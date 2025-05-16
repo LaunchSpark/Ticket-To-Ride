@@ -1,8 +1,8 @@
 
 from typing import List, Optional
 
-from abstract_player import AbstractPlayer
-from game_context import GameContext
+from player_types.abstract_player import AbstractPlayer
+from context.game_context import GameContext
 
 
 class Game:

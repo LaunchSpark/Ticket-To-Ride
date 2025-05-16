@@ -4,8 +4,8 @@ from collections import Counter
 from dataclasses import dataclass
 import weakref
 
-from Map import Route
-from decks import DestinationTicket
+from ..context.Map import Route
+from ..context.decks import DestinationTicket
 
 
 @dataclass

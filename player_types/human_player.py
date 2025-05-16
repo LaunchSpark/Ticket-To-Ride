@@ -1,8 +1,8 @@
 from typing import List, Optional
 
 from abstract_player import AbstractPlayer
-from Map import Route
-from decks import DestinationTicket
+from ..context.Map import Route
+from ..context.decks import DestinationTicket
 
 
 class HumanPlayer(AbstractPlayer):
@@ -38,7 +38,7 @@ class HumanPlayer(AbstractPlayer):
             print("No unclaimed routes available.")
             return None
 
-        options = {idx: f"{route.city_a} - {route.city_b} ({route.length} trains, {route.colour})" for idx, route in enumerate(available_routes)}
+        options = {idx: f"{route.city1} - {route.city2} ({route.length} trains, {route.colour})" for idx, route in enumerate(available_routes)}
         options[-1] = "Skip claiming a route"
 
         choice = self._display_menu("Choose a route to claim", options)
@@ -48,7 +48,7 @@ class HumanPlayer(AbstractPlayer):
         self._display_player_state()
         print("\nSelect destination tickets to keep (must keep at least 1):")
         for idx, ticket in enumerate(offer):
-            print(f"{idx}: {ticket.city_a} → {ticket.city_b} ({ticket.value} pts)")
+            print(f"{idx}: {ticket.city1} → {ticket.city2} ({ticket.value} pts)")
 
         while True:
             try:
@@ -82,7 +82,7 @@ class HumanPlayer(AbstractPlayer):
     def _display_player_state(self) -> None:
         print(f"\n--- {self.player_id}'s Current State ---")
         print(f"Hand: {dict(self.train_hand)}")
-        print(f"Tickets: {[f'{t.city_a}->{t.city_b} ({t.value})' for t in self.tickets]}")
+        print(f"Tickets: {[f'{t.city1}->{t.city2} ({t.value})' for t in self.tickets]}")
         print(f"Trains Remaining: {self.trains_remaining}")
         print("----------------------------------")
 

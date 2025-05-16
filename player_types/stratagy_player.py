@@ -2,8 +2,8 @@ from typing import List, Optional, Dict
 from collections import Counter
 
 from abstract_player import AbstractPlayer
-from Map import Route
-from decks import DestinationTicket
+from ..context.Map import Route
+from ..context.decks import DestinationTicket
 from dataclasses import dataclass
 
 
@@ -34,6 +34,11 @@ class RouteInfo:
 
 
 class StrategyPlayer(AbstractPlayer):
+    def __init__(self, player_id: str):
+        super().__init__(player_id)
+        self.desired_routes: List[DesiredRoute] = []
+        self._alloc: Dict[str, Counter[str]] = {}
+
     def choose_turn_action(self) -> int:
         # Decide whether to draw cards, claim a route, or draw destination tickets
         raise NotImplementedError
@@ -65,10 +70,7 @@ class StrategyPlayer(AbstractPlayer):
     def estimate_turns(self, route: RouteInfo) -> float:
         # Estimate how many turns are needed to claim a given route
         raise NotImplementedError
-    def __init__(self, player_id: str, context):
-        super().__init__(player_id, context)
-        self.desired_routes: List[DesiredRoute] = []
-        self._alloc: Dict[str, Counter[str]] = {}
+
 
     def choose_turn_action(self) -> int:
         # Placeholder heuristic decision-making

@@ -1,6 +1,6 @@
 from Map import MapGraph
 from decks import TrainCardDeck, TicketDeck
-from abstract_player import AbstractPlayer
+from ..player_types.abstract_player import AbstractPlayer
 from collections import Counter
 from typing import Dict, List
 

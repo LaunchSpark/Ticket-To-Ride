@@ -1,7 +1,7 @@
 from player_types.stratagy_player import StrategyPlayer
 from player_types.human_player import HumanPlayer
 from Game import Game
-from game_context import GameContext
+from context.game_context import GameContext
 
 
 
