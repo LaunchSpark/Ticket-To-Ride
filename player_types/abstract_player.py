@@ -1,39 +1,13 @@
+from copy import deepcopy
 from typing import List, Dict, Optional
 from collections import Counter
-
-from dataclasses import dataclass
 import weakref
-
+import copy as copy
 from ..context.Map import Route
 from ..context.decks import DestinationTicket
 
 
-@dataclass
-class UnknownPoolSnapshot:
-    counts: Counter[str]
-    total: int
 
-
-@dataclass
-class GameSnapshot:
-    turn_index: int
-    unknown_pool: UnknownPoolSnapshot
-
-
-@dataclass
-class OpponentInfo:
-    player_id: str
-    exposed_hand: Dict[str, int]
-
-
-@dataclass
-class PlayerViewContext:
-    face_up_cards: List[str]
-    available_routes: List
-    ticket_deck: object
-    opponents: List[OpponentInfo]
-    map: object
-    game_snapshot: GameSnapshot
 
 class AbstractPlayer:
     def __init__(self, player_id: str):
@@ -45,10 +19,9 @@ class AbstractPlayer:
 
     # Executors: Require implementation per player type
     def set_context(self, context):
-        self.context = weakref.ref(context)
-        self.map = context.get_map()
-        self.train_deck = context.get_train_deck()
-        self.ticket_deck = context.get_ticket_deck()
+        self.map = deepcopy(context.get_map())
+        self.train_deck = deepcopy(context.context.get_train_deck())
+        self.ticket_deck = deepcopy(context.context.get_ticket_deck())
 
     def choose_turn_action(self) -> int:
         raise NotImplementedError
@@ -97,7 +70,7 @@ class AbstractPlayer:
             try:
                 card = train_deck.draw_face_up(first_choice)
                 self.add_cards([card])
-                if card == 'locomotive':
+                if card == 'L':
                     return card
             except IndexError:
                 print(f"Invalid face-up index '{first_choice}' by player {self.player_id}.")
@@ -202,46 +175,5 @@ class AbstractPlayer:
     def __repr__(self) -> str:
         return (f"{self.__class__.__name__}(id={self.player_id}, trains={self.trains_remaining}, "
                 f"hand={dict(self.train_hand)}, tickets={self.tickets})")
-
-# ------------- Player Veiw ----------
-
-    def build_player_view(self,) -> PlayerViewContext:
-        face_up_cards = self.context.get_train_deck().face_up()
-        available_routes = self.context.get_map().get_available_routes()
-        ticket_deck = self.context.get_ticket_deck()
-
-        opponents = [
-            OpponentInfo(
-                player_id=p.player_id,
-                exposed_hand=p.get_exposed()
-            ) for p in self.players if p.player_id != self.player_id
-        ]
-
-
-        game_snapshot = self.build_snapshot()
-
-        return PlayerViewContext(
-            face_up_cards=face_up_cards,
-            available_routes=available_routes,
-            ticket_deck=ticket_deck,
-            opponents=opponents,
-            map=map,
-            game_snapshot = game_snapshot
-        )
-
-    def build_snapshot(self) -> GameSnapshot:
-        known = Counter(self.context.get_train_deck().face_up()) + Counter(self.context.get_train_deck().get_discard_pile()) + self.hand_counts()
-        for p in self.players:
-            if p.player_id != self.player_id:
-                known.update(p.get_exposed())
-
-        unseen = Counter(self.context.get_train_deck().get_full_deck()) - known
-        pool = UnknownPoolSnapshot(counts=unseen, total=sum(unseen.values()))
-        turn = self.turn_index
-
-        return GameSnapshot(
-            turn_index = turn,
-            unknown_pool=pool
-        )
 
 
