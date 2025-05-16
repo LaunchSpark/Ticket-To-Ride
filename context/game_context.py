@@ -1,6 +1,6 @@
 from Map import MapGraph
 from decks import TrainCardDeck, TicketDeck
-from ..player_types.abstract_player import AbstractPlayer
+from ..player import Player
 from collections import Counter
 from typing import Dict, List
 
@@ -41,7 +41,7 @@ class GameContext:
     def get_ticket_deck(self) -> TicketDeck:
         return self.ticket_deck
 
-    def build_snapshot(self, active_player: AbstractPlayer, players: List[AbstractPlayer], turn_index: int, full_deck: Counter[str]) -> GameSnapshot:
+    def build_snapshot(self, active_player: Player, players: List[Player], turn_index: int, full_deck: Counter[str]) -> GameSnapshot:
         known = Counter(self.train_deck.face_up()) + self.train_deck.discard_pile + active_player.hand_counts()
         for p in players:
             if p.player_id != active_player.player_id:
@@ -59,7 +59,7 @@ class GameContext:
             unknown_pool=pool
         )
 
-    def get_opponent_snapshots(self, current_player_id: str, players: List[AbstractPlayer]) -> List[PlayerSnapshot]:
+    def get_opponent_snapshots(self, current_player_id: str, players: List[Player]) -> List[PlayerSnapshot]:
         return [PlayerSnapshot(player_id=p.player_id) for p in players if p.player_id != current_player_id]
 
 

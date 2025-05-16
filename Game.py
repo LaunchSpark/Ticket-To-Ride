@@ -1,19 +1,19 @@
 
 from typing import List, Optional
 
-from player_types.abstract_player import AbstractPlayer
+from player import Player
 from context.game_context import GameContext
 
 
 class Game:
-    def __init__(self, context: GameContext, players: List[AbstractPlayer]):
+    def __init__(self, context: GameContext, players: List[Player]):
         self.context = context
         self.players = players
         self.turn_index = 0
 
 
 
-    def current_player(self) -> AbstractPlayer:
+    def current_player(self) -> Player:
         return self.players[self.turn_index % len(self.players)]
 
     def _is_game_over(self) -> bool:

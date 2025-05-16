@@ -1,5 +1,5 @@
-from player_types.human_player import HumanPlayer
-from player_types.stratagy_player import StrategyPlayer
+from Intefaces.human_interface import HumanPlayer
+from Intefaces.stratagy_player import StrategyPlayer
 from Game import Game
 from context.game_context import GameContext
 

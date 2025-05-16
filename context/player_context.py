@@ -14,6 +14,7 @@ import weakref
 class OpponentInfo:
     player_id: str
     exposed_hand: Dict[str, int]
+    num_cards_in_hand: int
 
 
 
@@ -30,10 +31,9 @@ class PlayerContext:
 
 
     def set_context(self, context):
-        self.context = weakref.ref(context)
-        self.map = context.get_map()
-        self.train_deck = context.get_train_deck()
-        self.ticket_deck = context.get_ticket_deck()
+        self.map = deepcopy(context.get_map())
+        self.train_deck = deepcopy(context.context.get_train_deck())
+        self.ticket_deck = deepcopy(context.context.get_ticket_deck())
 
 
     def build_player_view(self):

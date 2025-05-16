@@ -2,14 +2,13 @@ from copy import deepcopy
 from typing import List, Dict, Optional
 from collections import Counter
 import weakref
-import copy as copy
 from ..context.Map import Route
 from ..context.decks import DestinationTicket
 
 
 
 
-class AbstractPlayer:
+class Player:
     def __init__(self, player_id: str):
         self.player_id = player_id
         self.train_hand: Counter[str] = Counter()
@@ -19,9 +18,10 @@ class AbstractPlayer:
 
     # Executors: Require implementation per player type
     def set_context(self, context):
-        self.map = deepcopy(context.get_map())
-        self.train_deck = deepcopy(context.context.get_train_deck())
-        self.ticket_deck = deepcopy(context.context.get_ticket_deck())
+        self.context = weakref.ref(context)
+
+    def set_interface(self,interface):
+        self.interface = weakref.ref(interface)
 
     def choose_turn_action(self) -> int:
         raise NotImplementedError

@@ -1,11 +1,13 @@
 from typing import List, Optional
+from abstract_interface import Interface
 
-from abstract_player import AbstractPlayer
 from ..context.Map import Route
 from ..context.decks import DestinationTicket
 
 
-class HumanPlayer(AbstractPlayer):
+
+class HumanPlayer(Interface):
+
     def choose_turn_action(self) -> int:
         self._display_player_state()
         self._display_market()
