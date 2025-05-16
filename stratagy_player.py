@@ -1,8 +1,12 @@
 from typing import List, Optional, Dict
 from collections import Counter
+
 from abstract_player import AbstractPlayer
+from Map import Route
+from decks import DestinationTicket
 from dataclasses import dataclass
-from typing import Tuple
+
+
 
 
 @dataclass
@@ -12,8 +16,21 @@ class DesiredRoute:
     expected_utility: float
     committed_colour: str | None = None  # used only for grey routes
 
-    def key(self) -> Tuple[str, str]:
+    def key(self) -> tuple[str, str]:
         return tuple(sorted((self.city_a, self.city_b)))
+
+
+@dataclass
+class RouteInfo:
+    city_a: str
+    city_b: str
+    expected_utility: float
+    committed_colour: str | None = None  # used only for grey routes
+
+    def key(self) -> tuple[str, str]:
+        return tuple(sorted((self.city_a, self.city_b)))
+
+
 
 
 class StrategyPlayer(AbstractPlayer):

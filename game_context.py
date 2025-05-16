@@ -1,10 +1,8 @@
-from decks import TrainCardDeck , TicketDeck
 from Map import MapGraph
+from decks import TrainCardDeck, TicketDeck
+from abstract_player import AbstractPlayer
 from collections import Counter
 from typing import Dict, List
-from abstract_player import AbstractPlayer
-
-
 
 class GameSnapshot:
     def __init__(self, turn_index: int, player_snapshots: Dict[str, 'PlayerSnapshot'], unknown_pool: 'UnknownPoolSnapshot'):
@@ -22,10 +20,17 @@ class UnknownPoolSnapshot:
         self.total = total
 
 class GameContext:
-    def __init__(self, map_graph: MapGraph, train_deck: TrainCardDeck, ticket_deck: TicketDeck):
-        self.map_graph = map_graph
-        self.train_deck = train_deck
-        self.ticket_deck = ticket_deck
+    def __init__(self):
+        print("Initializing GameContext...")
+
+        # Initialize MapGraph (Map handles its own data loading)
+        self.map_graph = MapGraph()
+
+        # Initialize TrainCardDeck
+        self.train_deck = TrainCardDeck()
+
+        # Initialize TicketDeck
+        self.ticket_deck = TicketDeck()
 
     def get_map(self) -> MapGraph:
         return self.map_graph
@@ -56,4 +61,5 @@ class GameContext:
 
     def get_opponent_snapshots(self, current_player_id: str, players: List[AbstractPlayer]) -> List[PlayerSnapshot]:
         return [PlayerSnapshot(player_id=p.player_id) for p in players if p.player_id != current_player_id]
+
 

@@ -1,74 +1,23 @@
 
-from typing import List, Dict, Optional
+from typing import List, Optional
+from collections import Counter
+import copy
 
+from player_view_context import PlayerViewContext, OpponentInfo, UnknownPoolSnapshot, GameSnapshot
 from abstract_player import AbstractPlayer
-from human_player import HumanPlayer
-from stratagy_player import StrategyPlayer
-
-
-
+from game_context import GameContext
 
 
 class Game:
-    def __init__(self, players: Optional[List[AbstractPlayer]], context: GameContext, ruleset: object):
+    def __init__(self, context: GameContext, players: List[AbstractPlayer]):
         self.context = context
+        self.players = players
         self.turn_index = 0
-        self.RULESET = ruleset
+        self.PlayerViewContext = self.build_player_view(players[0])
 
-        if players is None:
-            self.setup()
-        else:
-            self.players = players
-
-    def setup(self):
-        print("=== Game Setup ===")
-
-        while True:
-            try:
-                num_human = int(input("Enter number of human players: "))
-                if num_human >= 0:
-                    break
-            except ValueError:
-                pass
-            print("Invalid input. Please enter a non-negative integer.")
-
-        while True:
-            try:
-                num_ai = int(input("Enter number of AI players: "))
-                if num_ai >= 0:
-                    break
-            except ValueError:
-                pass
-            print("Invalid input. Please enter a non-negative integer.")
-
-        self.players = []
-
-        for i in range(num_human):
-            player_id = f"Human_{i+1}"
-            self.players.append(HumanPlayer(player_id, self.context))
-
-        for i in range(num_ai):
-            player_id = f"AI_{i+1}"
-            self.players.append(StrategyPlayer(player_id, self.context))
 
     def current_player(self) -> AbstractPlayer:
         return self.players[self.turn_index % len(self.players)]
-
-    def _execute_draw_phase(self, player: AbstractPlayer) -> None:
-        action = player.choose_draw_action()
-        if action == 'deck':
-            card = self.context.get_train_deck().draw_face_down()
-            player.add_cards([card])
-        elif action.startswith('face_up_'):
-            index = int(action.split('_')[-1])
-            card = self.context.get_train_deck().draw_face_up(index)
-            player.add_cards([card])
-
-    def _execute_claim_phase(self, player: AbstractPlayer) -> None:
-        route = player.choose_route_to_claim()
-        if route:
-            player.claim_route(route)
-            self.context.get_map().claim_route(route)
 
     def _is_game_over(self) -> bool:
         return any(p.trains_remaining <= 2 for p in self.players)
@@ -78,15 +27,51 @@ class Game:
             score = self.context.get_map().score_tickets(player.tickets, player.player_id)
             print(f"{player.player_id} final score: {score}")
 
+    def build_player_view(self, active_player: AbstractPlayer) -> PlayerViewContext:
+        face_up_cards = self.context.get_train_deck().face_up()
+        available_routes = self.context.get_map().get_available_routes()
+        ticket_deck = self.context.get_ticket_deck()
+
+        opponents = [
+            OpponentInfo(
+                player_id=p.player_id,
+                exposed_hand=p.get_exposed()
+            ) for p in self.players if p.player_id != active_player.player_id
+        ]
+
+        map_view = copy.deepcopy(self.context.get_map())
+        game_snapshot = self.build_snapshot(active_player)
+
+        return PlayerViewContext(
+            face_up_cards=face_up_cards,
+            available_routes=available_routes,
+            ticket_deck=ticket_deck,
+            opponents=opponents,
+            map_view=map_view,
+            game_snapshot = game_snapshot
+        )
+
+    def build_snapshot(self, active_player: AbstractPlayer) -> GameSnapshot:
+        known = Counter(self.context.get_train_deck().face_up()) + Counter(self.context.get_train_deck().get_discard_pile()) + active_player.hand_counts()
+        for p in self.players:
+            if p.player_id != active_player.player_id:
+                known.update(p.get_exposed())
+
+        unseen = Counter(self.context.get_train_deck().get_full_deck()) - known
+        pool = UnknownPoolSnapshot(counts=unseen, total=sum(unseen.values()))
+        turn = self.turn_index
+
+        return GameSnapshot(
+            turn_index = turn,
+            unknown_pool=pool
+        )
+
     def next_turn(self) -> None:
         player = self.current_player()
-        snapshot = self.context.build_snapshot(
-            active_player=player,
-            players=self.players,
-            turn_index=self.turn_index,
-            full_deck=self.RULESET.full_deck
-        )
-        player.take_turn()
+        snapshot = self.build_snapshot(player)
+        view = self.build_player_view(player)
+        view.game_snapshot = snapshot
+        player.take_turn(view)
         self.turn_index += 1
 
     def play(self, turns: Optional[int] = None) -> None:
