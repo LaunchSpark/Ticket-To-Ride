@@ -19,7 +19,7 @@ class LiveHeatmapRenderer:
     Draws pre‑computed quadratic/cubic Bézier curves for each board edge.
     Can colour them by *utility* or highlight already‑claimed routes.
     Added robustness so that **route keys are now orientation‑agnostic** –
-    missing lines should no longer occur if your `(cityA, cityB)` tuples are
+    missing lines should no longer occur if your `(city1, city2)` tuples are
     in the opposite order to the JSON file.
     """
 
@@ -171,7 +171,7 @@ if __name__ == "__main__":
 
     # ─── Load utilities from CSV ───────────────────────────────────────────
     df = pd.read_csv(MAP_CSV)
-    utils = {(r.cityA, r.cityB): float(r.Distance) for r in df.itertuples(index=False)}
+    utils = {(r.city1, r.city2): float(r.Distance) for r in df.itertuples(index=False)}
 
     # ─── Choose a handful of claimed routes for demo ──────────────────────
     all_keys = list(utils.keys())

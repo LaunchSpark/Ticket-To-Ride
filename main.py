@@ -1,5 +1,5 @@
-from stratagy_player import StrategyPlayer
-from human_player import HumanPlayer
+from player_types.stratagy_player import StrategyPlayer
+from player_types.human_player import HumanPlayer
 from Game import Game
 from game_context import GameContext
 
@@ -43,6 +43,8 @@ def setup():
         player_id = f"AI_{i + max_huma_id + 1}"
         players.append(StrategyPlayer(player_id))
 
+    for p in players:
+        p.set_context(context)
     # Instantiate Game with created context and players
     game = Game(context=context, players=players)
 

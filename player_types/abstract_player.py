@@ -1,11 +1,39 @@
 from typing import List, Dict, Optional
 from collections import Counter
 
-from player_view_context import PlayerViewContext
+from dataclasses import dataclass
+import weakref
+
 from Map import Route
 from decks import DestinationTicket
 
 
+@dataclass
+class UnknownPoolSnapshot:
+    counts: Counter[str]
+    total: int
+
+
+@dataclass
+class GameSnapshot:
+    turn_index: int
+    unknown_pool: UnknownPoolSnapshot
+
+
+@dataclass
+class OpponentInfo:
+    player_id: str
+    exposed_hand: Dict[str, int]
+
+
+@dataclass
+class PlayerViewContext:
+    face_up_cards: List[str]
+    available_routes: List
+    ticket_deck: object
+    opponents: List[OpponentInfo]
+    map: object
+    game_snapshot: GameSnapshot
 
 class AbstractPlayer:
     def __init__(self, player_id: str):
@@ -16,6 +44,11 @@ class AbstractPlayer:
         self.trains_remaining: int = 45
 
     # Executors: Require implementation per player type
+    def set_context(self, context):
+        self.context = weakref.ref(context)
+        self.map = context.get_map()
+        self.train_deck = context.get_train_deck()
+        self.ticket_deck = context.get_ticket_deck()
 
     def choose_turn_action(self) -> int:
         raise NotImplementedError
@@ -23,27 +56,29 @@ class AbstractPlayer:
     def choose_draw_train_action(self) -> int:
         raise NotImplementedError
 
-    def choose_route_to_claim(self, view_context: PlayerViewContext) -> Optional[Route]:
+    def choose_route_to_claim(self) -> Optional[Route]:
         raise NotImplementedError
 
     def select_ticket_offer(self, offer: List[DestinationTicket]) -> List[DestinationTicket]:
         raise NotImplementedError
 
-    def take_turn(self, view_context: PlayerViewContext) -> None:
+    def take_turn(self) -> None:
         turn_choice = self.choose_turn_action()
 
         if turn_choice == 1:
-            first_draw_card = self.draw_train_cards(view_context)
+            first_draw_card = self.draw_train_cards()
             if first_draw_card != 'locomotive':
-                self.draw_train_cards(view_context)
+                self.draw_train_cards()
 
         elif turn_choice == 2:
-            success = self.claim_available_route(view_context)
+            success = self.claim_available_route()
             if not success:
+                self.take_turn() #chose returns to the turn menu
                 print(f"{self.player_id} could not claim a route.")
 
+
         elif turn_choice == 3:
-            success = self.draw_destination_tickets(view_context)
+            success = self.draw_destination_tickets()
             if not success:
                 print(f"{self.player_id} could not draw destination tickets.")
 
@@ -52,10 +87,10 @@ class AbstractPlayer:
 
     # Shared Turn Actions
 
-    def draw_train_cards(self, view_context: PlayerViewContext) -> str:
+    def draw_train_cards(self) -> str:
         draw_choices = [self.choose_draw_train_action() for _ in range(2)]
 
-        train_deck = view_context.ticket_deck  # Assuming ticket_deck includes train draw functionality
+        train_deck = self.context.train_deck # Assuming ticket_deck includes train draw functionality
 
         first_choice = draw_choices[0]
         if first_choice >= 0:
@@ -106,8 +141,8 @@ class AbstractPlayer:
 
         return 'success'
 
-    def claim_available_route(self, view_context: PlayerViewContext) -> bool:
-        route = self.choose_route_to_claim(view_context)
+    def claim_available_route(self) -> bool:
+        route = self.choose_route_to_claim()
         if route is None:
             return False
 
@@ -115,7 +150,7 @@ class AbstractPlayer:
         if self.train_hand >= required:
             try:
                 self.spend_cards([route.colour] * route.length)
-                self.claim_route(route, view_context)
+                self.claim_route(route)
                 return True
             except Exception as e:
                 print(f"Error claiming route {route}: {e}")
@@ -124,9 +159,9 @@ class AbstractPlayer:
         print(f"{self.player_id} lacks cards to claim {route}.")
         return False
 
-    def draw_destination_tickets(self, view_context: PlayerViewContext) -> bool:
+    def draw_destination_tickets(self) -> bool:
         try:
-            offer = view_context.ticket_deck.deal_unique(3)
+            offer = self.context.ticket_deck.deal_unique(3)
         except Exception as e:
             print(f"Ticket draw failed for player {self.player_id}: {e}")
             return False
@@ -142,7 +177,7 @@ class AbstractPlayer:
 
         self.tickets.extend(kept)
         returned = [t for t in offer if t not in kept]
-        view_context.ticket_deck.return_tickets(returned)
+        self.context.ticket_deck.return_tickets(returned)
         return True
 
     # Helpers
@@ -154,9 +189,9 @@ class AbstractPlayer:
         self.train_hand.subtract(cards)
         self.train_hand += Counter()
 
-    def claim_route(self, route: Route, view_context: PlayerViewContext) -> None:
+    def claim_route(self, route: Route) -> None:
         self.trains_remaining -= route.length
-        view_context.map_view.claim_route(route, self.player_id)
+        self.context.map_graph.claim_route(route, self.player_id)
 
     def hand_counts(self) -> Counter[str]:
         return self.train_hand.copy()
@@ -167,3 +202,46 @@ class AbstractPlayer:
     def __repr__(self) -> str:
         return (f"{self.__class__.__name__}(id={self.player_id}, trains={self.trains_remaining}, "
                 f"hand={dict(self.train_hand)}, tickets={self.tickets})")
+
+# ------------- Player Veiw ----------
+
+    def build_player_view(self,) -> PlayerViewContext:
+        face_up_cards = self.context.get_train_deck().face_up()
+        available_routes = self.context.get_map().get_available_routes()
+        ticket_deck = self.context.get_ticket_deck()
+
+        opponents = [
+            OpponentInfo(
+                player_id=p.player_id,
+                exposed_hand=p.get_exposed()
+            ) for p in self.players if p.player_id != self.player_id
+        ]
+
+
+        game_snapshot = self.build_snapshot()
+
+        return PlayerViewContext(
+            face_up_cards=face_up_cards,
+            available_routes=available_routes,
+            ticket_deck=ticket_deck,
+            opponents=opponents,
+            map=map,
+            game_snapshot = game_snapshot
+        )
+
+    def build_snapshot(self) -> GameSnapshot:
+        known = Counter(self.context.get_train_deck().face_up()) + Counter(self.context.get_train_deck().get_discard_pile()) + self.hand_counts()
+        for p in self.players:
+            if p.player_id != self.player_id:
+                known.update(p.get_exposed())
+
+        unseen = Counter(self.context.get_train_deck().get_full_deck()) - known
+        pool = UnknownPoolSnapshot(counts=unseen, total=sum(unseen.values()))
+        turn = self.turn_index
+
+        return GameSnapshot(
+            turn_index = turn,
+            unknown_pool=pool
+        )
+
+

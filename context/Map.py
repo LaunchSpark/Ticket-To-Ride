@@ -14,7 +14,7 @@ class Route:
 class MapGraph:
     def __init__(self):
         self.routes: List[Route] = []
-        self._load_routes_from_csv("data/map.csv")  # <-- Hardcoded path
+        self._load_routes_from_csv("../data/map.csv")  # <-- Hardcoded path
 
         self._adj: Dict[str, List[Route]] = {}
         self._build_adjacency()
@@ -23,8 +23,8 @@ class MapGraph:
         with open(csv_path, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                city1 = row["cityA"]
-                city2 = row["cityB"]
+                city1 = row["city1"]
+                city2 = row["city2"]
                 length = int(row["Distance"])
                 color = row["Color"] or None  # Empty string becomes None
 

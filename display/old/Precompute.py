@@ -82,10 +82,10 @@ def compute_control_points(city_coords: dict,
 if __name__ == '__main__':
     # Updated file paths
     coords_path = os.path.join('city_locations.json')
-    map_csv = os.path.join('..', 'data', 'map.csv')
+    map_csv = os.path.join('../..', 'data', 'map.csv')
     # load map image to get shape
     from PIL import Image
-    img_path = os.path.join('USA_map.jpg')
+    img_path = os.path.join('../USA_map.jpg')
     img = Image.open(img_path)
     h, w = img.size[1], img.size[0]
 
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     control_points = compute_control_points(city_coords, routes, (h, w))
 
     # save to JSON for later use
-    out_path = 'route_control_points.json'
+    out_path = '../route_control_points.json'
     with open(out_path, 'w') as f:
         json.dump(control_points, f, indent=2)
 

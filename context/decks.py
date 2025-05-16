@@ -97,13 +97,13 @@ class TrainCardDeck:
 # DestinationTicket – as originally defined
 # ────────────────────────────────────────────────────────────────────────────────
 class DestinationTicket:
-    def __init__(self, city_a: str, city_b: str, value: int):
-        self.city_a = city_a
-        self.city_b = city_b
+    def __init__(self, city1: str, city2: str, value: int):
+        self.city1 = city1
+        self.city2 = city2
         self.value = value
 
     def __repr__(self):
-        return f"{self.city_a} → {self.city_b} ({self.value} pts)"
+        return f"{self.city1} → {self.city2} ({self.value} pts)"
 
 # ────────────────────────────────────────────────────────────────────────────────
 # TicketDeck – loads tickets from CSV and manages draws
@@ -137,8 +137,8 @@ class TicketDeck:
         with open(csv_path, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                city_a = row["cityA"]
-                city_b = row["cityB"]
+                city1 = row["cityA"]
+                city2 = row["cityB"]
                 value = int(row["value"])
-                tickets.append(DestinationTicket(city_a, city_b, value))
+                tickets.append(DestinationTicket(city1, city2, value))
         return tickets
