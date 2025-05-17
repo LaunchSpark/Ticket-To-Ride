@@ -19,6 +19,8 @@ class HumanPlayer(Interface):
         }
         return self._display_menu("Choose an action", options)
 
+
+
     def choose_draw_train_action(self) -> int:
         self._display_player_state()
         self._display_market()

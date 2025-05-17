@@ -23,20 +23,9 @@ class Player:
     def set_interface(self,interface):
         self.interface = weakref.ref(interface)
 
-    def choose_turn_action(self) -> int:
-        raise NotImplementedError
-
-    def choose_draw_train_action(self) -> int:
-        raise NotImplementedError
-
-    def choose_route_to_claim(self) -> Optional[Route]:
-        raise NotImplementedError
-
-    def select_ticket_offer(self, offer: List[DestinationTicket]) -> List[DestinationTicket]:
-        raise NotImplementedError
 
     def take_turn(self) -> None:
-        turn_choice = self.choose_turn_action()
+        turn_choice = self.interface.choose_turn_action()
 
         if turn_choice == 1:
             first_draw_card = self.draw_train_cards()
@@ -61,7 +50,7 @@ class Player:
     # Shared Turn Actions
 
     def draw_train_cards(self) -> str:
-        draw_choices = [self.choose_draw_train_action() for _ in range(2)]
+        draw_choices = [self.interface.choose_draw_train_action() for _ in range(2)]
 
         train_deck = self.context.train_deck # Assuming ticket_deck includes train draw functionality
 
@@ -115,7 +104,7 @@ class Player:
         return 'success'
 
     def claim_available_route(self) -> bool:
-        route = self.choose_route_to_claim()
+        route = self.interface.choose_route_to_claim()
         if route is None:
             return False
 
@@ -143,7 +132,7 @@ class Player:
             print(f"No destination tickets available for {self.player_id}.")
             return False
 
-        kept = self.select_ticket_offer(offer)
+        kept = self.interface.select_ticket_offer(offer)
         if not kept or len(kept) == 0:
             print(f"{self.player_id} kept no tickets from offer.")
             return False

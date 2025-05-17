@@ -1,5 +1,4 @@
 from Intefaces.human_interface import HumanPlayer
-from Intefaces.stratagy_player import StrategyPlayer
 from Game import Game
 from context.game_context import GameContext
 
@@ -20,15 +19,6 @@ def setup():
             pass
         print("Invalid input. Please enter a non-negative integer.")
 
-    while True:
-        try:
-            num_ai = int(input("Enter number of AI players: "))
-            if num_ai >= 0:
-                break
-        except ValueError:
-            pass
-        print("Invalid input. Please enter a non-negative integer.")
-
     # Initialize GameContext (replace with actual map/deck initializations as needed)
     context = GameContext()
 
@@ -39,9 +29,6 @@ def setup():
         players.append(HumanPlayer(player_id))
         max_huma_id = i
 
-    for i in range(num_ai):
-        player_id = f"AI_{i + max_huma_id + 1}"
-        players.append(StrategyPlayer(player_id))
 
     for p in players:
         p.set_context(context)
