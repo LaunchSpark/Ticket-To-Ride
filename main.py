@@ -1,4 +1,5 @@
 from Intefaces.human_interface import HumanPlayer
+from player import Player
 from Game import Game
 from context.game_context import GameContext
 
@@ -22,12 +23,14 @@ def setup():
     # Initialize GameContext (replace with actual map/deck initializations as needed)
     context = GameContext()
 
+    interfaces  = []
     players = []
-    max_huma_id = 0
+
+    max_human_id = 0
     for i in range(num_human):
         player_id = f"Human_{i}"
-        players.append(HumanPlayer(player_id))
-        max_huma_id = i
+        players.append(Player(player_id,HumanPlayer()))
+        max_human_id = i
 
 
     for p in players:
