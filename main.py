@@ -1,7 +1,7 @@
-from Intefaces.human_interface import HumanPlayer
-from player import Player
-from Game import Game
-from context.game_context import GameContext
+from ticket_to_ride.Intefaces.human_interface import HumanPlayer
+from ticket_to_ride.player import Player
+from ticket_to_ride.Game import Game
+from ticket_to_ride.context.game_context import GameContext
 
 
 

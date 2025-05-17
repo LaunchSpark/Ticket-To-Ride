@@ -1,8 +1,8 @@
 from typing import List, Optional
-from abstract_interface import Interface
+from ticket_to_ride.Intefaces.abstract_interface import Interface
 
-from ..context.Map import Route
-from ..context.decks import DestinationTicket
+from ticket_to_ride.context.Map import Route
+from ticket_to_ride.context.decks import DestinationTicket
 
 
 

@@ -2,8 +2,8 @@ from copy import deepcopy
 from typing import List, Dict, Optional
 from collections import Counter
 import weakref
-from context.Map import Route
-from context.decks import DestinationTicket
+from ticket_to_ride.context.Map import Route
+from ticket_to_ride.context.decks import DestinationTicket
 
 
 

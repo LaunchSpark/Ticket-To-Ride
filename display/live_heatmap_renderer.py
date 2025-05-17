@@ -10,7 +10,7 @@ from matplotlib.patches import PathPatch
 from PIL import Image
 
 if TYPE_CHECKING:  # avoid runtime circular deps
-    from Player import Player  # noqa: F401
+    from ticket_to_ride.player import Player  # noqa: F401
 
 
 class LiveHeatmapRenderer:

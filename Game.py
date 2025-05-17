@@ -1,8 +1,8 @@
 
 from typing import List, Optional
 
-from player import Player
-from context.game_context import GameContext
+from ticket_to_ride.player import Player
+from ticket_to_ride.context.game_context import GameContext
 
 
 class Game:
