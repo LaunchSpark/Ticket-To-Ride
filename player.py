@@ -2,26 +2,25 @@ from copy import deepcopy
 from typing import List, Dict, Optional
 from collections import Counter
 import weakref
-from ..context.Map import Route
-from ..context.decks import DestinationTicket
+from context.Map import Route
+from context.decks import DestinationTicket
 
 
 
 
 class Player:
-    def __init__(self, player_id: str):
+    def __init__(self, player_id: str,interface):
         self.player_id = player_id
         self.train_hand: Counter[str] = Counter()
         self._exposed: Dict[str, int] = {}
         self.tickets: List[DestinationTicket] = []
         self.trains_remaining: int = 45
+        self.interface = weakref.ref(interface)
+        interface.set_player(self)
 
     # Executors: Require implementation per player type
     def set_context(self, context):
         self.context = weakref.ref(context)
-
-    def set_interface(self,interface):
-        self.interface = weakref.ref(interface)
 
 
     def take_turn(self) -> None:
