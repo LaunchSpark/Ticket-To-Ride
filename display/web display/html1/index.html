@@ -1,270 +1,193 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta charset="utf-8" />
-<link rel="stylesheet" href="globals.css" />
-<link rel="stylesheet" href="style.css" />
-</head>
-<body>
-<div class="ticket-to-ride">
-<div class="overlap-wrapper">
-<div class="overlap">
-<div class="overlap-group">
-<img class="USA-map" src="img/USA_map-1.png" />
-<div class="market">
-<img class="orange-train-car" src="img/market-orange-train-car-card.png" />
-<img class="yellow-train-car" src="img/market-yellow-train-car-card.png" />
-<img class="blue-train-car-card" src="img/market-blue-train-car-card.png" />
-<img class="red-train-car-card" src="img/market-red-train-car-card.png" />
-<img class="locomotive" src="img/market-locomotive.png" />
-<img class="hidden-train-car" src="img/market-hidden-train-car-card.png" />
-<img class="hidden-destination" src="img/market-hidden-destination-ticket.png" />
-</div>
-<div class="right-player">
-<div class="div">
-<div class="red-card-count">#</div>
-<div class="blue-card-count">#</div>
-<div class="yellow-card-count">#</div>
-<div class="orange-card-count">#</div>
-<div class="green-card-count">#</div>
-<div class="pink-card-count">#</div>
-<div class="white-card-count">#</div>
-<div class="black-card-count">#</div>
-<div class="overlap-2">
-<div class="locomotives-count">#</div>
-<div class="secret-cards-count">#</div>
-<div class="destination-tickets">#</div>
-<div class="overlap-group-2">
-<img class="black-train-car-card" src="img/right-black-train-car-card.png" />
-<img class="white-train-car-card" src="img/right-white-train-car-card.png" />
-<img class="purple-train-car" src="img/right-purple-train-car-card.png" />
-<img class="green-train-car-card" src="img/right-green-train-car-card.png" />
-<img class="img" src="img/right-orange-train-car-card.png" />
-<img class="yellow-train-car-2" src="img/right-yellow-train-car-card.png" />
-<img class="blue-train-car-card-2" src="img/right-blue-train-car-card.png" />
-<img class="red-train-car-card-2" src="img/right-red-train-car-card.png" />
-<img class="locomotive-2" src="img/right-locomotive.png" />
-<img class="hidden-train-car-2" src="img/right-hidden-train-car-card.png" />
-<img class="hidden-destination-2" src="img/right-hidden-destination-ticket.png" />
-</div>
-</div>
-</div>
-</div>
-<div class="left-player">
-<div class="overlap-3">
-<div class="text-wrapper">#</div>
-<img class="img-2" src="img/left-red-train-car-card.png" />
-</div>
-<div class="overlap-4">
-<div class="text-wrapper">#</div>
-<img class="img-2" src="img/left-blue-train-car-card.png" />
-</div>
-<div class="overlap-5">
-<div class="text-wrapper">#</div>
-<img class="img-2" src="img/left-yellow-train-car-card.png" />
-</div>
-<div class="overlap-6">
-<div class="text-wrapper">#</div>
-<img class="img-2" src="img/left-orange-train-car-card.png" />
-</div>
-<div class="overlap-7">
-<div class="text-wrapper">#</div>
-<img class="img-2" src="img/left-green-train-car-card.png" />
-</div>
-<div class="overlap-8">
-<div class="pink-card-count-2">#</div>
-<img class="img-2" src="img/left-purple-train-car-card.png" />
-</div>
-<div class="overlap-9">
-<div class="text-wrapper">#</div>
-<img class="img-2" src="img/left-white-train-car-card.png" />
-</div>
-<div class="overlap-10">
-<div class="text-wrapper">#</div>
-<img class="img-2" src="img/left-black-train-car-card.png" />
-</div>
-<div class="overlap-11">
-<div class="text-wrapper-2">#</div>
-<img class="locomotive-3" src="img/left-locomotive.png" />
-</div>
-<div class="overlap-12">
-<div class="secret-cards-count-2">#</div>
-<img class="hidden-train-car-3" src="img/left-hidden-train-car-card.png" />
-</div>
-<div class="overlap-13">
-<div class="text-wrapper-2">#</div>
-<img class="hidden-destination-3" src="img/left-hidden-destination-ticket.png" />
-</div>
-</div>
-<div class="sidebar">
-<div class="overlap-14">
-<img class="background" src="img/Sidebar-Background.png" />
-<div class="this-game">
-<div class="overlap-15">
-<div class="player-list">
-<div class="overlap-16">
-<div class="element-place-player">
-<div class="overlap-group-3">
-<img class="rectangle" src="img/4th-Place-Name-Card.png" />
-<img class="rectangle-2" src="img/4th-Place-Score-Card.png" />
-<div class="score">42</div>
-<div class="name-text">Placeholder name</div>
-</div>
-</div>
-<div class="element-rd-place-player">
-<div class="overlap-17">
-<img class="rectangle-3" src="img/3rd-Place-Name-Card.png" />
-<img class="rectangle-4" src="img/3rd-Place-Score-Card.png" />
-<div class="score-2">32</div>
-<div class="name-text">Placeholder name</div>
-</div>
-</div>
-</div>
-<div class="element-nd-place-player">
-<div class="overlap-17">
-<img class="rectangle" src="img/2nd-Place-Name-Card.png" />
-<img class="rectangle-2" src="img/2nd-Place-Score-Card.png" />
-<div class="score-2">12</div>
-<div class="name-text">Placeholder name</div>
-</div>
-</div>
-<div class="element-st-place-player">
-<div class="overlap-18">
-<img class="rectangle" src="img/1st-Place-Name-Card.png" />
-<img class="rectangle-2" src="img/1st-Place-Score-Card.png" />
-<div class="score-3">42</div>
-<div class="name-text">Placeholder name</div>
-</div>
-</div>
-</div>
-<div class="label">THIS GAME</div>
-</div>
-</div>
- <div class="box">
- <div class="match-stats">
+ <head>
+ <meta name="viewport" content="width=device-width, initial-scale=1" />
+ <meta charset="utf-8" />
+ <link rel="stylesheet" href="globals.css" />
+ <link rel="stylesheet" href="style.css" />
+ </head>
+ <body>
+ <div class="flatened">
+ <div class="overlap-wrapper">
  <div class="overlap">
- <div class="overlap-group"><div class="score">42</div></div>
- <div class="label-wrapper"><div class="label">Avg Score</div></div>
- <div class="name">Player 4</div>
+ <div class="overlap-group">
+ <img class="USA-map" src="img/USA_map-1.png" />
+ <div class="market">
+ <img class="market-orange-train" src="img/market-orange-train-car-card.png" />
+ <img class="market-yellow-train" src="img/market-yellow-train-car-card.png" />
+ <img class="market-blue-train" src="img/market-blue-train-car-card.png" />
+ <img class="market-red-train-car" src="img/market-red-train-car-card.png" />
+ <img class="market-locomotive" src="img/market-locomotive.png" />
+ <img class="market-hidden-train" src="img/market-hidden-train-car-card.png" />
+ <img class="market-hidden" src="img/market-hidden-destination-ticket.png" />
  </div>
+ <div class="right-player">
+ <div class="right-red-card-count">#</div>
+ <div class="right-blue-card">0</div>
+ <div class="right-yellow-card">9</div>
+ <div class="right-orange-card">8</div>
+ <div class="right-green-card">7</div>
+ <div class="right-pink-card">6</div>
+ <div class="right-white-card">5</div>
+ <div class="right-black-card">4</div>
+ <div class="right-locomotives">3</div>
+ <div class="right-secret-cards">2</div>
+ <div class="right-destination">1</div>
  <div class="div">
- <div class="score-wrapper"><div class="score">42</div></div>
- <div class="div-wrapper"><div class="label">Avg Score</div></div>
- <div class="name">Player 3</div>
+ <img class="right-black-train" src="img/right-black-train-car-card.png" />
+ <img class="right-white-train" src="img/right-white-train-car-card.png" />
+ <img class="right-purple-train" src="img/right-purple-train-car-card.png" />
+ <img class="right-green-train" src="img/right-green-train-car-card.png" />
+ <img class="right-orange-train" src="img/right-orange-train-car-card.png" />
+ <img class="right-yellow-train" src="img/right-yellow-train-car-card.png" />
+ <img class="right-blue-train-car" src="img/right-blue-train-car-card.png" />
+ <img class="right-red-train-car" src="img/right-red-train-car-card.png" />
+ <img class="right-locomotive" src="img/right-locomotive.png" />
+ <img class="right-hidden-train" src="img/right-hidden-train-car-card.png" />
+ <img class="right-hidden" src="img/right-hidden-destination-ticket.png" />
  </div>
+ </div>
+ <div class="left-player">
  <div class="overlap-2">
- <div class="overlap-3"><div class="score">42</div></div>
- <div class="overlap-4"><div class="text-wrapper">Avg Score</div></div>
- <div class="name">Player 2</div>
+ <div class="text-wrapper">1</div>
+ <img class="img" src="img/left-red-train-car-card.png" />
  </div>
- <div class="overlap-group-2">
- <div class="overlap-5"><div class="score">42</div></div>
- <div class="overlap-6"><div class="text-wrapper">Avg Score</div></div>
- <div class="name">Player 1</div>
+ <div class="overlap-3">
+ <div class="text-wrapper">2</div>
+ <img class="img" src="img/left-blue-train-car-card.png" />
  </div>
+ <div class="overlap-4">
+ <div class="text-wrapper">3</div>
+ <img class="img" src="img/left-yellow-train-car-card.png" />
+ </div>
+ <div class="overlap-5">
+ <div class="text-wrapper">4</div>
+ <img class="img" src="img/left-orange-train-car-card.png" />
+ </div>
+ <div class="overlap-6">
+ <div class="text-wrapper">5</div>
+ <img class="img" src="img/left-green-train-car-card.png" />
+ </div>
+ <div class="overlap-7">
+ <div class="left-pink-card-count">6</div>
+ <img class="img" src="img/left-purple-train-car-card.png" />
+ </div>
+ <div class="overlap-8">
+ <div class="text-wrapper">7</div>
+ <img class="img" src="img/left-white-train-car-card.png" />
+ </div>
+ <div class="overlap-9">
+ <div class="text-wrapper">8</div>
+ <img class="img" src="img/left-black-train-car-card.png" />
+ </div>
+ <div class="overlap-10">
+ <div class="text-wrapper-2">9</div>
+ <img class="left-locomotive" src="img/left-locomotive.png" />
+ </div>
+ <div class="overlap-11">
+ <div class="left-secret-cards">0</div>
+ <img class="left-hidden-train" src="img/left-hidden-train-car-card.png" />
+ </div>
+ <div class="overlap-12">
+ <div class="text-wrapper-2">#</div>
+ <img class="left-hidden" src="img/left-hidden-destination-ticket.png" />
+ </div>
+ </div>
+ <div class="sidebar">
+ <div class="overlap-13">
+ <div class="overlap-14">
+ <div class="element-place-score">4</div>
+ <div class="element-place-name-text">Placeholder name</div>
+ <div class="element-rd-place-name-text">Placeholder name</div>
  <div class="match-stats-label">MATCH&nbsp;&nbsp;STATS</div>
  </div>
+ <div class="element-rd-place-score">3</div>
  </div>
-</div>
-</div>
-</div>
-<div class="current-player">
-<div class="overlap-19">
-<img class="background-2" src="img/background.png" />
-<div class="cards">
-<img class="black-train-car-card-2" src="img/current-black-train-car-card.png" />
-<img class="white-train-car-card-2" src="img/current-white-train-car-card.png" />
-<img class="purple-train-car-2" src="img/current-purple-train-car-card.png" />
-<img class="green-train-car-card-2" src="img/current-green-train-car-card.png" />
-<img class="orange-train-car-2" src="img/current-orange-train-car-card.png" />
-<img class="yellow-train-car-3" src="img/current-yellow-train-car-card.png" />
-<img class="blue-train-car-card-3" src="img/current-blue-train-car-card.png" />
-<img class="red-train-car-card-3" src="img/current-red-train-car-card.png" />
-<img class="locomotive-4" src="img/current-locomotive.png" />
-</div>
-<div class="card-counts">
-<div class="locomotives-count-2">#</div>
-<div class="black-card-count-2">#</div>
-<div class="white-card-count-2">#</div>
-<div class="pink-card-count-3">#</div>
-<div class="green-card-count-2">#</div>
-<div class="orange-card-count-2">#</div>
-<div class="yellow-card-count-2">#</div>
-<div class="blue-card-count-2">#</div>
-<div class="red-card-count-2">#</div>
-</div>
-<div class="list-of-destination">
-<div class="overlap-20">
-<div class="ticket">
-<div class="overlap-group-4">
-<div class="city-b">MOSCOW</div>
-<div class="city-a">MOSCOW</div>
-<div class="score-4">23</div>
-</div>
-</div>
-<div class="overlap-group-wrapper">
-<div class="overlap-21">
-<div class="city-b">MOSCOW</div>
-<div class="city-a">MOSCOW</div>
-<div class="score-4">23</div>
-</div>
-</div>
-<div class="div-wrapper">
-<div class="overlap-22">
-<div class="city-b">MOSCOW</div>
-<div class="city-a">MOSCOW</div>
-<div class="score-4">23</div>
-</div>
-</div>
-<div class="ticket-2">
-<div class="overlap-23">
-<div class="city-b">MOSCOW</div>
-<div class="city-a">MOSCOW</div>
-<div class="score-4">23</div>
-</div>
-</div>
-</div>
-</div>
-<div class="name"><input class="name-text-wrapper" placeholder="Placeholder name" type="text" /></div>
-<div class="train-counter">
-<div class="overlap-24">
-<div class="text-wrapper-3">45</div>
-<img class="train-car-image" src="img/train-counter-image.png" />
-<div class="label-3">Train Cars:</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="opposite-player">
-<div class="red-card-count-3">#</div>
-<div class="blue-card-count-3">#</div>
-<div class="yellow-card-count-3">#</div>
-<div class="orange-card-count-3">#</div>
-<div class="green-card-count-3">#</div>
-<div class="pink-card-count-4">#</div>
-<div class="white-card-count-3">#</div>
-<div class="black-card-count-3">#</div>
-<div class="locomotives-count-3">#</div>
-<div class="secret-cards-count-3">#</div>
-<div class="destination-tickets-2">#</div>
-<img class="black-train-car-card-3" src="img/opposite-black-train-car-card.png" />
-<img class="white-train-car-card-3" src="img/opposite-white-train-car-card.png" />
-<img class="purple-train-car-3" src="img/opposite-purple-train-car-card.png" />
-<img class="green-train-car-card-3" src="img/opposite-green-train-car-card.png" />
-<img class="orange-train-car-3" src="img/opposite-orange-train-car-card.png" />
-<img class="yellow-train-car-4" src="img/opposite-yellow-train-car-card.png" />
-<img class="blue-train-car-card-4" src="img/opposite-blue-train-car-card.png" />
-<img class="red-train-car-card-4" src="img/opposite-red-train-car-card.png" />
-<img class="locomotive-5" src="img/opposite-locomotive.png" />
-<img class="hidden-train-car-4" src="img/opposite-hidden-train-car-card.png" />
-<img class="hidden-destination-4" src="img/opposite-hidden-destination-ticket.png" />
-</div>
-</div>
-</div>
-</div>
-</body>
+ <div class="element-nd-place-score">2</div>
+ <div class="element-nd-place-name-text">Placeholder name</div>
+ <div class="overlap-15">
+ <div class="element-st-place-score">1</div>
+ <div class="element-st-place-name-text">Placeholder name</div>
+ <div class="this-game-label">THIS GAME</div>
+ </div>
+ <div class="score">4</div>
+ <div class="label">Avg Score</div>
+ <div class="name">Player 4</div>
+ <div class="p-score">3</div>
+ <div class="p-label">Avg Score</div>
+ <div class="p-name">Player 3</div>
+ <div class="score-2">2</div>
+ <div class="label-2">Avg Score</div>
+ <div class="name-2">Player 2</div>
+ <div class="score-3">1</div>
+ <div class="label-3">Avg Score</div>
+ <div class="name-3">Player 1</div>
+ </div>
+ <div class="current-player">
+ <div class="overlap-16">
+ <div class="ticket-city-b">MOSCO7</div>
+ <div class="ticket-city-a">MOSCO8</div>
+ <div class="ticket-score">4</div>
+ <div class="ticket-city-b-2">MOSCO5</div>
+ <div class="ticket-city-a-2">MOSCO6</div>
+ <div class="ticket-score-2">3</div>
+ <div class="ticket-city-b-3">MOSCO3</div>
+ <div class="ticket-city-a-3">MOSCO4</div>
+ <div class="ticket-score-3">2</div>
+ <div class="ticket-city-b-4">MOSCO1</div>
+ <div class="ticket-city-a-4">MOSCO2</div>
+ <div class="ticket-score-4">1</div>
+ </div>
+ <img class="train-counter-image" src="img/train-counter-image.png" />
+ <img class="current-black-train" src="img/current-black-train-car-card.png" />
+ <img class="current-white-train" src="img/current-white-train-car-card.png" />
+ <img class="current-purple-train" src="img/current-purple-train-car-card.png" />
+ <img class="current-green-train" src="img/current-green-train-car-card.png" />
+ <img class="current-orange-train" src="img/current-orange-train-car-card.png" />
+ <img class="current-yellow-train" src="img/current-yellow-train-car-card.png" />
+ <img class="current-blue-train" src="img/current-blue-train-car-card.png" />
+ <img class="current-red-train" src="img/current-red-train-car-card.png" />
+ <img class="current-locomotive" src="img/current-locomotive.png" />
+ <div class="current-locomotives">9</div>
+ <div class="current-black-card">8</div>
+ <div class="current-white-card">7</div>
+ <div class="current-pink-card">6</div>
+ <div class="current-green-card">5</div>
+ <div class="current-orange-card">4</div>
+ <div class="current-yellow-card">3</div>
+ <div class="current-blue-card">2</div>
+ <div class="current-red-card">1</div>
+ <div class="name-text">Placeholder name</div>
+ <div class="train-car-total">45</div>
+ <div class="train-counter-label">Train Cars:</div>
+ </div>
+ </div>
+ <div class="opposite-player">
+ <div class="opposite-red-card">1</div>
+ <div class="opposite-blue-card">2</div>
+ <div class="opposite-yellow-card">3</div>
+ <div class="opposite-orange-card">4</div>
+ <div class="opposite-green-card">5</div>
+ <div class="opposite-pink-card">6</div>
+ <div class="opposite-white-card">7</div>
+ <div class="opposite-black-card">8</div>
+ <div class="opposite-locomotives">9</div>
+ <div class="opposite-secret">0</div>
+ <div class="opposite-destination">#</div>
+ <img class="opposite-black-train" src="img/opposite-black-train-car-card.png" />
+ <img class="opposite-white-train" src="img/opposite-white-train-car-card.png" />
+ <img class="opposite-purple" src="img/opposite-purple-train-car-card.png" />
+ <img class="opposite-green-train" src="img/opposite-green-train-car-card.png" />
+ <img class="opposite-orange" src="img/opposite-orange-train-car-card.png" />
+ <img class="opposite-yellow" src="img/opposite-yellow-train-car-card.png" />
+ <img class="opposite-blue-train" src="img/opposite-blue-train-car-card.png" />
+ <img class="opposite-red-train" src="img/opposite-red-train-car-card.png" />
+ <img class="opposite-locomotive" src="img/opposite-locomotive.png" />
+ <img class="opposite-hidden" src="img/opposite-hidden-train-car-card.png" />
+ <img class="opposite-hidden-2" src="img/opposite-hidden-destination-ticket.png" />
+ </div>
+ </div>
+ </div>
+ </div>
+ </body>
 </html>
-
-
