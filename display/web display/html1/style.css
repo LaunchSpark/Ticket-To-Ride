@@ -5,6 +5,203 @@ ticket-to-ride {
  justify-content: center;
  width: 100%;
 }
+
+.box {
+    position: relative;
+    width: 350px;
+    height: 373px;
+   }
+   .box .match-stats {
+    position: fixed;
+    width: 376px;
+    height: 373px;
+    top: 0;
+    left: 0;
+   }
+   .box .overlap {
+    width: 328px;
+    height: 79px;
+    top: 302px;
+    left: 12px;
+    background-image: url(./img/p4-stats-background.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .overlap-group {
+    width: 79px;
+    height: 26px;
+    top: 36px;
+    left: 229px;
+    background-image: url(./img/score-card.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .score {
+    position: absolute;
+    width: 79px;
+    height: 26px;
+    top: 0;
+    left: 0;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 0;
+    line-height: normal;
+   }
+   .box .label-wrapper {
+    width: 189px;
+    height: 26px;
+    top: 36px;
+    left: 21px;
+    background-image: url(./img/label-card-3.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .label {
+    top: 7px;
+    position: absolute;
+    width: 108px;
+    height: 13px;
+    left: 41px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+   }
+   .box .name {
+    position: absolute;
+    width: 132px;
+    height: 20px;
+    top: 5px;
+    left: 98px;
+    text-shadow: 0px 4px 4px #00000040;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 0;
+    line-height: normal;
+    text-decoration: underline;
+    white-space: nowrap;
+   }
+   .box .div {
+    width: 328px;
+    height: 79px;
+    top: 220px;
+    left: 12px;
+    background-image: url(./img/p3-stats-background.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .score-wrapper {
+    width: 79px;
+    height: 26px;
+    top: 36px;
+    left: 229px;
+    background-image: url(./img/score-card-2.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .div-wrapper {
+    width: 189px;
+    height: 26px;
+    top: 36px;
+    left: 21px;
+    background-image: url(./img/label-card.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .overlap-200 {
+    width: 328px;
+    height: 79px;
+    top: 138px;
+    left: 12px;
+    background-image: url(./img/p2-stats-background.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .overlap-300 {
+    width: 79px;
+    height: 26px;
+    top: 36px;
+    left: 229px;
+    background-image: url(./img/score-card-3.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .overlap-400 {
+    width: 189px;
+    height: 26px;
+    top: 36px;
+    left: 21px;
+    background-image: url(./img/label-card-2.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .text-wrapper {
+    top: 6px;
+    position: absolute;
+    width: 108px;
+    height: 13px;
+    left: 41px;
+    font-family: "Inter-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 0;
+    line-height: normal;
+    white-space: nowrap;
+   }
+   .box .overlap-group-200 {
+    width: 328px;
+    height: 79px;
+    top: 56px;
+    left: 12px;
+    background-image: url(./img/p1-stats-background.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .overlap-500 {
+    width: 79px;
+    height: 26px;
+    top: 36px;
+    left: 229px;
+    background-image: url(./img/image.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .overlap-600 {
+    width: 189px;
+    height: 26px;
+    top: 36px;
+    left: 21px;
+    background-image: url(./img/label-card-4.png);
+    position: absolute;
+    background-size: 100% 100%;
+   }
+   .box .match-stats-label {
+    position: absolute;
+    width: 350px;
+    height: 51px;
+    top: 0;
+    left: 0;
+    font-family: "Impact-Regular", Helvetica;
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 35px;
+    text-align: center;
+    letter-spacing: 0;
+    line-height: normal;
+   }
+
 .ticket-to-ride .overlap-wrapper {
  background-color: #413e3e;
  overflow: hidden;
@@ -1040,7 +1237,7 @@ ticket-to-ride {
  position: relative;
  width: 354px;
  height: 39px;
- background-image: url(./img/Vector-2.png);
+ background-image: url(./img/Ticket-0-Vector.png);
  background-size: 100% 100%;
 }
 .ticket-to-ride .city-b {
@@ -1098,7 +1295,7 @@ ticket-to-ride {
  position: relative;
  width: 354px;
  height: 45px;
- background-image: url(./img/Vector.png);
+ background-image: url(./img/Ticket-0-Vector.png);
  background-size: 100% 100%;
 }
 .ticket-to-ride .div-wrapper {
@@ -1112,7 +1309,7 @@ ticket-to-ride {
  position: relative;
  width: 354px;
  height: 45px;
- background-image: url(./img/Vector-3.png);
+ background-image: url(./img/Ticket-0-Vector.png);
  background-size: 100% 100%;
 }
 .ticket-to-ride .ticket-2 {
@@ -1126,7 +1323,7 @@ ticket-to-ride {
  position: relative;
  width: 354px;
  height: 45px;
- background-image: url(./img/Vector-4.png);
+ background-image: url(./img/Ticket-0-Vector.png);
  background-size: 100% 100%;
 }
 .ticket-to-ride .name {
@@ -1165,7 +1362,7 @@ ticket-to-ride {
  position: relative;
  width: 140px;
  height: 124px;
- background-image: url(./img/background.png);
+ background-image: url(./img/Train-Counter-Background.png);
  background-size: 100% 100%;
 }
 .ticket-to-ride .text-wrapper-3 {
