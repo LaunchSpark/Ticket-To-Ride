@@ -1,4 +1,4 @@
-from ticket_to_ride.Intefaces.human_interface import HumanPlayer
+from ticket_to_ride.Intefaces.example_bot import ExampleBot
 from ticket_to_ride.player import Player
 from ticket_to_ride.Game import Game
 from ticket_to_ride.context.game_context import GameContext
@@ -19,24 +19,21 @@ def setup():
 
     while True:
         try:
-            num_human = int(input("Enter number of human players: "))
-            if num_human >= 0:
+            player_count = int(input("Enter number of players: "))
+            if 0 <= player_count <= 4:
                 break
         except ValueError:
             pass
-        print("Invalid input. Please enter a non-negative integer.")
+        print("Invalid input. Please enter a non-negative integer 1-4.")
 
-    # Initialize GameContext (replace with actual map/deck initializations as needed)
+    # Initialize GameContext
     context = GameContext()
 
 
     players = []
-    max_human_id = 0
-    for i in range(num_human):
-        player_id = f"Human_{i}"
-        players.append(Player(player_id,HumanPlayer()))
-        max_human_id = i
-
+    for i in range(player_count):
+        player_id = f"bot_{i}"
+        players.append(Player(player_id,ExampleBot()))
 
     for p in players:
         p.set_context(context)

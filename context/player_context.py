@@ -2,6 +2,7 @@ from typing import List, Dict, Optional
 from dataclasses import dataclass
 from collections import Counter
 import weakref
+from copy import deepcopy
 
 
 
@@ -23,20 +24,20 @@ class PlayerContext:
     turn_index: int
     face_up_cards: List[str]
     available_routes: List
-    ticket_deck: object
     opponents: List[OpponentInfo]
-    map: object
     unknown_counts: Counter[str]
     total_unknown: int
 
 
-    def set_context(self, context):
+    def __init__(self,context):
         self.map = deepcopy(context.get_map())
         self.train_deck = deepcopy(context.context.get_train_deck())
         self.ticket_deck = deepcopy(context.context.get_ticket_deck())
+        self.context = context
 
 
-    def build_player_view(self):
+
+    def build_player_view(self,context):
 
         face_up_cards = self.context.get_train_deck().face_up()
         available_routes = self.context.get_map().get_available_routes()

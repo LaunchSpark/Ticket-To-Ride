@@ -10,35 +10,42 @@ from ticket_to_ride.context.decks import DestinationTicket
 
 class Player:
     def __init__(self, player_id: str,interface):
-        self.player_id = player_id
-        self.train_hand: Counter[str] = Counter()
-        self._exposed: Dict[str, int] = {}
-        self.tickets: List[DestinationTicket] = []
-        self.trains_remaining: int = 45
-        self.interface = weakref.ref(interface)
-        interface.set_player(self)
-
-    # Executors: Require implementation per player type
-    def set_context(self, context):
-        self.context = weakref.ref(context)
+        self.__player_id = player_id
+        self.__train_hand: Counter[str] = Counter()
+        self.__exposed: Dict[str, int] = {}
+        self.__tickets: List[DestinationTicket] = []
+        self.__trains_remaining: int = 45
+        self.__context = None
+        self.__interface = weakref.ref(interface)
+        self.__interface.set_player(self)
 
 
-    def take_turn(self) -> None:
+    def get_context(self):
+        return self.__context
+
+
+
+    # sets the context for the player
+    def __set_context(self, context):
+        self.__context = weakref.ref(context)
+
+    #prompts interface
+    def __take_turn(self) -> None:
         turn_choice = self.interface.choose_turn_action()
 
-        if turn_choice == 1:
+        if turn_choice == 1: ## Draw Cards
             first_draw_card = self.draw_train_cards()
             if first_draw_card != 'locomotive':
                 self.draw_train_cards()
 
-        elif turn_choice == 2:
+        elif turn_choice == 2: ## Claim Route
             success = self.claim_available_route()
             if not success:
                 self.take_turn() #chose returns to the turn menu
                 print(f"{self.player_id} could not claim a route.")
 
 
-        elif turn_choice == 3:
+        elif turn_choice == 3: ## Draw Destination tickets
             success = self.draw_destination_tickets()
             if not success:
                 print(f"{self.player_id} could not draw destination tickets.")
@@ -48,7 +55,7 @@ class Player:
 
     # Shared Turn Actions
 
-    def draw_train_cards(self) -> str:
+    def __draw_train_cards(self) -> str:
         draw_choices = [self.interface.choose_draw_train_action() for _ in range(2)]
 
         train_deck = self.context.train_deck # Assuming ticket_deck includes train draw functionality
@@ -102,7 +109,7 @@ class Player:
 
         return 'success'
 
-    def claim_available_route(self) -> bool:
+    def __claim_available_route(self) -> bool:
         route = self.interface.choose_route_to_claim()
         if route is None:
             return False
@@ -120,7 +127,7 @@ class Player:
         print(f"{self.player_id} lacks cards to claim {route}.")
         return False
 
-    def draw_destination_tickets(self) -> bool:
+    def __draw_destination_tickets(self) -> bool:
         try:
             offer = self.context.ticket_deck.deal_unique(3)
         except Exception as e:
@@ -143,21 +150,21 @@ class Player:
 
     # Helpers
 
-    def add_cards(self, cards: List[str]) -> None:
+    def __add_cards(self, cards: List[str]) -> None:
         self.train_hand.update(cards)
 
-    def spend_cards(self, cards: List[str]) -> None:
+    def __spend_cards(self, cards: List[str]) -> None:
         self.train_hand.subtract(cards)
         self.train_hand += Counter()
 
-    def claim_route(self, route: Route) -> None:
+    def __claim_route(self, route: Route) -> None:
         self.trains_remaining -= route.length
         self.context.map_graph.claim_route(route, self.player_id)
 
-    def hand_counts(self) -> Counter[str]:
+    def __hand_counts(self) -> Counter[str]:
         return self.train_hand.copy()
 
-    def get_exposed(self) -> Dict[str, int]:
+    def __get_exposed(self) -> Dict[str, int]:
         return dict(self._exposed)
 
     def __repr__(self) -> str:
