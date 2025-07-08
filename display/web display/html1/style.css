@@ -1704,3 +1704,18 @@
     top: 63px;
     left: 606px;
    }
+   .flatened .routes {
+    position: absolute;
+    width: 351px;
+    height: 100px;
+    top: 57px;
+    left: 153px;
+    z-index: 200;
+   }
+   .flatened .player-hand-backgrounds {
+    position: absolute;
+    width: 1175px;
+    height: 660px;
+    top: 0px;
+    left: 0px;
+   }
