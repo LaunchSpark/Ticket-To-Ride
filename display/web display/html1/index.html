@@ -79,28 +79,39 @@
 						<div class="sidebar" id="sidebar">
 							<div class="overlap-2">
 								<img class="sidebar-background" src="img/sidebar-background.png" />
-								<div class="element-place-score">4</div>
-								<div class="element-place-name-text">Placeholder name</div>
-								<div class="element-rd-place-score">3</div>
-								<div class="element-rd-place-name-text">Placeholder name</div>
-								<div class="element-nd-place-score">2</div>
-								<div class="element-nd-place-name-text">Placeholder name</div>
-								<div class="element-st-place-score">1</div>
-								<div class="element-st-place-name-text">Placeholder name</div>
 								<div class="this-game-label">THIS GAME</div>
-								<div class="score">4</div>
-								<div class="label">Avg Score</div>
-								<div class="name">Player 4</div>
-								<div class="p-score">3</div>
-								<div class="p-label">Avg Score</div>
-								<div class="p-name">Player 3</div>
-								<div class="text-wrapper">2</div>
-								<div class="label-2">Avg Score</div>
-								<div class="name-2">Player 2</div>
-								<div class="score-2">1</div>
-								<div class="label-3">Avg Score</div>
-								<div class="name-3">Player 1</div>
-								<div class="match-stats-label">MATCH&nbsp;&nbsp;STATS</div>  
+								<div id="leaderboard-scores">
+									<div place="1" class="element-place-score">4</div>
+									<div place="2" class="element-rd-place-score">3</div>
+									<div place="3" class="element-nd-place-score">2</div>
+									<div place="4" class="element-st-place-score">1</div>
+								</div>
+								<div id="leaderboard-names">
+									<div class="element-place-name-text">Placeholder name</div>
+									<div class="element-rd-place-name-text">Placeholder name</div>
+									<div class="element-nd-place-name-text">Placeholder name</div>
+									<div class="element-st-place-name-text">Placeholder name</div>
+								</div>
+								<div class="match-stats-label">MATCH&nbsp;&nbsp;STATS</div>
+								<div id="match-stats-names">
+									<div playerId="1" class="name-3">Player 1</div>
+									<div playerId="2" class="name-2">Player 2</div>
+									<div playerId="3" class="p-name">Player 3</div>
+									<div playerId="4" class="name">Player 4</div>
+								</div>
+								<div id="match-stats-scores">
+									<div playerId="1" class="score-2">1</div>
+									<div playerId="2" class="text-wrapper">2</div>
+									<div playerId="3" class="p-score">3</div>
+									<div playerId="4" class="score">4</div>
+
+								</div>
+								<div id="match-stats-labels">
+									<div class="label-3">Avg Score</div>
+									<div class="label-2">Avg Score</div>
+									<div class="p-label">Avg Score</div>
+									<div class="label">Avg Score</div>
+								</div>
                                 <sgv class="score-background">
                                     <svg id="score-backgrounds" width="257" height="206" viewBox="0 0 257 206" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path place="1" d="M0 12C0 5.37258 5.37258 0 12 0H257V50H0V12Z" fill="#ffffff"/>
@@ -137,20 +148,28 @@
 								<div class="current-yellow-card" data-index="yellow">3</div>
 								<div class="current-blue-card" data-index="blue">2</div>
 								<div class="current-red-card" data-index="red">1</div>
-								<div class="ticket-city-b">MOSCO7</div>
-								<div class="ticket-city-a">MOSCO8</div>
-								<div class="ticket-score">4</div>
-								<div class="ticket-city-b-2">MOSCO5</div>
-								<div class="ticket-city-a-2">MOSCO6</div>
-								<div class="ticket-score-2">3</div>
-								<div class="ticket-city-b-3">MOSCO3</div>
-								<div class="ticket-city-a-3">MOSCO4</div>
-								<div class="ticket-score-3">2</div>
-								<div class="ticket-city-b-4">MOSCO1</div>
-								<div class="ticket-city-a-4">MOSCO2</div>
-								<div class="ticket-score-4">1</div>
-								<div class="name-text">Placeholder name</div>
-								<div class="train-car-total">45</div>
+								<div id="ticket-1">
+									<div sectionId="left-city" class="ticket-city-b-4">MOSCO1</div>
+									<div sectionId="right-city" class="ticket-city-a-4">MOSCO2</div>
+									<div sectionId="ticket-score" class="ticket-score-4">1</div>
+								</div>
+								<div id="ticket-2">
+									<div sectionId="left-city" class="ticket-city-b-3">MOSCO3</div>
+									<div sectionId="right-city" class="ticket-city-a-3">MOSCO4</div>
+									<div sectionId="ticket-score" class="ticket-score-3">2</div>
+								</div>
+								<div id="ticket-3">
+									<div sectionId="left-city" class="ticket-city-b-2">MOSCO5</div>
+									<div sectionId="right-city" class="ticket-city-a-2">MOSCO6</div>
+									<div sectionId="ticket-score" class="ticket-score-2">3</div>
+								</div>
+								<div id="ticket-4">
+									<div sectionId="left-city" class="ticket-city-b">MOSCO7</div>
+									<div sectionId="right-city" class="ticket-city-a">MOSCO8</div>
+									<div sectionId="ticket-score" class="ticket-score">4</div>
+								</div>
+								<div id="current-player-name" class="name-text">Placeholder name</div>
+								<div id="train-car-total" class="train-car-total">45</div>
 								<div class="train-counter-label">Train Cars:</div>
 							</div>
 						</div>
@@ -330,7 +349,7 @@
 				}
 			}
 
-			function updatePlayerCardCount(color, newCount) {
+			function setPlayerCardCount(color, newCount) {
   				const cardDiv = document.querySelector(`$ [data-index="${color}"]`);
 			  	if (cardDiv) {
 			  	  	cardDiv.textContent = newCount;
@@ -339,9 +358,48 @@
 			  	}
 			}
 
-			function updatePlayerColor(playerId, color) {
+			function setPlayerColor(playerId, color) {
 				const colorCard = document.getElementbyId(`${playerId}-name-card`);
-				colorCard.setAttribute('stroke', color);
+				colorCard.setAttribute('fill', color);
+			}
+
+			function setLeaderboardScore(place, score) {
+				const group = document.getElementbyId("leaderboard-scores");
+				const scoreDiv = group.querySelector(`div[place="${place}"]`);
+				scoreDiv.textContent = score;
+			}
+
+			function setLeaderboardName(place, name) {
+				const group = document.getElementbyId("leaderboard-names");
+				const nameDiv = group.querySelector(`div[place="${place}"]`);
+				nameDiv.textContent = name;
+			}
+
+			function setCurrentPlayerName(name) {
+				const playerName = document.getElementbyId("current-player-name");
+				playerName.textContent = name;
+			}
+			
+			function setTrainCarCount(count) {
+				const trainCarCount = document.getElementbyId("train-car-total");
+				trainCarCount.textContent = count;
+			}
+
+			function setDestinationTicket(ticketSlot, leftCity, rightCity, score) {
+				const ticket = document.getElementbyId(`ticket-${ticketslot}`);
+				ticket.querySelector('div[sectionId="left-city"]').textContent = leftCity;
+				ticket.querySelector('div[sectionId="right-city"]').textContent = rightCity;
+				ticket.querySelector('div[sectionId="ticket-score"]').textContent = score;
+			}
+
+			function setMatchStatName(playerId, name) {
+				const matchStatDiv = document.getElementbyId(`match-stats-names`);
+				matchStatDiv.querySelector(`div[playerId=${playerId}]`).textContent = name;
+			}
+
+			function setMatchStatScore(playerId, score) {
+				const matchStatDiv = document.getElementbyId(`match-stats-scores`);
+				matchStatDiv.querySelector(`div[playerId=${playerId}]`).textContent = score;
 			}
 
 			//TODO Will need to change the core functionality of the next two funcions
