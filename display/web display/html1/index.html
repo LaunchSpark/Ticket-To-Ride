@@ -308,7 +308,7 @@
 			</div>
 		</div>
 		<script>
-			// reference dictionaries
+			// constants
 			const marketImages = {
 			  	black: 'img/Market assets/market-black-train-car-card.png',
 			  	blue: 'img/Market assets/market-blue-train-car-card.png',
@@ -325,6 +325,9 @@
 				play: '',
 				pause: ''
 			}
+
+			// global variables
+			var currentTurn = 0;
 			
 			// general setter methods
 			function setTurnCounter(turn) {
@@ -425,8 +428,6 @@
 				const matchStatDiv = document.getElementById(`match-stats-scores`);
 				matchStatDiv.querySelector(`div[playerId=${playerId}]`).textContent = score;
 			}
-
-			let currentTurn = 0;
 			
 			// clock function
 			let running = false;
@@ -436,7 +437,8 @@
 
     			if (running) {
       				intervalId = setInterval(() => {
-        				currentTurn = test(currentTurn, "ArrowRight");
+        				currentTurn += 1;
+						test(currentTurn); // PENDING full turnUpdate functionality: swap this out for a turnUpdate call
   			  	  	}, 1000); // Every 1 second
   			  	} else {
   			  	  	clearInterval(intervalId);
@@ -448,30 +450,58 @@
 				if (event.code === "Space") {
 				  	event.preventDefault();
 				  	toggleRunning();
-				} else if(event.code === "ArrowLeft" || event.code === "ArrowRight") {
+				} else if(event.code === "ArrowLeft") {
 					console.log(`Input ${event.code} received`);
+					currentTurn -= 1;
+					console.log("value decremented");
 					console.log(`calling test with input ${currentTurn}`)
-					currentTurn = test(currentTurn, event.code);
-					console.log(`value of i changed to ${currentTurn}`)
+					test(currentTurn);
+					console.log(`value of currentTurn changed to ${currentTurn}`)
+				} else if(event.code === "ArrowRight") {
+					console.log(`Input ${event.code} received`);
+					currentTurn += 1; // PENDING json: check if there is a next turn
+					console.log(`value incremented`);
+					console.log(`calling test with input ${currentTurn}`)
+					test(currentTurn);
 				}
 			});
 
-			function test(input, code) {
-				if (code === "ArrowLeft") {
-					output = input - 1;
-					setCurrentPlayerName(output.toString());
-					console.log("value decremented");
-					console.log(`changing player name to ${output.toString()}`);
-				} else if (code === "ArrowRight") {
-					output = input + 1;
-					setCurrentPlayerName(output.toString());
-					console.log(`value decremented`);
-					console.log(`changing player name to ${output.toString()}`);
-				}
-				return output
+			function test(input) {
+				setCurrentPlayerName(currentTurn.toString());
+				console.log(`changing player name to ${currentTurn.toString()}`);
 			}
 
-			function turnUpdate() {
+			// update display given a specific turn of the current game.
+			function turnUpdate(turn) {
+				setTurnCounter(turn);
+				// set current player's card counts
+
+				// set current player's train car count
+
+				// set other players' card counts
+
+				// set each player's color
+
+				// update market
+
+				// update leaderboard
+				// sort players in descending order of score
+				sortedPlayers = players.toSorted(function(a, b) {
+					b.score - a.score // PENDING json: fix this to actually get the scores for each player
+				})
+				sortedPlayers.forEach(player, index => {
+
+				})
+
+				// update match stats for each player
+				players.forEach(player => { // PENDING json: make array [players]
+					// take the average of the score value for that player on the given turn for each game in the file
+					let total = 0;
+					games.forEach(game => {
+						//get the score for [player] at turn [turn] of [game] and add it to total
+					});
+					setMatchStatScore(playerId, score); // PENDING json: replace playerId and score with the right playerId
+				})
 				
 			}
 		</script>
