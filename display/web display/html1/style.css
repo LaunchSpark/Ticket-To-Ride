@@ -97,7 +97,7 @@
     left: 799px;
     transform: rotate(90deg);
    }
-   .flatened .right-red-card-count {
+   .flatened .right-red-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -113,7 +113,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-blue-card {
+   .flatened .right-blue-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -129,7 +129,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-yellow-card {
+   .flatened .right-yellow-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -145,7 +145,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-orange-card {
+   .flatened .right-orange-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -161,7 +161,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-green-card {
+   .flatened .right-green-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -177,7 +177,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-pink-card {
+   .flatened .right-pink-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -193,7 +193,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-white-card {
+   .flatened .right-white-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -209,7 +209,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-black-card {
+   .flatened .right-black-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -225,7 +225,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-locomotives {
+   .flatened .right-locomotive-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -241,7 +241,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-secret-cards {
+   .flatened .right-hidden-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -257,7 +257,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .right-destination {
+   .flatened .right-destination-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -344,7 +344,7 @@
     left: -15px;
     transform: rotate(-90deg);
    }
-   .flatened .right-locomotive {
+   .flatened .right-locomotive-card {
     position: absolute;
    width: 87px;
     height: 54px;
@@ -352,7 +352,7 @@
     left: 442px;
     transform: rotate(-90deg);
    }
-   .flatened .right-hidden-train {
+   .flatened .right-hidden-card {
     position: absolute;
    width: 80px;
     height: 51px;
@@ -360,7 +360,7 @@
     left: 499px;
     transform: rotate(-90deg);
    }
-   .flatened .right-hidden {
+   .flatened .right-destination-card {
     position: absolute;
    width: 82px;
     height: 53px;
@@ -376,7 +376,7 @@
     left: -274px;
     transform: rotate(-90deg);
    }
-   .flatened .left-red-card-count {
+   .flatened .left-red-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -392,7 +392,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-blue-card-count {
+   .flatened .left-blue-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -408,7 +408,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-yellow-card {
+   .flatened .left-yellow-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -424,7 +424,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-orange-card {
+   .flatened .left-orange-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -440,7 +440,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-green-card {
+   .flatened .left-green-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -456,7 +456,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-pink-card-count {
+   .flatened .left-pink-count-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -472,7 +472,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-white-card {
+   .flatened .left-white-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -488,7 +488,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-black-card {
+   .flatened .left-black-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -504,7 +504,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-locomotives {
+   .flatened .left-locomotive-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -520,7 +520,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-secret-cards {
+   .flatened .left-hidden-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -536,7 +536,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .left-destination {
+   .flatened .left-destination-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -616,7 +616,7 @@
     left: 10px;
     transform: rotate(90deg);
    }
-   .flatened .left-locomotive {
+   .flatened .left-locomotive-card {
     position: absolute;
    width: 36px;
     height: 54px;
@@ -624,7 +624,7 @@
     left: 463px;
     transform: rotate(90deg);
    }
-   .flatened .left-hidden-train {
+   .flatened .left-hidden-card {
     position: absolute;
    width: 36px;
     height: 51px;
@@ -632,7 +632,7 @@
     left: 516px;
     transform: rotate(90deg);
    }
-   .flatened .left-hidden {
+   .flatened .left-destination-card {
     position: absolute;
    width: 36px;
     height: 53px;
@@ -1096,14 +1096,14 @@
     top: 86px;
     left: 33px;
    }
-   .flatened .current-locomotive {
+   .flatened .current-locomotive-card {
     position: absolute;
    width: 89px;
     height: 90px;
     top: 86px;
     left: 843px;
    }
-   .flatened .current-locomotives {
+   .flatened .current-locomotive-count {
     position: absolute;
    width: 16px;
     height: 29px;
@@ -1118,7 +1118,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .current-black-card {
+   .flatened .current-black-count {
     position: absolute;
    width: 16px;
     height: 29px;
@@ -1133,7 +1133,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .current-white-card {
+   .flatened .current-white-count {
     position: absolute;
    width: 16px;
     height: 29px;
@@ -1148,7 +1148,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .current-pink-card {
+   .flatened .current-pink-count {
     position: absolute;
    width: 16px;
     height: 29px;
@@ -1163,7 +1163,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .current-green-card {
+   .flatened .current-green-count {
     position: absolute;
    width: 16px;
     height: 29px;
@@ -1178,7 +1178,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .current-orange-card {
+   .flatened .current-orange-count {
     position: absolute;
    width: 16px;
     height: 29px;
@@ -1193,7 +1193,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .current-yellow-card {
+   .flatened .current-yellow-count {
     position: absolute;
    width: 16px;
     height: 29px;
@@ -1208,7 +1208,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .current-blue-card {
+   .flatened .current-blue-count {
     position: absolute;
    width: 16px;
     height: 29px;
@@ -1223,7 +1223,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .current-red-card {
+   .flatened .current-red-count {
     position: absolute;
    width: 16px;
     height: 29px;
@@ -1462,7 +1462,7 @@
     top: 0;
    left: 239px;
    }
-   .flatened .opposite-red-card {
+   .flatened .opposite-red-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1477,7 +1477,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-blue-card {
+   .flatened .opposite-blue-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1492,7 +1492,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-yellow-card {
+   .flatened .opposite-yellow-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1507,7 +1507,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-orange-card {
+   .flatened .opposite-orange-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1522,7 +1522,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-green-card {
+   .flatened .opposite-green-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1537,7 +1537,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-pink-card {
+   .flatened .opposite-pink-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1552,7 +1552,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-white-card {
+   .flatened .opposite-white-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1567,7 +1567,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-black-card {
+   .flatened .opposite-black-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1582,7 +1582,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-locomotives {
+   .flatened .opposite-locomotive-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1597,7 +1597,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-secret {
+   .flatened .opposite-hidden-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1612,7 +1612,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .opposite-destination {
+   .flatened .opposite-destination-count {
     position: absolute;
    width: 10px;
     height: 14px;
@@ -1683,21 +1683,21 @@
     top: 63px;
     left: 0;
    }
-   .flatened .opposite-locomotive {
+   .flatened .opposite-locomotive-card {
     position: absolute;
    width: 54px;
     height: 24px;
     top: 63px;
     left: 480px;
    }
-   .flatened .opposite-hidden {
+   .flatened .opposite-hidden-card {
     position: absolute;
    width: 51px;
     height: 24px;
     top: 63px;
     left: 538px;
    }
-   .flatened .img {
+   .flatened .opposite-destination-card {
     position: absolute;
    width: 53px;
     height: 24px;
