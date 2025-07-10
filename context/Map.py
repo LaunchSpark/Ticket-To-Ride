@@ -1,6 +1,9 @@
 import csv
 from typing import List, Dict, Optional, Set, Tuple
 
+class Path:
+    def __init__(self,routes):
+        self.routes = routes
 
 class Route:
     def __init__(self, city1: str, city2: str, length: int, color: Optional[str] = None, claimed_by: Optional[str] = None):
@@ -57,9 +60,33 @@ class MapGraph:
         return [route for route in self.routes if route.claimed_by is None]
 
     def get_longest_path(self,player_ids) -> str:
-        player_with_longest_path = "error"
+        player_with_longest_path = "NA"
+        paths = []
+        temp_route_list = []
+        temp_city_list = []
         for p in player_ids:
-            players_routes = []
+            players_routes = list(filter(lambda x: x.claimed_by == p,self.routes))
+            for route in players_routes:
+                #initializes the search when
+                if not temp_route_list:
+                    temp_route_list.append(players_routes[0])
+                    temp_city_list.append(temp_route_list[0].city1)
+                    temp_city_list.append(temp_route_list[0].city2)
+                #checks if city 1 is attached to this path
+                elif route.city1 in temp_city_list:
+                    temp_route_list.append(route)
+                    temp_city_list.append(route.city1)
+                    # remove this route so it isnt revisited
+                    temp_route_list.remove(route)
+
+                #checks if city 2 is attached to this path
+                elif route.city2 in temp_city_list:
+                    temp_route_list.append(route)
+                    temp_city_list.append(route.city2)
+                    # remove this route so it isnt revisited
+                    temp_route_list.remove(route)
+
+
 
         return player_with_longest_path
 
