@@ -326,8 +326,17 @@
 				pause: ''
 			}
 
+			const playerColors = { // PENDING player color assignment: update to plug into that
+				player1: 'red',
+				player2: 'blue',
+				player3: 'green',
+				player4: 'yellow'
+			}
+
 			// global variables
 			var currentTurn = 0;
+			let running = false;
+			start();
 			
 			// general setter methods
 			function setTurnCounter(turn) {
@@ -428,9 +437,15 @@
 				const matchStatDiv = document.getElementById(`match-stats-scores`);
 				matchStatDiv.querySelector(`div[playerId=${playerId}]`).textContent = score;
 			}
+
+			// Initial setup function
+			function onStart() {
+				players.forEach(player => {
+					setMatchStatName(player)
+				})
+			}
 			
 			// clock function
-			let running = false;
 			function toggleRunning() {
     			running = !running;
     			console.log(`Running is now: ${running}`);
@@ -474,6 +489,8 @@
 			// update display given a specific turn of the current game.
 			function turnUpdate(turn) {
 				setTurnCounter(turn);
+				// set current player's name
+				
 				// set current player's card counts
 
 				// set current player's train car count
@@ -490,7 +507,9 @@
 					b.score - a.score // PENDING json: fix this to actually get the scores for each player
 				})
 				sortedPlayers.forEach(player, index => {
-
+					setLeaderboardColor(index + 1, playerColors[player]);
+					setLeaderboardName(index, player)
+					setLeaderboardScore(index, player.score)
 				})
 
 				// update match stats for each player
