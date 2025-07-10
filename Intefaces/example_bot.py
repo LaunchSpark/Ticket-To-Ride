@@ -1,6 +1,7 @@
 from typing import List, Optional
 from ticket_to_ride.Intefaces.abstract_interface import Interface
 
+from ticket_to_ride.context.Map import MapGraph
 from ticket_to_ride.context.Map import Route
 from ticket_to_ride.context.decks import DestinationTicket
 
@@ -10,8 +11,7 @@ class ExampleBot(Interface):
     # 2 = Claim
     # 3 = draw a destination ticket
     def choose_turn_action(self):
-        if self.context.players
-            return 1
+
 
 
     ##############################################################################################
@@ -21,11 +21,19 @@ class ExampleBot(Interface):
 
     # choose what cards to draw
     def choose_draw_train_action(self):
-
+        return -1
 
     # choose what routes to claim
     def choose_route_to_claim(self,claimable_routes):
-
+        return 1
 
     # choose which destination tickets to keep
     def select_ticket_offer(self,offer):
+        return [0,1]
+
+
+    #######################
+    #       helpers       #
+    #######################
+
+    def path_finder(self,city1,city2):
