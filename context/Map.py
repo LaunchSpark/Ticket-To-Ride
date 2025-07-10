@@ -40,10 +40,6 @@ class MapGraph:
         if route in self.routes and route.claimed_by is None:
             route.claimed_by = player_id
 
-    def unclaim_route(self, route: Route):
-        if route in self.routes:
-            route.claimed_by = None
-
     def cities(self) -> Set[str]:
         return set(self._adj.keys())
 

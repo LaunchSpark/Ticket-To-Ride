@@ -5,6 +5,9 @@ class Interface:
         self.context = None
         self.player = None
 
+
+
+
     def set_context(self,context):
         self.context = context
 

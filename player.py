@@ -12,11 +12,11 @@ class Player:
     def __init__(self, player_id: str,interface):
         self.__player_id = player_id
         self.__train_hand: Counter[str] = Counter()
-        self.__exposed: Dict[str, int] = {}
+        self.exposed: Counter[str] = Counter()
         self.__tickets: List[DestinationTicket] = []
-        self.__trains_remaining: int = 45
+        self.trains_remaining: int = 45
         self.__context = None
-        self.__interface = weakref.ref(interface)
+        self.__interface = interface
         self.__interface.set_player(self)
 
 
@@ -24,12 +24,12 @@ class Player:
         return self.__context
 
 
-
     # sets the context for the player
-    def __set_context(self, context):
-        self.__context = weakref.ref(context)
+    def set_context(self, context):
+        self.__context = context
+        self.__train_hand = context
 
-    #prompts interface
+    #prompts interface for turn option
     def __take_turn(self) -> None:
         turn_choice = self.interface.choose_turn_action()
 
@@ -53,8 +53,7 @@ class Player:
         else:
             print(f"Invalid action choice '{turn_choice}' by player {self.player_id}.")
 
-    # Shared Turn Actions
-
+    # handlers for each option
     def __draw_train_cards(self) -> str:
         draw_choices = [self.interface.choose_draw_train_action() for _ in range(2)]
 
@@ -149,7 +148,6 @@ class Player:
         return True
 
     # Helpers
-
     def __add_cards(self, cards: List[str]) -> None:
         self.train_hand.update(cards)
 
@@ -164,8 +162,13 @@ class Player:
     def __hand_counts(self) -> Counter[str]:
         return self.train_hand.copy()
 
-    def __get_exposed(self) -> Dict[str, int]:
-        return dict(self._exposed)
+
+    def get_exposed(self) -> Counter[str]:
+        return self.exposed
+
+    def get_card_count(self) -> int:
+        return self.__train_hand.total()
+
 
     def __repr__(self) -> str:
         return (f"{self.__class__.__name__}(id={self.player_id}, trains={self.trains_remaining}, "
