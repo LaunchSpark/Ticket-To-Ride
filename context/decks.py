@@ -137,8 +137,8 @@ class TicketDeck:
         with open(csv_path, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                city1 = row["cityA"]
-                city2 = row["cityB"]
+                city1 = row["city1"]
+                city2 = row["city2"]
                 value = int(row["value"])
                 tickets.append(DestinationTicket(city1, city2, value))
         return tickets
