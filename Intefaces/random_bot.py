@@ -1,5 +1,6 @@
 from typing import List, Optional
 from ticket_to_ride.Intefaces.abstract_interface import Interface
+import random
 
 from ticket_to_ride.context.Map import MapGraph
 from ticket_to_ride.context.Map import Route
@@ -11,7 +12,7 @@ class ExampleBot(Interface):
     # 2 = Claim
     # 3 = draw a destination ticket
     def choose_turn_action(self):
-
+        return random.randrange(1,3)
 
 
     ##############################################################################################
@@ -21,11 +22,11 @@ class ExampleBot(Interface):
 
     # choose what cards to draw
     def choose_draw_train_action(self):
-        return -1
+        return random.randrange(-1,5)
 
     # choose what routes to claim
     def choose_route_to_claim(self,claimable_routes):
-        return 1
+        return random.randrange(0,claimable_routes.len())
 
     # choose which destination tickets to keep
     def select_ticket_offer(self,offer):

@@ -55,3 +55,11 @@ class MapGraph:
         Returns a list of all unclaimed routes.
         """
         return [route for route in self.routes if route.claimed_by is None]
+
+    def get_longest_path(self,player_ids) -> str:
+        player_with_longest_path = "error"
+        for p in player_ids:
+            players_routes = []
+
+        return player_with_longest_path
+

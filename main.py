@@ -1,4 +1,4 @@
-from ticket_to_ride.Intefaces.example_bot import ExampleBot
+from ticket_to_ride.Intefaces.random_bot import ExampleBot
 from ticket_to_ride.player import Player
 from ticket_to_ride.Game import Game
 from ticket_to_ride.context.game_context import GameContext
@@ -45,14 +45,17 @@ def setup():
             pass
         print("Invalid input. Please enter a non-negative integer 1-4.")
 
-    # Initialize GameContext
-    context = GameContext()
-
-
+    player_ids = []
     players = []
     for i in range(player_count):
         player_id = f"bot_{i}"
         players.append(Player(player_id,ExampleBot()))
+
+        #for the game context
+        player_ids.append(player_id)
+
+    # Initialize GameContext
+    context = GameContext(player_ids)
 
     for p in players:
         p.set_context(context)

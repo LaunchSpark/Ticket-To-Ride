@@ -7,12 +7,14 @@ from typing import Dict, List
 
 
 class GameContext:
-    def __init__(self):
+    def __init__(self,player_ids):
         print("Initializing GameContext...")
         self.map_graph = MapGraph()
         self.train_deck = TrainCardDeck()
         self.ticket_deck = TicketDeck()
         self.turn_num = 0
+        for p in player_ids:
+            self.scores = dict[p: 0]
 
 
     def get_map(self) -> MapGraph:

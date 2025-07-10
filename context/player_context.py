@@ -23,6 +23,7 @@ class PlayerContext:
         self.ticket_deck = self.context.get_ticket_deck()
         self.turn_number = context.turn_num
 
+
         self.opponents = [
             OpponentInfo(
                 player_id = p.player_id,

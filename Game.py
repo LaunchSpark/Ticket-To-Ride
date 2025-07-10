@@ -11,7 +11,7 @@ class Game:
         self.context = context
         self.players = players
         self.turn_index = 0
-        
+
 
 
     def play(self, turns: Optional[int] = None) -> None:
@@ -22,7 +22,7 @@ class Game:
     def next_turn(self) -> None:
         # set current player
         player = self.current_player()
-
+        #
         # build and load player context into player
         player.set_context(PlayerContext(self.current_player(),self.context,self.players))
 
