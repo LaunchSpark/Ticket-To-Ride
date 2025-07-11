@@ -34,62 +34,61 @@ class GameLogger:
         opponents_data = []
         longest_path = context.map.get_longest_path()
         
-        
-        for player in self.log["players"]:
-            if player["player_id"] == context.player_id:
-                player_data = ({
-                    "player_id": context.playerId,
-                    "score": context.player,
-                    "remaining_trains": context.remaining_trians,
-                    "claimed_routes": [route for route in context.map.routes if route.claimed_by is context.player_id],
-                    "longest_path": context.longest_path,
-                    "has_longest_path": context.has_longest_path, 
-                    "destinationTickets": [
-                        {
-                            "from": ,
-                            "to": "Raleigh",
-                            "points": ,
-                            "completed":  
-                        },
-                        {
-                            "from": ,
-                            "to": ,
-                            "points": ,
-                            "completed": 
-                        }
-                    ],
-                    "hand": { 
-                        "black": ,
-                        "blue": ,
-                        "green": ,
-                        "locomotive": ,
-                        "orange": ,
-                        "purple": ,
-                        "red": ,
-                        "white": ,
-                        "yellow": 
-                    }
-                })
-            else:
-                opponents_data.append({
-                    "playerId": context.player_id,
-                    "score": context.score,
-                    "trainCarCount": player.trains_remaining,
-                    "claimed_routes": [route for route in context.map.routes if route.claimed_by is playerId],
-                    "longest_path": context.longest_path,
-                    "destinationTickets": [
-                        {
-                            "from": t.start,
-                            "to": t.end,
-                            "points": t.points,
-                            "completed": t.completed
-                        } for t in player.get_tickets()
-                    ],
-                    "hand": {
-                        "public": dict(player.get_exposed()),
-                        "hidden": player.get_card_count() - player.get_exposed().length()
-                    }
-                })
+        player_data = ({
+            "player_id": context.playerId,
+            "score": context.score,
+            "remaining_trains": context.remaining_trians,
+            "claimed_routes": [route for route in context.map.routes if route.claimed_by is context.player_id],
+            "longest_path": context.longest_path,
+            "has_longest_path": context.has_longest_path, 
+            "destinationTickets": [
+                {
+                    "from": ,
+                    "to": ,
+                    "points": ,
+                    "completed":  
+                } for ticket in player.get_tickets()
+                {
+                    "from": ,
+                    "to": ,
+                    "points": ,
+                    "completed": 
+                }
+            ],
+            "hand": { 
+                "black": ,
+                "blue": ,
+                "green": ,
+                "locomotive": ,
+                "orange": ,
+                "purple": ,
+                "red": ,
+                "white": ,
+                "yellow": 
+            }
+        })
+
+        # find index in array for current player to add to i
+        for i in range(1,player_list.length)
+            opponents_data.append({
+                "playerId": context.player_id,
+                "score": context.score,
+                "trainCarCount": player.trains_remaining,
+                "claimed_routes": [route for route in context.map.routes if route.claimed_by is playerId],
+                "longest_path": context.longest_path,
+                "destinationTickets": [
+                    {
+                        "from": t.start,
+                        "to": t.end,
+                        "points": t.points,
+                        "completed": t.completed
+                    } for t in player.get_tickets()
+                ],
+                "hand": {
+                    "public": dict(player.get_exposed()),
+                    "hidden": player.get_card_count() - player.get_exposed().length()
+                }
+            })
 
         turn_state = {
             "player": player_data,
