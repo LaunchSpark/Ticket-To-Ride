@@ -1,10 +1,9 @@
 import csv
-from typing import List, Dict, Optional, Set, Tuple, Type
+
+from typing import List, Dict, Optional, Set
 
 
-class Path:
-    def __init__(self,routes):
-        self.routes = routes
+
 
 class Route:
     city1: str
@@ -67,34 +66,31 @@ class MapGraph:
         """
         return [route for route in self.routes if route.claimed_by is None]
 
-    def get_longest_path(self,player_ids:[str]) -> dict[str,int]:
-        player_with_longest_path = "NA"
-        paths = []
-        temp_route_list = []
-        temp_city_list = []
+    def get_longest_path(self, player_ids: List[str]) -> Dict[str, int]:
+        def dfs(city: str, path_length: int, used_routes: Set[Route]):
+            nonlocal max_length
+            if path_length > max_length:
+                max_length = path_length
 
-        for p in player_ids:
-            player_adj = self._build_adjacency(p)
-            players_routes = [r for r in self.routes if r.claimed_by == p]
-            for R in players_routes:
-                to_check = [players_routes[0]]
-                for route in to_check:
-                    #gets nehibors for both cities
-                    city1_neighbirs = player_adj[route.city1]
-                    city2_neighbirs = player_adj[route.city2]
-                    all_nehibors = city1_neighbirs + city2_neighbirs
+            for route in adjacency.get(city, []):
+                if route not in used_routes:
+                    next_city = route.city2 if city == route.city1 else route.city1
+                    used_routes.add(route)
+                    dfs(next_city, path_length + route.length, used_routes)
+                    used_routes.remove(route)
 
-                    to_check.append(all_nehibors)
+        results: Dict[str, int] = {}
+
+        for player_id in player_ids:
+            adjacency = self._build_adjacency(player_id)
+            max_length = 0
+
+            for start_city in adjacency:
+                dfs(start_city, 0, set())
+
+            results[player_id] = max_length
+
+        return results
 
 
 
-
-
-
-
-
-
-        return player_with_longest_path
-
-    def aggrigate_path(self,routes_to_exclude) -> [] :
-        return []

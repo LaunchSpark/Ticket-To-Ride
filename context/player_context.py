@@ -1,7 +1,6 @@
 from typing import List, Dict, Optional
 from dataclasses import dataclass
 from collections import Counter
-import weakref
 from copy import deepcopy
 from game_context import GameContext
 
@@ -25,7 +24,7 @@ class PlayerContext:
         self.longest_path = map.get_longest_path(player_id)
         self.has_longest_path = map.get_longest_path(context.player)
         self.ticket_deck = context.get_ticket_deck(players)
-        self.destination_tickets = 
+        self.destination_tickets =
         self.turn_number = context.turn_num
         self.score = context.get_score(player_id)
 
