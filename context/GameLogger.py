@@ -104,7 +104,7 @@ class GameLogger:
                 "decks": {
                     "train_deck_count": context.train_deck.remaining(),
                     "destination_deck_count": context.ticket_deck.remaining(),
-                    "face_up_train_cards": context.face_up_cards
+                    "marketCards": context.face_up_cards
                 }
             }
         }
