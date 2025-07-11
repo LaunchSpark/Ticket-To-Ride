@@ -39,9 +39,10 @@ class Game:
         return any(p.trains_remaining <= 2 for p in self.players)
 
     def _score_game(self) -> None:
-        for player in self.players:
-            score = self.context.get_map().score_tickets(player.tickets, player.player_id)
-            print(f"{player.player_id} final score: {score}")
+
+
+
+
 
     def __repr__(self) -> str:
         return f"Game(turn={self.turn_index}, players={[p.player_id for p in self.players]})"
