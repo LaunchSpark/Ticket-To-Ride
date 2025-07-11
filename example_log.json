@@ -74,7 +74,7 @@
                 "decks": {
                     "trainDeckCount": 9,
                     "destinationDeckCount": 20,
-                    "marketCards"
+                    "marketCards": []
                 }
             }
         }]
