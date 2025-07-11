@@ -66,6 +66,12 @@ class MapGraph:
         """
         return [route for route in self.routes if route.claimed_by is None]
 
+    def get_claimed_routes(self, player_id: str) -> List[Route]:
+        """
+        Returns all routes claimed by the specified player.
+        """
+        return [route for route in self.routes if route.claimed_by == player_id]
+
     def get_longest_path(self, player_ids: List[str]) -> Dict[str, int]:
         def dfs(city: str, path_length: int, used_routes: Set[Route]):
             nonlocal max_length

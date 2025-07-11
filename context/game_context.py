@@ -16,6 +16,11 @@ class GameContext:
         for p in player_ids:
             self.scores = dict[p: 0]
 
+    def set_score(self,player_id,score):
+        self.scores[player_id] = score
+
+    def get_score(self,player_id):
+        return self.scores[player_id]
 
     def get_map(self) -> MapGraph:
         return self.map_graph

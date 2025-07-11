@@ -10,7 +10,7 @@ from ticket_to_ride.context.decks import DestinationTicket
 
 class Player:
     def __init__(self, player_id: str,interface):
-        self.__player_id = player_id
+        self.player_id = player_id
         self.__train_hand: Counter[str] = Counter()
         self.exposed: Counter[str] = Counter()
         self.__tickets: List[DestinationTicket] = []
