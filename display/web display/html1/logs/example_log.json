@@ -14,7 +14,7 @@
                 "playerId": 1,
                 "score": 3,
                 "trainCarCount": 45,
-                "claimedRoutes": [],
+                "claimedRoutes": ["El_Paso-Houston-1"],
                 "longestPath": 1,
                 "hasLongestPath": true, 
                 "destinationTickets": [

@@ -12,6 +12,13 @@
 				<div class="overlap">
 					<div class="overlap-group">
 						<img class="USA-map" src="img/USA_map-1.png" />
+						<div class="turn-display">
+							<svg class="turn-counter-background" width="110" height="58" viewBox="0 0 110 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<rect width="110" height="58" fill="#D9D9D9"/>
+							</svg>
+							<div class="turn-counter-text">Turn: </div>
+							<div class="turn-counter-text" id="turn-counter">1</div>
+						</div>
 						<svg class="player-hand-backgrounds" width="1086" height="644" viewBox="0 0 1086 644" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<rect id="left-player-name-card" y="1" width="80" height="643" fill="#0066FF"/>
 							<rect id="opposite-player-name-card" x="173" width="708" height="50" fill="#D9FF00"/>
@@ -310,16 +317,24 @@
 		<script>
             // grabbing JSON
             logName = "example_log.json"
-            fetch("./logs/" + logName)
-                .then(response => response.json())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error fetching JSON:', error));
+			let gameData = null;
+			let gameDataLoaded = false;
 
-			// constants
-            const turnOrder = [players.forEach(player => {
-                player.playerId;
-            })];
-            console.log(`Turn order: ${turnOrder}`)
+			fetch("./logs/example_log.json")
+			    .then(res => res.json())
+			    .then(data => {
+			        gameData = data;
+			        document.dispatchEvent(new Event("gameDataLoaded"));
+			    });
+
+			document.addEventListener("gameDataLoaded", () => {
+			    // safe to use gameData here
+			    console.log("Data loaded and event received:", gameData);
+				console.log("Players", gameData.players);
+				gameDataLoaded = true;
+				const turnOrder = gameData.players.map(player => player.playerId);
+				onStart();
+			});
             
             const marketImages = {
 			  	black: 'img/Market assets/market-black-train-car-card.png',
@@ -347,14 +362,14 @@
 
             // converter functions
             function playerIdConverter(turnData) {
-                currentPlayer = turnOrder.find(p => turnOrder[p] === turnData.player.playerId)
-                
+				currentPlayer = turnOrder.find(p => turnOrder[p] === turnData.player.playerId);
+
             }
 
 			// global variables
 			var currentTurn = 0;
+			var currentRound = 0;
 			let running = false;
-			start();
 			
 			// general setter methods
 			function setTurnCounter(turn) {
@@ -431,12 +446,12 @@
                 });
             }
             
-            function setOpponentCardCounts(playerId, opponent_data) {
-                opponent_data.hand.public.forEach(([color, count]) => {
+            function setOpponentCardCounts(playerId, opponentData) {
+                opponentData.hand.public.forEach(([color, count]) => {
                     setCardCount(playerId, color, count);
                 });
-                setCardCount(playerId, "secret", opponent_data.hand.hidden);
-                setCardCount(playerId, "destination", opponent_data.destinationTicketCount);
+                setCardCount(playerId, "secret", opponentData.hand.hidden);
+                setCardCount(playerId, "destination", opponentData.destinationTicketCount);
             }
 
 			// Leaderboard setters
@@ -462,18 +477,20 @@
 			// MatchStat setters
 			function setMatchStatName(playerId, name) {
 				const matchStatDiv = document.getElementById(`match-stats-names`);
-				matchStatDiv.querySelector(`div[playerId=${playerId}]`).textContent = name;
+				let adjustedId = gameData.players.findIndex(p => p.playerId === playerId) + 1;
+				matchStatDiv.querySelector(`div[playerId="${adjustedId}"]`).textContent = name;
 			}
 
 			function setMatchStatScore(playerId, score) {
 				const matchStatDiv = document.getElementById(`match-stats-scores`);
-				matchStatDiv.querySelector(`div[playerId=${playerId}]`).textContent = score;
+				let adjustedId = gameData.players.findIndex(p => p.playerId === playerId) + 1;
+				matchStatDiv.querySelector(`div[playerId="${adjustedId}"]`).textContent = score;
 			}
 
 			// Initial setup function
 			function onStart() {
-				players.forEach(player => {
-					setMatchStatName(player)
+				gameData.players.forEach(player => {
+					setMatchStatName(player.playerId)
 				})
 			}
 			
@@ -485,7 +502,7 @@
     			if (running) {
       				intervalId = setInterval(() => {
         				currentTurn += 1;
-						test(currentTurn); // PENDING full turnUpdate functionality: swap this out for a turnUpdate call
+						turnUpdate(currentTurn); // PENDING full turnUpdate functionality: swap this out for a turnUpdate call
   			  	  	}, 1000); // Every 1 second
   			  	} else {
   			  	  	clearInterval(intervalId);
@@ -494,79 +511,87 @@
 
 			// Input processing function
 			document.addEventListener("keydown", function (event) {
-				if (event.code === "Space") {
+				if (event.code === "Space" && gameDataLoaded) {
 				  	event.preventDefault();
 				  	toggleRunning();
-				} else if(event.code === "ArrowLeft") {
+				} else if(event.code === "ArrowLeft" && gameDataLoaded) {
 					console.log(`Input ${event.code} received`);
 					if (currentTurn > 0) {
                         currentTurn -= 1;
 					    console.log("value decremented");
 					    console.log(`calling test with input ${currentTurn}`)
-					    test(currentTurn);
+					    turnUpdate(currentTurn);
 					    console.log(`value of currentTurn changed to ${currentTurn}`)
                     }
-				} else if(event.code === "ArrowRight") {
+				} else if(event.code === "ArrowRight" && gameDataLoaded) {
 					console.log(`Input ${event.code} received`);
                     if(currentTurn < (gameData.rounds[currentRound].turns.length - 1)) {
 					    currentTurn += 1;
                         console.log(`value incremented`);
 					    console.log(`calling test with input ${currentTurn}`)
-					    test(currentTurn);
+					    turnUpdate(currentTurn);
                     }
 				}
 			});
 
-			function test(input) {
-				setCurrentPlayerName(currentTurn.toString());
-				console.log(`changing player name to ${currentTurn.toString()}`);
-			}
-
 			// update display given a specific turn of the current game.
 			function turnUpdate(turnNumber) {
-				turnData = gameData.rounds[currentRound].turns[turnNumber]
+				turnData = gameData.rounds[currentRound].turns[turnNumber];
                 setTurnCounter(turnNumber);
 
 				// set current player's name
-                currentPlayer = gameData.players.find(p => p.playerId === turnData.player.playerId)
+                currentPlayer = gameData.players.find(p => p.playerId === turnData.player.playerId);
 				setCurrentPlayerName(currentPlayer.name);
 
 				// set current player's card counts
-                setCurrentPlayerCardCounts(turnData.player.playerId, );
+                setCurrentPlayerCardCounts(turnData.player.hand);
 
 				// set current player's train car count
                 setTrainCarCount(turnData.player.trainCarCount);
                 
-				// set other players' card counts
-                for (let i = 0; i < turnData.opponents.length; i++)
-                setCardCount(turnData.opponents[i])
-
-				// set each player's color
-                setPlayerColor("left-player", );
+				// set current player's color
+                setPlayerColor(currentPlayer.playerId, playerColors[currentPlayer.color]);
+				
+				turnData.opponents.forEach(opponent => {
+					let opponentData = gameData.players.find(p => p.playerId === turnData.opponent.playerId);
+					// set opponent's card counts
+					setOpponentCardCounts(opponent.playerId, opponent);
+					
+					// set opponent's color
+					setPlayerColor(opponent.playerId, playerColors[opponentData.color]);
+				});
 
 				// update market
+				turnData.gameObjects.decks.marketCards.forEach(card => {
+					setMarketCard(index, marketImages.card);
+				});
 
                 // update map
+				turnData.player.claimedRoutes.forEach(route => {
+					claimRoute(route, currentPlayer.color);
+				});
 
 				// update leaderboard
 				// sort players in descending order of score
+				let playerList = concat([turnData.player], turnData.opponents)
 				sortedPlayers = players.toSorted(function(a, b) {
-					b.score - a.score // PENDING json: fix this to actually get the scores for each player
-				})
+					b.score - a.score
+				}).map(p => p.playerId);
 				sortedPlayers.forEach(player, index => {
 					setLeaderboardColor(index + 1, playerColors[player]);
-					setLeaderboardName(index, player)
-					setLeaderboardScore(index, player.score)
+					setLeaderboardName(index, player);
+					setLeaderboardScore(index, player.score);
 				})
 
 				// update match stats for each player
-				players.forEach(player => { // PENDING json: make array [players]
-					// take the average of the score value for that player on the given turn for each game in the file
+				averages = gameData.averageScores
+				averages.forEach(player => {
 					let total = 0;
-					games.forEach(game => {
-						//get the score for [player] at turn [turn] of [game] and add it to total
+					player.scores.forEach(score => {
+						total += score;
 					});
-					setMatchStatScore(playerId, score); // PENDING json: replace playerId and score with the right playerId
+					let avgScore = total / (player.scores.length);
+					setMatchStatScore(player.playerId, avgScore);
 				})
 				
 			}
