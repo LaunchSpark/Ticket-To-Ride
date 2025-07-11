@@ -308,8 +308,20 @@
 			</div>
 		</div>
 		<script>
+            // grabbing JSON
+            logName = "example_log.json"
+            fetch("./logs/" + logName)
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error fetching JSON:', error));
+
 			// constants
-			const marketImages = {
+            const turnOrder = [players.forEach(player => {
+                player.playerId;
+            })];
+            console.log(`Turn order: ${turnOrder}`)
+            
+            const marketImages = {
 			  	black: 'img/Market assets/market-black-train-car-card.png',
 			  	blue: 'img/Market assets/market-blue-train-car-card.png',
 				green: 'img/Market assets/market-green-train-car-card.png',
@@ -326,12 +338,18 @@
 				pause: ''
 			}
 
-			const playerColors = { // PENDING player color assignment: update to plug into that
-				player1: 'red',
-				player2: 'blue',
-				player3: 'green',
-				player4: 'yellow'
+			const playerColors = { // PENDING player color assignment: update with RGB
+				red: 'red',
+				blue: 'blue',
+				green: 'green',
+				yellow: 'yellow'
 			}
+
+            // converter functions
+            function playerIdConverter(turnData) {
+                currentPlayer = turnOrder.find(p => turnOrder[p] === turnData.player.playerId)
+                
+            }
 
 			// global variables
 			var currentTurn = 0;
@@ -397,15 +415,29 @@
 				colorCard.setAttribute('fill', color);
 			}
 
-			function setCardCount(playerId, color, counts) {
+			function setCardCount(playerId, color, count) {
 				const container = document.getElementById(playerId);
 				const cardDiv = container.querySelector(`div[data-index="${color}"]`);
 				if (cardDiv) {
-			  	  	cardDiv.textContent = newCount;
+			  	  	cardDiv.textContent = count;
 			  	} else {
 			  	  	console.warn(`No card found for color: ${color}`);
 			  	}
 			}
+
+            function setCurrentPlayerCardCounts(hand) {
+                hand.forEach(([color, count]) => {
+                    setCardCount("current-player", color, count);
+                });
+            }
+            
+            function setOpponentCardCounts(playerId, opponent_data) {
+                opponent_data.hand.public.forEach(([color, count]) => {
+                    setCardCount(playerId, color, count);
+                });
+                setCardCount(playerId, "secret", opponent_data.hand.hidden);
+                setCardCount(playerId, "destination", opponent_data.destinationTicketCount);
+            }
 
 			// Leaderboard setters
 			function setLeaderboardScore(place, score) {
@@ -467,17 +499,21 @@
 				  	toggleRunning();
 				} else if(event.code === "ArrowLeft") {
 					console.log(`Input ${event.code} received`);
-					currentTurn -= 1;
-					console.log("value decremented");
-					console.log(`calling test with input ${currentTurn}`)
-					test(currentTurn);
-					console.log(`value of currentTurn changed to ${currentTurn}`)
+					if (currentTurn > 0) {
+                        currentTurn -= 1;
+					    console.log("value decremented");
+					    console.log(`calling test with input ${currentTurn}`)
+					    test(currentTurn);
+					    console.log(`value of currentTurn changed to ${currentTurn}`)
+                    }
 				} else if(event.code === "ArrowRight") {
 					console.log(`Input ${event.code} received`);
-					currentTurn += 1; // PENDING json: check if there is a next turn
-					console.log(`value incremented`);
-					console.log(`calling test with input ${currentTurn}`)
-					test(currentTurn);
+                    if(currentTurn < (gameData.rounds[currentRound].turns.length - 1)) {
+					    currentTurn += 1;
+                        console.log(`value incremented`);
+					    console.log(`calling test with input ${currentTurn}`)
+					    test(currentTurn);
+                    }
 				}
 			});
 
@@ -487,19 +523,30 @@
 			}
 
 			// update display given a specific turn of the current game.
-			function turnUpdate(turn) {
-				setTurnCounter(turn);
+			function turnUpdate(turnNumber) {
+				turnData = gameData.rounds[currentRound].turns[turnNumber]
+                setTurnCounter(turnNumber);
+
 				// set current player's name
-				
+                currentPlayer = gameData.players.find(p => p.playerId === turnData.player.playerId)
+				setCurrentPlayerName(currentPlayer.name);
+
 				// set current player's card counts
+                setCurrentPlayerCardCounts(turnData.player.playerId, );
 
 				// set current player's train car count
-
+                setTrainCarCount(turnData.player.trainCarCount);
+                
 				// set other players' card counts
+                for (let i = 0; i < turnData.opponents.length; i++)
+                setCardCount(turnData.opponents[i])
 
 				// set each player's color
+                setPlayerColor("left-player", );
 
 				// update market
+
+                // update map
 
 				// update leaderboard
 				// sort players in descending order of score
