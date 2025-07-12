@@ -25,8 +25,8 @@
                         "completed": false 
                     },
                     {
-                        "from": "",
-                        "to": "",
+                        "from": "Vancouver",
+                        "to": "Seattle",
                         "points": 24,
                         "completed": true
                     }

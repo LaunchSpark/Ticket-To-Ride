@@ -11,7 +11,7 @@ export default function OppositePlayerSection(): JSX.Element {
     "bg-yellow-400",
     "bg-orange-500",
     "bg-green-500",
-    "bg-pink-500",
+    "bg-purple-500",
     "bg-purple-500",
     "bg-gray-800",
     "bg-cyan-400",

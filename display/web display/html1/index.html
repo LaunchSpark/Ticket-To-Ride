@@ -39,7 +39,7 @@
 							<div class="right-yellow-count" data-index="yellow">9</div>
 							<div class="right-orange-count" data-index="orange">8</div>
 							<div class="right-green-count" data-index="green">7</div>
-							<div class="right-pink-count" data-index="pink">6</div>
+							<div class="right-purple-count" data-index="purple">6</div>
 							<div class="right-white-count" data-index="white">5</div>
 							<div class="right-black-count" data-index="black">4</div>
 							<div class="right-locomotive-count" data-index="locomotive">3</div>
@@ -65,7 +65,7 @@
 							<div class="left-yellow-count" data-index="yellow">3</div>
 							<div class="left-orange-count" data-index="orange">4</div>
 							<div class="left-green-count" data-index="green">5</div>
-							<div class="left-pink-count-count" data-index="pink">6</div>
+							<div class="left-purple-count-count" data-index="purple">6</div>
 							<div class="left-white-count" data-index="white">7</div>
 							<div class="left-black-count" data-index="black">8</div>
 							<div class="left-locomotive-count" data-index="locomotive">9</div>
@@ -94,23 +94,23 @@
 									<div place="4" class="element-st-place-score">1</div>
 								</div>
 								<div id="leaderboard-names">
-									<div class="element-place-name-text">Placeholder name</div>
-									<div class="element-rd-place-name-text">Placeholder name</div>
-									<div class="element-nd-place-name-text">Placeholder name</div>
-									<div class="element-st-place-name-text">Placeholder name</div>
+									<div place="1" class="element-st-place-name-text">Placeholder name</div>
+									<div place="2" class="element-nd-place-name-text">Placeholder name</div>
+									<div place="3" class="element-rd-place-name-text">Placeholder name</div>
+									<div place="4" class="element-place-name-text">Placeholder name</div>
 								</div>
 								<div class="match-stats-label">MATCH&nbsp;&nbsp;STATS</div>
 								<div id="match-stats-names">
-									<div playerId="1" class="name-3">Player 1</div>
-									<div playerId="2" class="name-2">Player 2</div>
-									<div playerId="3" class="p-name">Player 3</div>
-									<div playerId="4" class="name">Player 4</div>
+									<div data-player-id="1" class="name-3">Player 1</div>
+									<div data-player-id="2" class="name-2">Player 2</div>
+									<div data-player-id="3" class="p-name">Player 3</div>
+									<div data-player-id="4" class="name">Player 4</div>
 								</div>
 								<div id="match-stats-scores">
-									<div playerId="1" class="score-2">1</div>
-									<div playerId="2" class="text-wrapper">2</div>
-									<div playerId="3" class="p-score">3</div>
-									<div playerId="4" class="score">4</div>
+									<div data-player-id="1" class="score-2">1</div>
+									<div data-player-id="2" class="text-wrapper">2</div>
+									<div data-player-id="3" class="p-score">3</div>
+									<div data-player-id="4" class="score">4</div>
 
 								</div>
 								<div id="match-stats-labels">
@@ -149,31 +149,35 @@
 								<div class="current-locomotive-count" data-index="locomotive">9</div>
 								<div class="current-black-count" data-index="black">8</div>
 								<div class="current-white-count" data-index="white">7</div>
-								<div class="current-pink-count" data-index="pink">6</div>
+								<div class="current-purple-count" data-index="purple">6</div>
 								<div class="current-green-count" data-index="green">5</div>
 								<div class="current-orange-count" data-index="orange">4</div>
 								<div class="current-yellow-count" data-index="yellow">3</div>
 								<div class="current-blue-count" data-index="blue">2</div>
 								<div class="current-red-count" data-index="red">1</div>
 								<div id="ticket-1">
-									<div sectionId="left-city" class="ticket-city-b-4">MOSCO1</div>
-									<div sectionId="right-city" class="ticket-city-a-4">MOSCO2</div>
-									<div sectionId="ticket-score" class="ticket-score-4">1</div>
+									<div data-section-id="left-city" class="ticket-city-b-4">MOSCO1</div>
+									<div data-section-id="right-city" class="ticket-city-a-4">MOSCO2</div>
+									<div data-section-id="ticket-score" class="ticket-score-4">1</div>
+									<img data-section-id="check-mark" class="ticket-check-mark-4" src="img/check-mark.png" style="opacity: 0"/>
 								</div>
 								<div id="ticket-2">
-									<div sectionId="left-city" class="ticket-city-b-3">MOSCO3</div>
-									<div sectionId="right-city" class="ticket-city-a-3">MOSCO4</div>
-									<div sectionId="ticket-score" class="ticket-score-3">2</div>
+									<div data-section-id="left-city" class="ticket-city-b-3">MOSCO3</div>
+									<div data-section-id="right-city" class="ticket-city-a-3">MOSCO4</div>
+									<div data-section-id="ticket-score" class="ticket-score-3">2</div>
+									<img data-section-id="check-mark" class="ticket-check-mark-3" src="img/check-mark.png" style="opacity: 0"/>
 								</div>
 								<div id="ticket-3">
-									<div sectionId="left-city" class="ticket-city-b-2">MOSCO5</div>
-									<div sectionId="right-city" class="ticket-city-a-2">MOSCO6</div>
-									<div sectionId="ticket-score" class="ticket-score-2">3</div>
+									<div data-section-id="left-city" class="ticket-city-b-2">MOSCO5</div>
+									<div data-section-id="right-city" class="ticket-city-a-2">MOSCO6</div>
+									<div data-section-id="ticket-score" class="ticket-score-2">3</div>
+									<img data-section-id="check-mark" class="ticket-check-mark-2" src="img/check-mark.png" style="opacity: 0"/>
 								</div>
 								<div id="ticket-4">
-									<div sectionId="left-city" class="ticket-city-b">MOSCO7</div>
-									<div sectionId="right-city" class="ticket-city-a">MOSCO8</div>
-									<div sectionId="ticket-score" class="ticket-score">4</div>
+									<div data-section-id="left-city" class="ticket-city-b">MOSCO7</div>
+									<div data-section-id="right-city" class="ticket-city-a">MOSCO8</div>
+									<div data-section-id="ticket-score" class="ticket-score">4</div>
+									<img data-section-id="check-mark" class="ticket-check-mark" src="img/check-mark.png" style="opacity: 0"/>
 								</div>
 								<div id="current-player-name" class="name-text">Placeholder name</div>
 								<div id="train-car-total" class="train-car-total">45</div>
@@ -293,7 +297,7 @@
 						<div class="opposite-yellow-count" data-index="yellow">3</div>
 						<div class="opposite-orange-count" data-index="orange">4</div>
 						<div class="opposite-green-count" data-index="green">5</div>
-						<div class="opposite-pink-count" data-index="pink">6</div>
+						<div class="opposite-purple-count" data-index="purple">6</div>
 						<div class="opposite-white-count" data-index="white">7</div>
 						<div class="opposite-black-count" data-index="black">8</div>
 						<div class="opposite-locomotive-count" data-index="locomotive">9</div>
@@ -316,11 +320,12 @@
 		</div>
 		<script>
             // grabbing JSON
-            logName = "example_log.json"
+            logName = "4_player_test.json"
 			let gameData = null;
 			let gameDataLoaded = false;
+			let turnOrder = null;
 
-			fetch("./logs/example_log.json")
+			fetch("./logs/" + logName)
 			    .then(res => res.json())
 			    .then(data => {
 			        gameData = data;
@@ -329,10 +334,8 @@
 
 			document.addEventListener("gameDataLoaded", () => {
 			    // safe to use gameData here
-			    console.log("Data loaded and event received:", gameData);
-				console.log("Players", gameData.players);
 				gameDataLoaded = true;
-				const turnOrder = gameData.players.map(player => player.playerId);
+				turnOrder = gameData.players.map(player => player.playerId);
 				onStart();
 			});
             
@@ -361,9 +364,28 @@
 			}
 
             // converter functions
-            function playerIdConverter(turnData) {
-				currentPlayer = turnOrder.find(p => turnOrder[p] === turnData.player.playerId);
-
+            function playerIdConverter(playerId) {
+				let turnData = gameData.rounds[currentRound].turns[currentTurn];
+				let currentPlayerIndex = turnOrder.findIndex(p => p === turnData.player.playerId);
+				let soughtPlayerIndex = turnOrder.findIndex(p => p === playerId);
+				let turnDistance = (turnOrder.length + soughtPlayerIndex - currentPlayerIndex) % turnOrder.length
+				switch (turnDistance) {
+					case 0:
+						return "current-player"
+						break;
+					case 1:
+						return "left-player"
+						break;
+					case 2:
+						return "opposite-player"
+						break;
+					case 3:
+						return "right-player"
+						break;
+					default:
+						return null;
+						break;
+				}
             }
 
 			// global variables
@@ -400,10 +422,10 @@
 			  	}
 			}
 		
-			function claimRoute(routeID,playerColor) {
+			function claimRoute(routeId,playerColor) {
 				const route = document.getElementById(routeId);
 				if (route) {
-					route.element.style.opacity = '1';
+					route.style.opacity = '1';
 					route.setAttribute('stroke', playerColor);
 				}
 			}
@@ -418,20 +440,21 @@
 				trainCarCount.textContent = count;
 			}
 
-			function setDestinationTicket(ticketSlot, leftCity, rightCity, score) {
-				const ticket = document.getElementById(`ticket-${ticketslot}`);
-				ticket.querySelector('div[sectionId="left-city"]').textContent = leftCity;
-				ticket.querySelector('div[sectionId="right-city"]').textContent = rightCity;
-				ticket.querySelector('div[sectionId="ticket-score"]').textContent = score;
+			function setDestinationTicket(ticketSlot, leftCity, rightCity, score, completed) {
+				const ticket = document.getElementById(`ticket-${ticketSlot}`);
+				ticket.querySelector('div[data-section-id="left-city"]').textContent = leftCity;
+				ticket.querySelector('div[data-section-id="right-city"]').textContent = rightCity;
+				ticket.querySelector('div[data-section-id="ticket-score"]').textContent = score;
+				ticket.querySelector('img[data-section-id="check-mark"]').style.opacity = (completed? '1' : '0');
 			}
 
 			function setPlayerColor(playerId, color) {
-				const colorCard = document.getElementById(`${playerId}-name-card`);
+				const colorCard = document.getElementById(`${playerIdConverter(playerId)}-name-card`);
 				colorCard.setAttribute('fill', color);
 			}
 
 			function setCardCount(playerId, color, count) {
-				const container = document.getElementById(playerId);
+				const container = document.getElementById(playerIdConverter(playerId));
 				const cardDiv = container.querySelector(`div[data-index="${color}"]`);
 				if (cardDiv) {
 			  	  	cardDiv.textContent = count;
@@ -440,15 +463,15 @@
 			  	}
 			}
 
-            function setCurrentPlayerCardCounts(hand) {
-                hand.forEach(([color, count]) => {
-                    setCardCount("current-player", color, count);
+            function setCurrentPlayerCardCounts(playerId, hand) {
+                Object.entries(hand).forEach(([color, count]) => {
+                    setCardCount(playerId, color, count);
                 });
             }
             
             function setOpponentCardCounts(playerId, opponentData) {
-                opponentData.hand.public.forEach(([color, count]) => {
-                    setCardCount(playerId, color, count);
+                Object.entries(opponentData.hand.public).forEach(([color, count]) => {
+					setCardCount(playerId, color, count);
                 });
                 setCardCount(playerId, "secret", opponentData.hand.hidden);
                 setCardCount(playerId, "destination", opponentData.destinationTicketCount);
@@ -475,22 +498,25 @@
 			}
 
 			// MatchStat setters
-			function setMatchStatName(playerId, name) {
+			function setMatchStatName(playerId) {
 				const matchStatDiv = document.getElementById(`match-stats-names`);
+				let name = gameData.players.find(p => p.playerId === playerId).name;
 				let adjustedId = gameData.players.findIndex(p => p.playerId === playerId) + 1;
-				matchStatDiv.querySelector(`div[playerId="${adjustedId}"]`).textContent = name;
+				console.log("setting player ", playerId, "'s name to ", name);
+				matchStatDiv.querySelector(`div[data-player-id="${adjustedId}"]`).textContent = name;
 			}
 
 			function setMatchStatScore(playerId, score) {
 				const matchStatDiv = document.getElementById(`match-stats-scores`);
 				let adjustedId = gameData.players.findIndex(p => p.playerId === playerId) + 1;
-				matchStatDiv.querySelector(`div[playerId="${adjustedId}"]`).textContent = score;
+				matchStatDiv.querySelector(`div[data-player-id="${adjustedId}"]`).textContent = score;
 			}
 
 			// Initial setup function
 			function onStart() {
 				gameData.players.forEach(player => {
-					setMatchStatName(player.playerId)
+					setMatchStatName(player.playerId);
+					turnUpdate(0);
 				})
 			}
 			
@@ -498,14 +524,20 @@
 			function toggleRunning() {
     			running = !running;
     			console.log(`Running is now: ${running}`);
-
-    			if (running) {
+				lastTurn = gameData.rounds[currentRound].turns.length - 1
+				console.log(gameData.rounds[currentRound].turns.length, " turns in round ", currentRound, ", stopping after turn ", lastTurn)
+    			if (running && currentTurn < lastTurn) {
       				intervalId = setInterval(() => {
         				currentTurn += 1;
-						turnUpdate(currentTurn); // PENDING full turnUpdate functionality: swap this out for a turnUpdate call
+						turnUpdate(currentTurn); 
+						if(currentTurn >= lastTurn) {
+							clearInterval(intervalId);
+						}
   			  	  	}, 1000); // Every 1 second
   			  	} else {
-  			  	  	clearInterval(intervalId);
+  			  	  	if(intervalId) {
+						clearInterval(intervalId);
+					}
   			  	}
   			}
 
@@ -536,24 +568,31 @@
 
 			// update display given a specific turn of the current game.
 			function turnUpdate(turnNumber) {
-				turnData = gameData.rounds[currentRound].turns[turnNumber];
+				console.log("getting turnData for round ", currentRound, ", turn ", turnNumber);
+				let turnData = gameData.rounds[currentRound].turns[turnNumber];
+				console.log(turnData);
                 setTurnCounter(turnNumber);
 
 				// set current player's name
-                currentPlayer = gameData.players.find(p => p.playerId === turnData.player.playerId);
+				let currentPlayer = gameData.players.find(p => p.playerId === turnData.player.playerId);
 				setCurrentPlayerName(currentPlayer.name);
 
 				// set current player's card counts
-                setCurrentPlayerCardCounts(turnData.player.hand);
+                setCurrentPlayerCardCounts(turnData.player.playerId, turnData.player.hand);
 
 				// set current player's train car count
                 setTrainCarCount(turnData.player.trainCarCount);
+
+				// set current player's destination tickets
+				turnData.player.destinationTickets.forEach((ticket, index) => {
+					setDestinationTicket(index + 1, ticket.from, ticket.to, ticket.points, ticket.completed);
+				})
                 
 				// set current player's color
-                setPlayerColor(currentPlayer.playerId, playerColors[currentPlayer.color]);
+				setPlayerColor(currentPlayer.playerId, playerColors[currentPlayer.color]);
 				
 				turnData.opponents.forEach(opponent => {
-					let opponentData = gameData.players.find(p => p.playerId === turnData.opponent.playerId);
+					let opponentData = gameData.players.find(p => p.playerId === opponent.playerId);
 					// set opponent's card counts
 					setOpponentCardCounts(opponent.playerId, opponent);
 					
@@ -567,20 +606,23 @@
 				});
 
                 // update map
-				turnData.player.claimedRoutes.forEach(route => {
-					claimRoute(route, currentPlayer.color);
-				});
+				if (turnData.player.claimedRoutes.length > 0) {
+					turnData.player.claimedRoutes.forEach(route => {
+						claimRoute(route, currentPlayer.color);
+					});
+				}
 
 				// update leaderboard
 				// sort players in descending order of score
-				let playerList = concat([turnData.player], turnData.opponents)
-				sortedPlayers = players.toSorted(function(a, b) {
+				let playerList = [turnData.player].concat(turnData.opponents)
+				sortedPlayers = playerList.toSorted(function(a, b) {
 					b.score - a.score
-				}).map(p => p.playerId);
-				sortedPlayers.forEach(player, index => {
-					setLeaderboardColor(index + 1, playerColors[player]);
-					setLeaderboardName(index, player);
-					setLeaderboardScore(index, player.score);
+				});
+				sortedPlayers.forEach((player, index) => {
+					let playerData = gameData.players.find(p => p.playerId === player.playerId);
+					setLeaderboardColor(index + 1, playerColors[playerData.color]);
+					setLeaderboardName(index + 1, playerData.name);
+					setLeaderboardScore(index + 1, player.score);
 				})
 
 				// update match stats for each player
