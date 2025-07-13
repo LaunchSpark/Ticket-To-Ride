@@ -3,6 +3,8 @@ from dataclasses import dataclass
 from collections import Counter
 from copy import deepcopy
 from game_context import GameContext
+from Map import MapGraph, Route
+from decks import TicketDeck, TrainCardDeck, DestinationTicket
 
 @dataclass
 class OpponentInfo:
@@ -17,18 +19,18 @@ class OpponentInfo:
 class PlayerContext:
     def __init__(self,player_id: str,context: GameContext, players: List):
         player = next((player for player in players if player.player_id == player_id), None)
-        self.player_id = player_id
-        self.map = deepcopy(context.get_map())
-        self.train_deck = deepcopy(context.get_train_deck())
-        self.face_up_cards = face_up_cards = context.get_train_deck().face_up()
-        self.available_routes = context.get_map().get_available_routes()
-        self.longest_path = map.get_longest_path(player_id)
-        self.has_longest_path = map.get_longest_path(context.player)
-        self.ticket_deck = None #TODO: add player.get_destination_tickets()
-        self.turn_number = context.turn_num
-        self.score = context.get_score(player_id)
-        self.remaining_trains = None # TODO: add self.remaining_trains
-        self.hand = None # TODO: add player.get_hand()
+        self.player_id: str = player_id
+        self.map: MapGraph = deepcopy(context.get_map())
+        self.train_deck: TicketDeck = deepcopy(context.get_train_deck())
+        self.face_up_cards: TrainCardDeck = context.get_train_deck().face_up()
+        self.available_routes: List[Route] = context.get_map().get_available_routes()
+        self.longest_path: int = context.get_map().get_longest_path(player_id)[player_id]
+        self.has_longest_path: bool = context.get_map().get_longest_path(context.player)
+        self.ticket_deck: List[DestinationTicket] = None #TODO: add player.get_destination_tickets()
+        self.turn_number: int = context.turn_num
+        self.score: int = context.get_score(player_id)
+        self.remaining_trains: int = None # TODO: add self.remaining_trains
+        self.hand: Counter[str] = None # TODO: add player.get_hand()
 
         self.opponents = [
             OpponentInfo(
