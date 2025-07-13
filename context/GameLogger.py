@@ -2,11 +2,14 @@ from typing import List, Dict, Optional
 from player_context import PlayerContext
 from game_context import GameContext
 from player import Player
+from pathlib import Path
+from decks import DestinationTicket
 import json
 
 class GameLogger:
     player_list: List[Player]
-    def __init__(self, players: List[Players]):
+    file: Path = "../../display/web display/html1/logs"
+    def __init__(self, players: List[Player]):
         self.player_list = players
         self.log = {
             "rounds": [], 
@@ -35,27 +38,21 @@ class GameLogger:
         longest_path = context.map.get_longest_path()
         
         player_data = ({
-            "player_id": context.playerId,
+            "playerId": context.player_id,
             "score": context.score,
-            "remaining_trains": context.remaining_trians,
-            "claimed_routes": [route for route in context.map.routes if route.claimed_by is context.player_id],
-            "longest_path": context.longest_path,
-            "has_longest_path": context.has_longest_path, 
+            "remainingTrains": context.remaining_trains,
+            "claimedRoutes": [route for route in context.map.routes if route.claimed_by is context.player_id],
+            "longestPath": context.longest_path,
+            "hasLongestPath": context.has_longest_path, 
             "destinationTickets": [
                 {
-                    "from": ,
-                    "to": ,
-                    "points": ,
-                    "completed":  
-                } for ticket in player.get_tickets()
-                {
-                    "from": ,
-                    "to": ,
-                    "points": ,
-                    "completed": 
-                }
+                    "from": ticket.city1,
+                    "to": ticket.city2,
+                    "points": ticket.value,
+                    "completed": None # TODO replace "None" with a function call PENDING a function to check completion of destination tickets
+                } for ticket in player.get_tickets() # TODO implement DestinationTicket.get_tickets()
             ],
-            "hand": { 
+            "hand": { # TODO implement player.get_hand() function
                 "black": ,
                 "blue": ,
                 "green": ,
@@ -69,7 +66,7 @@ class GameLogger:
         })
 
         # find index in array for current player to add to i
-        for i in range(1,player_list.length)
+        for i in range(1,player_list.length):
             opponents_data.append({
                 "playerId": context.player_id,
                 "score": context.score,

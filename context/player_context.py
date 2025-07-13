@@ -16,6 +16,7 @@ class OpponentInfo:
 
 class PlayerContext:
     def __init__(self,player_id: str,context: GameContext, players: List):
+        player = next((player for player in players if player.player_id == player_id), None)
         self.player_id = player_id
         self.map = deepcopy(context.get_map())
         self.train_deck = deepcopy(context.get_train_deck())
@@ -23,10 +24,11 @@ class PlayerContext:
         self.available_routes = context.get_map().get_available_routes()
         self.longest_path = map.get_longest_path(player_id)
         self.has_longest_path = map.get_longest_path(context.player)
-        self.ticket_deck = context.get_ticket_deck(players)
+        self.ticket_deck = None #TODO: add player.get_destination_tickets()
         self.turn_number = context.turn_num
         self.score = context.get_score(player_id)
-
+        self.remaining_trains = None # TODO: add self.remaining_trains
+        self.hand = None # TODO: add player.get_hand()
 
         self.opponents = [
             OpponentInfo(
