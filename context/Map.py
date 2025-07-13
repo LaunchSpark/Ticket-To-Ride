@@ -60,7 +60,7 @@ class MapGraph:
         return set(self._adj.keys())
 
 
-    def get_available_routes(self) -> List['Route']:
+    def get_available_routes(self) -> List[Route]:
         """
         Returns a list of all unclaimed routes.
         """
