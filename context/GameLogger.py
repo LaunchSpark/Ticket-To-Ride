@@ -20,12 +20,12 @@ class GameLogger:
             } for p in players
         ]}
 
-    def add_round(context:PlayerContext, players: List, self):
+    def add_round(self):
         self.log["rounds"].append({
             "turns": []
         })
 
-    def add_turn(round_number:int, context:PlayerContext, self):
+    def add_turn(self, round_number:int, context:PlayerContext):
         """
         Export a PlayerContext + full player list to JSON format.
         Assumes each player object has:
@@ -33,11 +33,11 @@ class GameLogger:
           - .get_claimed_routes(), .get_exposed(), .get_card_count(), .get_hidden_card_count()
           - .get_tickets() returning .start, .end, .points, .completed
         """
-        player_data = {}
-        opponents_data = []
-        longest_path = context.map.get_longest_path()
+        longest_path = context.map.get_longest_path(self.player_list)
+        claimed_routes = []
         
-        player_data = ({
+        # logs the current player's information
+        player_data = ({ 
             "playerId": context.player_id,
             "score": context.score,
             "remainingTrains": context.remaining_trains,
@@ -65,38 +65,39 @@ class GameLogger:
             }
         })
 
-        # find index in array for current player to add to i
-        for i in range(1,player_list.length):
-            opponents_data.append({
-                "playerId": context.player_id,
-                "score": context.score,
-                "trainCarCount": player.trains_remaining,
-                "claimed_routes": [route for route in context.map.routes if route.claimed_by is playerId],
-                "longest_path": context.longest_path,
-                "destinationTickets": [
-                    {
-                        "from": t.start,
-                        "to": t.end,
-                        "points": t.points,
-                        "completed": t.completed
-                    } for t in player.get_tickets()
-                ],
-                "hand": {
-                    "public": dict(player.get_exposed()),
-                    "hidden": player.get_card_count() - player.get_exposed().length()
-                }
-            })
+        # log each opponent's information
+        opponents_data = [({ # Log the 
+            "playerId": context.player_id,
+            "score": context.score,
+            "trainCarCount": p.trains_remaining,
+            "claimed_routes": [route for route in context.map.routes if route.claimed_by is playerId],
+            "longest_path": context.longest_path,
+            "destinationTickets": [
+                {
+                    "from": t.start,
+                    "to": t.end,
+                    "points": t.points,
+                    "completed": t.completed
+                } for t in p.get_tickets() # TODO: add player.get_tickets()
+            ],
+            "hand": {
+                "public": dict(p.get_exposed()),
+                "hidden": p.get_card_count() - p.get_exposed().length()
+            }
+        }) for p in self.player_list if p.player_id != context.player_id]
 
+        longest_paths = context.map.get_longest_path(self.player_list)
+        longest_path_length = max(list(longest_paths.values))
         turn_state = {
             "player": player_data,
             "opponents": opponents_data,
             "game_objects": {
                 "map": {
-                    "claimed_routes": claimed_routes,
-                    "longest_path": [
-                        "length": map.get_longest_path(player_list)["length"],
-                        "player_id": map.get_longest_path(player_list)[""]
-                    ]
+                    "claimed_routes": context.map.get_claimed_routes(),
+                    "longest_path": {
+                        "length": longest_path_length,
+                        "player_id": None
+                    }
                 },
                 "decks": {
                     "train_deck_count": context.train_deck.remaining(),
@@ -110,6 +111,6 @@ class GameLogger:
     def log_turn_for_all_players(self, context, players):
         for player in players:
             pc = PlayerContext(player.player_id, context, players)
-            self.log = append_turn_to_game_log(self.log, pc, players)
+            self.log = add_turn(self.log, pc, players)
             with open(f"logs/game_log_p{player.player_id}.json", "w") as f:
                 json.dump(self.log, f, indent=2)
