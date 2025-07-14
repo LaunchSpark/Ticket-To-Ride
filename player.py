@@ -162,7 +162,6 @@ class Player:
     def __hand_counts(self) -> Counter[str]:
         return self.__train_hand.copy()
 
-
     def get_exposed(self) -> Counter[str]:
         return self.exposed
     
