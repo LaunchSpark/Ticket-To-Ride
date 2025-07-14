@@ -63,7 +63,7 @@ def setup():
         player_ids.append(player_id)
 
     # Initialize logger and round_number counter
-    logger = GameLogger()
+    logger = GameLogger(players)
     round_number = 0
     round_limit = 10 # Can be changed to adjust how many consecutive rounds to run before the program stops
     
