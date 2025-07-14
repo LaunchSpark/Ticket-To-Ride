@@ -9,7 +9,7 @@ import json
 
 class GameLogger:
     player_list: List[Player]
-    def __init__(self, players: List[Player], file: Path):
+    def __init__(self, players: List[Player]):
         self.player_list = players
         self.log = {
             "rounds": [], 
