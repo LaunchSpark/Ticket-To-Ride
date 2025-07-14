@@ -1,7 +1,6 @@
 from typing import List, Dict, Optional
 from dataclasses import dataclass
 from collections import Counter
-from copy import deepcopy
 from context.game_context import GameContext
 from context.Map import MapGraph, Route
 from context.decks import TicketDeck, TrainCardDeck, DestinationTicket
@@ -9,7 +8,7 @@ from context.decks import TicketDeck, TrainCardDeck, DestinationTicket
 @dataclass
 class OpponentInfo:
     player_id: str
-    exposed_hand: Counter[str]
+    exposed_hand: Counter
     num_cards_in_hand: int
     remaining_trains: int
     longest_path: int
@@ -21,8 +20,8 @@ class PlayerContext:
     def __init__(self,player_id: str,context: GameContext, players: List):
         player = next((player for player in players if player.player_id == player_id), None)
         self.player_id: str = player_id
-        self.map: MapGraph = deepcopy(context.get_map())
-        self.train_deck: TicketDeck = deepcopy(context.get_train_deck())
+        self.map: MapGraph = context.get_map()
+        self.train_deck: TicketDeck = context.get_train_deck()
         self.face_up_cards: TrainCardDeck = context.get_train_deck().face_up()
         self.available_routes: List[Route] = context.get_map().get_available_routes()
         self.longest_path: int = context.get_map().get_longest_path([self.player_id])[self.player_id]
