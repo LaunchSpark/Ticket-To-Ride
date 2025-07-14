@@ -25,7 +25,7 @@ class PlayerContext:
         self.face_up_cards: TrainCardDeck = context.get_train_deck().face_up()
         self.available_routes: List[Route] = context.get_map().get_available_routes()
         self.longest_path: int = context.get_map().get_longest_path([self.player_id])[self.player_id]
-        self.has_longest_path: bool = context.get_map().get_longest_path([p.player_id for p in players]).keys()[0] == self.player_id
+        self.has_longest_path: bool = self.player_id in context.get_map().get_longest_path([p.player_id for p in players])
         self.turn_number: int = context.turn_num
         self.score: int = context.get_score(player_id)
 
