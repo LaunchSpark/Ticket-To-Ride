@@ -26,11 +26,8 @@ class PlayerContext:
         self.available_routes: List[Route] = context.get_map().get_available_routes()
         self.longest_path: int = context.get_map().get_longest_path(player_id)[player_id]
         self.has_longest_path: bool = context.get_map().get_longest_path(context.player)
-        self.ticket_deck: List[DestinationTicket] = None #TODO: add player.get_destination_tickets()
         self.turn_number: int = context.turn_num
         self.score: int = context.get_score(player_id)
-        self.remaining_trains: int = None # TODO: add self.remaining_trains
-        self.hand: Counter[str] = None # TODO: add player.get_hand()
 
         self.opponents = [
             OpponentInfo(
