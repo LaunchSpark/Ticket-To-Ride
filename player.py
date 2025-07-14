@@ -10,8 +10,10 @@ from context.player_context import PlayerContext
 
 
 class Player:
-    def __init__(self, player_id: str,interface):
+    def __init__(self, player_id: str,interface, name: str, color: str):
         self.player_id = player_id
+        self.name = name
+        self.color = color
         self.__train_hand: Counter[str] = Counter()
         self.exposed: Counter[str] = Counter()
         self.__tickets: List[DestinationTicket] = []
