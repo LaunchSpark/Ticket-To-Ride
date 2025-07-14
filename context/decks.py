@@ -101,6 +101,7 @@ class DestinationTicket:
         self.city1 = city1
         self.city2 = city2
         self.value = value
+        self.is_completed = False
 
     def __repr__(self):
         return f"{self.city1} → {self.city2} ({self.value} pts)"
