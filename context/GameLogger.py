@@ -68,7 +68,7 @@ class GameLogger:
         })
 
         # log each opponent's information
-        opponents_data = [({ # Log the 
+        opponents_data = [({
             "playerId": p.player_id,
             "score": p.score,
             "trainCarCount": p.trains_remaining,
