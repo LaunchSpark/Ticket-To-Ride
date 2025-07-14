@@ -39,7 +39,7 @@ class PlayerContext:
                 longest_path = context.get_map().get_longest_path([p.player_id])[p.player_id],
                 has_longest_path = context.get_map().get_longest_path(p.player_id),
                 score = context.get_score(p.player_id),
-                destination_ticket_count = p.get_tickets().size()
+                destination_ticket_count = len(p.get_tickets())
             ) for p in players if p.player_id != self.player_id
         ]
 

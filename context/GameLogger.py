@@ -90,7 +90,7 @@ class GameLogger:
                     "white": p.exposed_hand["W"],
                     "yellow": p.exposed_hand["Y"]
                 },
-                "hidden": p.num_cards_in_hand - p.exposed_hand.length()
+                "hidden": p.num_cards_in_hand - p.exposed_hand.total()
             }
         }) for p in context.opponents]
 
