@@ -98,5 +98,19 @@ class MapGraph:
 
         return results
 
+    def get_highest_path_only(self,results: Dict[str, int]) -> Dict[str, int]:
+        """
+        Returns a dictionary containing only the player(s) with the highest path length.
 
+        Args:
+            results (Dict[str, int]): Dictionary mapping player_id to their longest path length.
+
+        Returns:
+            Dict[str, int]: Filtered dictionary with only the player(s) with the maximum path length.
+        """
+        if not results:
+            return {}
+
+        max_length = max(results.values())
+        return {pid: length for pid, length in results.items() if length == max_length}
 
