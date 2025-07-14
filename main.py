@@ -58,9 +58,6 @@ def setup():
     # Initialize GameContext
     context = GameContext(player_ids)
 
-    for p in players:
-        p.set_context(context)
-    # Instantiate Game with created context and players
     game = Game(context=context, players=players)
 
     game.play()
