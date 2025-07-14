@@ -3,6 +3,7 @@ from ticket_to_ride.Intefaces.example_bot import ExampleBot
 from ticket_to_ride.player import Player
 from ticket_to_ride.Game import Game
 from ticket_to_ride.context.game_context import GameContext
+from ticket_to_ride.context.GameLogger import GameLogger
 
 from glob import glob
 import sys
@@ -55,12 +56,18 @@ def setup():
         #for the game context
         player_ids.append(player_id)
 
+    # Initialize logger and round_number counter
+    logger = GameLogger()
+    round_number = 0
+
     # Initialize GameContext
     context = GameContext(player_ids)
 
-    game = Game(context=context, players=players)
+    game = Game(context, players, logger, round_number)
 
     game.play()
+
+    
 
 if __name__ == "__main__":
     main()
