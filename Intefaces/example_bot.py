@@ -6,7 +6,7 @@ from ticket_to_ride.context.Map import MapGraph
 from ticket_to_ride.context.Map import Route
 from ticket_to_ride.context.decks import DestinationTicket
 
-class RandomBot(Interface):
+class ExampleBot(Interface):
     # used to determine weather to
     # 1 = Draw
     # 2 = Claim
