@@ -113,9 +113,6 @@ class GameLogger:
         }
         self.log["rounds"][round_number]["turns"].append(turn_state)
     
-    def log_turn_for_all_players(self, context, players):
-        for player in players:
-            pc = PlayerContext(player.player_id, context, players)
-            self.log = add_turn(self.log, pc, players)
-            with open(f"logs/game_log_p{player.player_id}.json", "w") as f:
-                json.dump(self.log, f, indent=2)
+    def export_log(self, file_name: str):
+        with open(f"display/web display/html1/logs/{file_name}", "w") as f:
+            json.dump(self.log, f, indent=2)
