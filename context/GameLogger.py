@@ -18,8 +18,12 @@ class GameLogger:
                 "playerId": p.player_id,
                 "name": p.name,
                 "color": p.color
-            } for p in players
-        ]}
+            } for p in players],
+            "averageScores": [{
+                "playerId": p.player_id,
+                "scores": []
+            } for p in players]
+        }
 
     def add_round(self):
         self.log["rounds"].append({
@@ -112,6 +116,21 @@ class GameLogger:
             }
         }
         self.log["rounds"][round_number]["turns"].append(turn_state)
+
+    def find_player_score(self, turn: Dict, player_id: str) -> int:
+        if (turn["player"]["playerId"] == player_id):
+            return turn["player"]["score"]
+        else:
+            return next((p["score"] for p in turn["opponents"] if p["playerId"] == player_id), None)
+    
+    def log_match_stats(self):
+        for turn in range(0, max([r.length() for r in self.log["rounds"]])):
+            for p in self.player_list:
+                player_scores = next((player for player in self.log["averageScores"] if player["playerId"] == p.player_id), None)["scores"]
+                turn_scores = [self.find_player_score(r["turns"][turn], p.player_id) for r in self.log["rounds"] if (turn < r["turns"].length())]
+                sum(turn_scores) / turn_scores.length()
+                player_scores.append() = sum(turn_scores) / turn_scores.length()
+
     
     def export_log(self, file_name: str):
         with open(f"display/web display/html1/logs/{file_name}", "w") as f:
