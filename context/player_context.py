@@ -21,8 +21,8 @@ class PlayerContext:
         player = next((player for player in players if player.player_id == player_id), None)
         self.player_id: str = player_id
         self.map: MapGraph = context.get_map()
-        self.train_deck: TicketDeck = context.get_train_deck()
-        self.face_up_cards: TrainCardDeck = context.get_train_deck().face_up()
+        self.train_deck: TrainCardDeck = context.get_train_deck()
+        self.face_up_cards: List[str] = context.get_train_deck().face_up()
         self.available_routes: List[Route] = context.get_map().get_available_routes()
         self.longest_path: int = context.get_map().get_longest_path([self.player_id])[self.player_id]
         self.has_longest_path: bool = self.player_id in context.get_map().get_longest_path([p.player_id for p in players])
@@ -36,7 +36,7 @@ class PlayerContext:
                 num_cards_in_hand = p.get_card_count(),
                 remaining_trains = p.trains_remaining,
                 longest_path = context.get_map().get_longest_path([p.player_id])[p.player_id],
-                has_longest_path = context.get_map().get_longest_path(p.player_id),
+                has_longest_path = p.player_id in context.get_map().get_longest_path(p.player_id)
                 score = context.get_score(p.player_id),
                 destination_ticket_count = len(p.get_tickets())
             ) for p in players if p.player_id != self.player_id
