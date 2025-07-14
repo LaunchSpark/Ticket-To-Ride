@@ -18,7 +18,7 @@ class Player:
         self.exposed: Counter[str] = Counter()
         self.__tickets: List[DestinationTicket] = []
         self.trains_remaining: int = 45
-        self.context = None
+        self.context: PlayerContext
         self.__interface = interface
         self.__interface.set_player(self)
         self.has_longest_path: bool = False
@@ -115,19 +115,13 @@ class Player:
         route = self.__interface.choose_route_to_claim(self.get_affordable_routes())
         if route is None:
             return False
-
-        required = Counter({route.colour: route.length})
-        if self.__train_hand >= required:
-            try:
-                self.__spend_cards([route.colour] * route.length)
-                self.__claim_route(route)
-                return True
-            except Exception as e:
-                print(f"Error claiming route {route}: {e}")
-                return False
-
-        print(f"{self.player_id} lacks cards to claim {route}.")
-        return False
+        try:
+            self.__spend_cards([route.color] * route.length)
+            self.__claim_route(route)
+            return True
+        except Exception as e:
+            print(f"Error claiming route {route}: {e}")
+            return False
 
     def __draw_destination_tickets(self) -> bool:
         try:
@@ -160,15 +154,15 @@ class Player:
 
     def __claim_route(self, route: Route) -> None:
         self.trains_remaining -= route.length
-        self.context.map_graph.claim_route(route, self.player_id)
+        self.context.map.claim_route(route, self.player_id)
 
-    def __hand_counts(self) -> Counter[str]:
+    def __hand_counts(self) -> 'Counter[str]':
         return self.__train_hand.copy()
 
-    def get_exposed(self) -> Counter[str]:
+    def get_exposed(self) -> 'Counter[str]':
         return self.exposed
     
-    def get_hand(self) -> Counter[str]:
+    def get_hand(self) -> 'Counter[str]':
         return self.__train_hand
 
     def get_card_count(self) -> int:

@@ -22,6 +22,7 @@ class PlayerContext:
         self.player_id: str = player_id
         self.map: MapGraph = context.get_map()
         self.train_deck: TrainCardDeck = context.get_train_deck()
+        self.ticket_deck: TicketDeck = context.get_ticket_deck()
         self.face_up_cards: List[str] = context.get_train_deck().face_up()
         self.available_routes: List[Route] = context.get_map().get_available_routes()
         self.longest_path: int = context.get_map().get_longest_path([self.player_id])[self.player_id]
