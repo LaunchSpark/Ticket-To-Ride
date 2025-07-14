@@ -165,9 +165,15 @@ class Player:
 
     def get_exposed(self) -> Counter[str]:
         return self.exposed
+    
+    def get_hand(self) -> Counter[str]:
+        return self.__train_hand
 
     def get_card_count(self) -> int:
         return self.__train_hand.total()
+    
+    def get_tickets(self) -> List[DestinationTicket]:
+        return self.__tickets
 
 
     def __repr__(self) -> str:
