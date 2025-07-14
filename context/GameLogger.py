@@ -95,21 +95,12 @@ class GameLogger:
         }) for p in context.opponents]
 
         longest_paths = context.map.get_longest_path(self.player_list)
-        longest_path_length = max(list(longest_paths.values))
+        longest_path_length = max(list(longest_paths.values()))
         turn_state = {
             "player": player_data,
             "opponents": opponents_data,
             "game_objects": {
-                "map": {
-                    "claimed_routes": context.map.get_claimed_routes(),
-                    "longest_path": {
-                        "length": longest_path_length,
-                        "player_id": None
-                    }
-                },
                 "decks": {
-                    "train_deck_count": context.train_deck.remaining(),
-                    "destination_deck_count": context.ticket_deck.remaining(),
                     "marketCards": context.face_up_cards
                 }
             }
