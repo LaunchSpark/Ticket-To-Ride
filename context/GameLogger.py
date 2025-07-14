@@ -74,23 +74,23 @@ class GameLogger:
         opponents_data = [({
             "playerId": p.player_id,
             "score": p.score,
-            "trainCarCount": p.trains_remaining,
+            "trainCarCount": p.remaining_trains,
             "claimed_routes": context.map.get_claimed_routes(p.player_id),
             "longest_path": p.longest_path,
-            "destinationTicketCount": p.get_tickets().length(),
+            "destinationTicketCount": p.destination_ticket_count,
             "hand": {
                 "public": {
-                    "black": p.get_exposed()["B"],
-                    "blue": p.get_exposed()["U"],
-                    "green": p.get_exposed()["G"],
-                    "locomotive": p.get_exposed()["L"],
-                    "orange": p.get_exposed()["O"],
-                    "purple": p.get_exposed()["P"],
-                    "red": p.get_exposed()["R"],
-                    "white": p.get_exposed()["W"],
-                    "yellow": p.get_exposed()["Y"]
+                    "black": p.exposed_hand["B"],
+                    "blue": p.exposed_hand["U"],
+                    "green": p.exposed_hand["G"],
+                    "locomotive": p.exposed_hand["L"],
+                    "orange": p.exposed_hand["O"],
+                    "purple": p.exposed_hand["P"],
+                    "red": p.exposed_hand["R"],
+                    "white": p.exposed_hand["W"],
+                    "yellow": p.exposed_hand["Y"]
                 },
-                "hidden": p.get_card_count() - p.get_exposed().length()
+                "hidden": p.num_cards_in_hand - p.exposed_hand.length()
             }
         }) for p in context.opponents]
 

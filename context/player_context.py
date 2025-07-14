@@ -15,6 +15,7 @@ class OpponentInfo:
     longest_path: int
     has_longest_path: bool
     score: int
+    destination_ticket_count: int
 
 class PlayerContext:
     def __init__(self,player_id: str,context: GameContext, players: List):
@@ -37,7 +38,8 @@ class PlayerContext:
                 remaining_trains = p.trains_remaining,
                 longest_path = context.get_map().get_longest_path([p.player_id])[p.player_id],
                 has_longest_path = context.get_map().get_longest_path(p.player_id),
-                score = context.get_score(p.player_id)
+                score = context.get_score(p.player_id),
+                destination_ticket_count = p.get_tickets().length()
             ) for p in players if p.player_id != self.player_id
         ]
 
