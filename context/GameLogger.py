@@ -130,5 +130,5 @@ class GameLogger:
                 player_scores.append(sum(turn_scores) / turn_scores.length())
     
     def export_log(self, file_name: str):
-        with open(f"display/web display/html1/logs/{file_name}", "w") as f:
+        with open(f"display/web display/html1/logs/{file_name}.json", "w") as f:
             json.dump(self.log, f, indent=2)

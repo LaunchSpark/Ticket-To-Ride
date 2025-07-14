@@ -49,6 +49,12 @@ def setup():
 
     player_ids = []
     players = []
+    player_names = [
+        "test_1",
+        "test_2",
+        "test_3",
+        "test_4",
+    ]
     for i in range(player_count):
         player_id = f"bot_{i}"
         players.append(Player(player_id,RandomBot()))
@@ -59,13 +65,21 @@ def setup():
     # Initialize logger and round_number counter
     logger = GameLogger()
     round_number = 0
+    round_limit = 10 # Can be changed to adjust how many consecutive rounds to run before the program stops
+    
+    while (round_number < round_limit):
+        # Add empty round to log
+        logger.add_round()
+        
+        # Initialize GameContext
+        context = GameContext(player_ids)
+        game = Game(context, players, logger, round_number)
+        game.play()
 
-    # Initialize GameContext
-    context = GameContext(player_ids)
+        round_number += 1
 
-    game = Game(context, players, logger, round_number)
-
-    game.play()
+    logger.log_match_stats()
+    logger.export_log("-".join(player_names))
 
     
 
