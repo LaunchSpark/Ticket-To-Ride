@@ -9,8 +9,7 @@ import json
 
 class GameLogger:
     player_list: List[Player]
-    file: Path = "../../display/web display/html1/logs"
-    def __init__(self, players: List[Player]):
+    def __init__(self, players: List[Player], file: Path):
         self.player_list = players
         self.log = {
             "rounds": [], 
