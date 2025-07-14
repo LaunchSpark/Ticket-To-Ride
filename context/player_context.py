@@ -8,7 +8,7 @@ from context.decks import TicketDeck, TrainCardDeck, DestinationTicket
 @dataclass
 class OpponentInfo:
     player_id: str
-    exposed_hand: Counter
+    exposed_hand: 'Counter[str]'
     num_cards_in_hand: int
     remaining_trains: int
     longest_path: int
@@ -25,7 +25,6 @@ class PlayerContext:
         self.face_up_cards: List[str] = context.get_train_deck().face_up()
         self.available_routes: List[Route] = context.get_map().get_available_routes()
         self.longest_path: int = context.get_map().get_longest_path([self.player_id])[self.player_id]
-        self.has_longest_path: bool = self.player_id in context.get_map().get_longest_path([p.player_id for p in players])
         self.turn_number: int = context.turn_num
         self.score: int = context.get_score(player_id)
 

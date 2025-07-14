@@ -48,7 +48,7 @@ class GameLogger:
             "remainingTrains": player.trains_remaining,
             "claimedRoutes": [route for route in context.map.routes if route.claimed_by is context.player_id],
             "longestPath": context.longest_path,
-            "hasLongestPath": context.has_longest_path, 
+            "hasLongestPath": player.has_longest_path, 
             "destinationTickets": [
                 {
                     "from": t.city1,
