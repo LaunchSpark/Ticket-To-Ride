@@ -37,11 +37,11 @@ class GameLogger:
           - .get_claimed_routes(), .get_exposed(), .get_card_count(), .get_hidden_card_count()
           - .get_tickets() returning .start, .end, .points, .completed
         """
-        longest_path = context.map.get_longest_path(self.player_list)
+        longest_path = context.map.get_longest_path([p.player_id for p in self.player_list])
         claimed_routes = []
         
         # logs the current player's information
-        player = next((player for player in self.player_list if player.player_id == context.player_id), None)
+        player = next((player for player in self.player_list if player.player_id == context.player_id))
         player_data = ({ 
             "playerId": context.player_id,
             "score": context.score,
@@ -90,26 +90,17 @@ class GameLogger:
                     "white": p.exposed_hand["W"],
                     "yellow": p.exposed_hand["Y"]
                 },
-                "hidden": p.num_cards_in_hand - p.exposed_hand.length()
+                "hidden": p.num_cards_in_hand - p.exposed_hand.total()
             }
         }) for p in context.opponents]
 
-        longest_paths = context.map.get_longest_path(self.player_list)
-        longest_path_length = max(list(longest_paths.values))
+        longest_paths = context.map.get_longest_path([p.player_id for p in self.player_list])
+        longest_path_length = max(list(longest_paths.values()))
         turn_state = {
             "player": player_data,
             "opponents": opponents_data,
             "game_objects": {
-                "map": {
-                    "claimed_routes": context.map.get_claimed_routes(),
-                    "longest_path": {
-                        "length": longest_path_length,
-                        "player_id": None
-                    }
-                },
                 "decks": {
-                    "train_deck_count": context.train_deck.remaining(),
-                    "destination_deck_count": context.ticket_deck.remaining(),
                     "marketCards": context.face_up_cards
                 }
             }
@@ -120,14 +111,14 @@ class GameLogger:
         if (turn["player"]["playerId"] == player_id):
             return turn["player"]["score"]
         else:
-            return next((p["score"] for p in turn["opponents"] if p["playerId"] == player_id), None)
+            return next((p["score"] for p in turn["opponents"] if p["playerId"] == player_id))
     
     def log_match_stats(self):
-        for turn in range(0, max([r.length() for r in self.log["rounds"]])):
+        for turn in range(0, max([len(r) for r in self.log["rounds"]])):
             for p in self.player_list:
-                player_scores = next((player for player in self.log["averageScores"] if player["playerId"] == p.player_id), None)["scores"]
-                turn_scores = [self.find_player_score(r["turns"][turn], p.player_id) for r in self.log["rounds"] if (turn < r["turns"].length())]
-                player_scores.append(sum(turn_scores) / turn_scores.length())
+                player_scores = next((player for player in self.log["averageScores"] if player["playerId"] == p.player_id))["scores"]
+                turn_scores = [self.find_player_score(r["turns"][turn], p.player_id) for r in self.log["rounds"] if (turn < len(r["turns"]))]
+                player_scores.append(sum(turn_scores) / len(turn_scores))
     
     def export_log(self, file_name: str):
         with open(f"display/web display/html1/logs/{file_name}.json", "w") as f:

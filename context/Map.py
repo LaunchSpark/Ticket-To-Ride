@@ -15,7 +15,6 @@ class Route:
         self.city2 = city2
         self.length = length
         self.color = color
-        self.colour = color
         self.claimed_by = claimed_by
 
 class MapGraph:
