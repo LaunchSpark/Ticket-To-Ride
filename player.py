@@ -171,7 +171,7 @@ class Player:
     def get_tickets(self) -> List[DestinationTicket]:
         return self.__tickets
 
-    def get_affordable_routes(self) -> List[Route]:
+    def get_affordable_routes(self) -> List[Route]: #TODO Add grey support
         affordable_routes = []
         available_routes = self.context.map.get_available_routes()
         for r in available_routes:
