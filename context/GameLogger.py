@@ -54,7 +54,7 @@ class GameLogger:
                     "completed": t.is_completed
                 } for t in player.get_tickets()
             ],
-            "hand": { # TODO implement player.get_hand() function
+            "hand": {
                 "black": player.get_hand()["B"],
                 "blue": player.get_hand()["U"],
                 "green": player.get_hand()["G"],
