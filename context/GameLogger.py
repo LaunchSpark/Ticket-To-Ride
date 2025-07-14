@@ -4,6 +4,7 @@ from game_context import GameContext
 from player import Player
 from pathlib import Path
 from decks import DestinationTicket
+from Map import MapGraph
 import json
 
 class GameLogger:
@@ -37,6 +38,7 @@ class GameLogger:
         claimed_routes = []
         
         # logs the current player's information
+        player = next((player for player in self.player_list if player.player_id == context.player_id), None)
         player_data = ({ 
             "playerId": context.player_id,
             "score": context.score,
@@ -46,42 +48,45 @@ class GameLogger:
             "hasLongestPath": context.has_longest_path, 
             "destinationTickets": [
                 {
-                    "from": ticket.city1,
-                    "to": ticket.city2,
-                    "points": ticket.value,
-                    "completed": None # TODO replace "None" with a function call PENDING a function to check completion of destination tickets
-                } for ticket in player.get_tickets() # TODO implement DestinationTicket.get_tickets()
+                    "from": t.city1,
+                    "to": t.city2,
+                    "points": t.value,
+                    "completed": t.is_completed
+                } for t in player.get_tickets()
             ],
             "hand": { # TODO implement player.get_hand() function
-                "black": ,
-                "blue": ,
-                "green": ,
-                "locomotive": ,
-                "orange": ,
-                "purple": ,
-                "red": ,
-                "white": ,
-                "yellow": 
+                "black": player.get_hand()["B"],
+                "blue": player.get_hand()["U"],
+                "green": player.get_hand()["G"],
+                "locomotive": player.get_hand()["L"],
+                "orange": player.get_hand()["O"],
+                "purple": player.get_hand()["P"],
+                "red": player.get_hand()["R"],
+                "white": player.get_hand()["W"],
+                "yellow": player.get_hand()["Y"]
             }
         })
 
         # log each opponent's information
         opponents_data = [({ # Log the 
-            "playerId": context.player_id,
-            "score": context.score,
+            "playerId": p.player_id,
+            "score": p.score,
             "trainCarCount": p.trains_remaining,
-            "claimed_routes": [route for route in context.map.routes if route.claimed_by is playerId],
+            "claimed_routes": context.map.get_claimed_routes(p.player_id),
             "longest_path": context.longest_path,
-            "destinationTickets": [
-                {
-                    "from": t.start,
-                    "to": t.end,
-                    "points": t.points,
-                    "completed": t.completed
-                } for t in p.get_tickets() # TODO: add player.get_tickets()
-            ],
+            "destinationTicketCount": p.get_tickets().length(),
             "hand": {
-                "public": dict(p.get_exposed()),
+                "public": {
+                    "black": p.get_exposed()["B"],
+                    "blue": p.get_exposed()["U"],
+                    "green": p.get_exposed()["G"],
+                    "locomotive": p.get_exposed()["L"],
+                    "orange": p.get_exposed()["O"],
+                    "purple": p.get_exposed()["P"],
+                    "red": p.get_exposed()["R"],
+                    "white": p.get_exposed()["W"],
+                    "yellow": p.get_exposed()["Y"]
+                },
                 "hidden": p.get_card_count() - p.get_exposed().length()
             }
         }) for p in self.player_list if p.player_id != context.player_id]
