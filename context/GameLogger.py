@@ -45,7 +45,7 @@ class GameLogger:
         player_data = ({ 
             "playerId": context.player_id,
             "score": context.score,
-            "remainingTrains": context.remaining_trains,
+            "remainingTrains": player.trains_remaining,
             "claimedRoutes": [route for route in context.map.routes if route.claimed_by is context.player_id],
             "longestPath": context.longest_path,
             "hasLongestPath": context.has_longest_path, 
@@ -76,7 +76,7 @@ class GameLogger:
             "score": p.score,
             "trainCarCount": p.trains_remaining,
             "claimed_routes": context.map.get_claimed_routes(p.player_id),
-            "longest_path": context.longest_path,
+            "longest_path": p.longest_path,
             "destinationTicketCount": p.get_tickets().length(),
             "hand": {
                 "public": {
@@ -92,7 +92,7 @@ class GameLogger:
                 },
                 "hidden": p.get_card_count() - p.get_exposed().length()
             }
-        }) for p in self.player_list if p.player_id != context.player_id]
+        }) for p in context.opponents]
 
         longest_paths = context.map.get_longest_path(self.player_list)
         longest_path_length = max(list(longest_paths.values))

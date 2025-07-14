@@ -55,9 +55,15 @@ def setup():
         "test_3",
         "test_4",
     ]
+    player_colors = [
+        "red",
+        "blue",
+        "green",
+        "yellow"
+    ]
     for i in range(player_count):
         player_id = f"bot_{i}"
-        players.append(Player(player_id,RandomBot()))
+        players.append(Player(player_id,RandomBot(), player_names[i], player_colors[i]))
 
         #for the game context
         player_ids.append(player_id)
