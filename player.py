@@ -109,9 +109,9 @@ class Player:
             return 'invalid'
 
         return 'success'
-
+    
     def __claim_available_route(self) -> bool:
-        route = self.__interface.choose_route_to_claim()
+        route = self.__interface.choose_route_to_claim(self.get_affordable_routes())
         if route is None:
             return False
 
@@ -176,8 +176,12 @@ class Player:
     def get_tickets(self) -> List[DestinationTicket]:
         return self.__tickets
 
-    def get_affordable_routes(self): #TODO impliment filtering this function to return an array of affordable routes to buy
+    def get_affordable_routes(self) -> List[Route]:
         affordable_routes = []
+        available_routes = self.context.map.get_available_routes()
+        for r in available_routes:
+            if self.__train_hand[r.color] >= r.length:
+                affordable_routes.append(r)
         return affordable_routes
 
     def __repr__(self) -> str:
