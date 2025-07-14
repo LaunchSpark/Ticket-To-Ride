@@ -127,7 +127,7 @@ class GameLogger:
             for p in self.player_list:
                 player_scores = next((player for player in self.log["averageScores"] if player["playerId"] == p.player_id), None)["scores"]
                 turn_scores = [self.find_player_score(r["turns"][turn], p.player_id) for r in self.log["rounds"] if (turn < r["turns"].length())]
-                player_scores.append() = sum(turn_scores) / turn_scores.length()
+                player_scores.append(sum(turn_scores) / turn_scores.length())
     
     def export_log(self, file_name: str):
         with open(f"display/web display/html1/logs/{file_name}", "w") as f:
