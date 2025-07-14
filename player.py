@@ -21,6 +21,7 @@ class Player:
         self.context = None
         self.__interface = interface
         self.__interface.set_player(self)
+        self.has_longest_path: bool = False
 
 
     def get_context(self):
