@@ -1,10 +1,10 @@
 from typing import List, Dict, Optional
-from player_context import PlayerContext
+from ticket_to_ride.context.player_context import PlayerContext
 from game_context import GameContext
-from player import Player
+from ticket_to_ride.player import Player
 from pathlib import Path
-from decks import DestinationTicket
-from Map import MapGraph
+from ticket_to_ride.context.decks import DestinationTicket
+from ticket_to_ride.context.Map import MapGraph
 import json
 
 class GameLogger:
