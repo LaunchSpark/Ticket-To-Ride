@@ -60,6 +60,7 @@ class Game:
             #refrence the score tabel to get score value
             values.append(self.score_table[r.length])
 
+
         score  = sum(values) + self.context.get_map().get_longest_path([p.player_id])[p.player_id] #TODO add destination ticket checking
         self.context.set_score(p.player_id,score)
 
