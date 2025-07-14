@@ -4,10 +4,15 @@ from ticket_to_ride.context.Map import MapGraph , Route
 from ticket_to_ride.context.player_context import PlayerContext
 from ticket_to_ride.player import Player
 from ticket_to_ride.context.game_context import GameContext
-
+from ticket_to_ride.context.GameLogger import GameLogger
 
 class Game:
-    def __init__(self, context: GameContext, players: List[Player]):
+    def __init__(self, context: GameContext, players: List[Player], logger: GameLogger, round_number: int):
+        # logging variables
+        self.round_number = round_number
+        self.logger = logger
+        
+        #logic variables
         self.context = context
         self.players = players
         self.turn_index = 0
@@ -34,6 +39,7 @@ class Game:
         # build and load player context into player
         player_ids = [p.player_id for p in self.players]
         player.set_context(PlayerContext(self.current_player().player_id, self.context, self.players))
+        self.logger.add_turn(self.round_number, self.current_player().context)
 
         # have that player take their turn
         player.take_turn()
