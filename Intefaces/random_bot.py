@@ -1,10 +1,10 @@
 from typing import List, Optional
-from ticket_to_ride.Intefaces.abstract_interface import Interface
+from Intefaces.abstract_interface import Interface
 import random
 
-from ticket_to_ride.context.Map import MapGraph
-from ticket_to_ride.context.Map import Route
-from ticket_to_ride.context.decks import DestinationTicket
+from context.Map import MapGraph
+from context.Map import Route
+from context.decks import DestinationTicket
 
 class RandomBot(Interface):
     # used to determine weather to

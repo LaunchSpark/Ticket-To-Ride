@@ -1,10 +1,10 @@
 
 from typing import List, Optional
-from ticket_to_ride.context.Map import MapGraph , Route
-from ticket_to_ride.context.player_context import PlayerContext
-from ticket_to_ride.player import Player
-from ticket_to_ride.context.game_context import GameContext
-from ticket_to_ride.context.GameLogger import GameLogger
+from context.Map import MapGraph , Route
+from context.player_context import PlayerContext
+from player import Player
+from context.game_context import GameContext
+from context.GameLogger import GameLogger
 
 class Game:
     def __init__(self, context: GameContext, players: List[Player], logger: GameLogger, round_number: int):

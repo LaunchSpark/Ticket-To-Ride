@@ -1,5 +1,5 @@
-from ticket_to_ride.context.Map import MapGraph
-from ticket_to_ride.context.decks import TrainCardDeck, TicketDeck
+from context.Map import MapGraph
+from context.decks import TrainCardDeck, TicketDeck
 
 from collections import Counter
 from typing import Dict, List

@@ -1,9 +1,9 @@
-from ticket_to_ride.Intefaces.random_bot import RandomBot
-from ticket_to_ride.Intefaces.example_bot import ExampleBot
-from ticket_to_ride.player import Player
-from ticket_to_ride.Game import Game
-from ticket_to_ride.context.game_context import GameContext
-from ticket_to_ride.context.GameLogger import GameLogger
+from Intefaces.random_bot import RandomBot
+from Intefaces.example_bot import ExampleBot
+from player import Player
+from Game import Game
+from context.game_context import GameContext
+from context.GameLogger import GameLogger
 
 from glob import glob
 import sys
