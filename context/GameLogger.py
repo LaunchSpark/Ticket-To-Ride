@@ -1,6 +1,6 @@
 from typing import List, Dict, Optional
 from ticket_to_ride.context.player_context import PlayerContext
-from game_context import GameContext
+from ticket_to_ride.context.game_context import GameContext
 from ticket_to_ride.player import Player
 from pathlib import Path
 from ticket_to_ride.context.decks import DestinationTicket

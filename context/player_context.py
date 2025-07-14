@@ -2,9 +2,9 @@ from typing import List, Dict, Optional
 from dataclasses import dataclass
 from collections import Counter
 from copy import deepcopy
-from game_context import GameContext
-from Map import MapGraph, Route
-from decks import TicketDeck, TrainCardDeck, DestinationTicket
+from ticket_to_ride.context.game_context import GameContext
+from ticket_to_ride.context.Map import MapGraph, Route
+from ticket_to_ride.context.decks import TicketDeck, TrainCardDeck, DestinationTicket
 
 @dataclass
 class OpponentInfo:
