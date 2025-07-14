@@ -2,7 +2,7 @@ from typing import List, Dict, Optional
 from dataclasses import dataclass
 from collections import Counter
 from copy import deepcopy
-from game_context import GameContext
+from ticket_to_ride.context.game_context import GameContext
 
 @dataclass
 class OpponentInfo:
@@ -19,11 +19,11 @@ class PlayerContext:
         self.player_id = player_id
         self.map = deepcopy(context.get_map())
         self.train_deck = deepcopy(context.get_train_deck())
-        self.face_up_cards = face_up_cards = context.get_train_deck().face_up()
+        self.face_up_cards = context.get_train_deck().face_up()
         self.available_routes = context.get_map().get_available_routes()
-        self.longest_path = map.get_longest_path(player_id)
-        self.has_longest_path = map.get_longest_path(context.player)
-        self.ticket_deck = context.get_ticket_deck(players)
+        self.longest_path = context.get_map().get_longest_path([player_id])
+        self.has_longest_path = context.get_map().get_longest_path(players)
+        self.ticket_deck = context.get_ticket_deck()
         self.turn_number = context.turn_num
         self.score = context.get_score(player_id)
 
@@ -34,8 +34,8 @@ class PlayerContext:
                 exposed_hand = p.get_exposed(),
                 num_cards_in_hand = p.get_card_count(),
                 remaining_trains = p.trains_remaining,
-                longest_path = map.get_longest_path(player_id),
-                has_longest_path = map.get_longest_path(context.player),
+                longest_path = context.get_map().get_longest_path([p.player_id])[p.player_id],
+                has_longest_path = context.get_map().get_longest_path(p.player_id),
                 score = context.get_score(p.player_id)
             ) for p in players if p.player_id != self.player_id
         ]

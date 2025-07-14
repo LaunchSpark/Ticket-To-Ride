@@ -21,7 +21,7 @@ class Route:
 class MapGraph:
     def __init__(self):
         self.routes: List[Route] = []
-        self._load_routes_from_csv("../data/map.csv")  # <-- Hardcoded path
+        self._load_routes_from_csv("data/map.csv")  # <-- Hardcoded path
 
         self._adj: Dict[str, List[Route]] = {}
         self._build_adjacency()
@@ -38,19 +38,17 @@ class MapGraph:
                 route = Route(city1=city1, city2=city2, length=length, color=color)
                 self.routes.append(route)
 
-    def _build_adjacency(self):
+    def _build_adjacency(self,player_id = None):
+        if player_id != None:
+            player_adj: Dict[str, List[Route]] = {}
+            for route in self.routes:
+                if route.claimed_by == player_id:
+                    player_adj.setdefault(route.city1, []).append(route)
+                    player_adj.setdefault(route.city2, []).append(route)
+            return player_adj
         for route in self.routes:
             self._adj.setdefault(route.city1, []).append(route)
             self._adj.setdefault(route.city2, []).append(route)
-
-    def _build_adjacency(self,player_id):
-        player_adj: Dict[str, List[Route]] = {}
-        for route in self.routes:
-            if route.claimed_by == player_id:
-                player_adj.setdefault(route.city1, []).append(route)
-                player_adj.setdefault(route.city2, []).append(route)
-
-        return player_adj
 
     def claim_route(self, route: Route, player_id: str):
         if route in self.routes and route.claimed_by is None:

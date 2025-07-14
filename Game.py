@@ -11,12 +11,13 @@ class Game:
         self.context = context
         self.players = players
         self.turn_index = 0
-        self.score_table = dict[int: int] = {1:1,
-                                             2:2,
-                                             3:4,
-                                             4:7,
-                                             5:10,
-                                             6:15}
+        self.score_table = dict[int: int]
+        self.score_table= {1:1,
+                           2:2,
+                           3:4,
+                           4:7,
+                           5:10,
+                           6:15}
 
 
 
@@ -31,7 +32,8 @@ class Game:
         player = self.current_player()
         #
         # build and load player context into player
-        player.set_context(PlayerContext(self.current_player(),self.context,self.players))
+        player_ids = [p.player_id for p in self.players]
+        player.set_context(PlayerContext(self.current_player().player_id, self.context, self.players))
 
         # have that player take their turn
         player.take_turn()

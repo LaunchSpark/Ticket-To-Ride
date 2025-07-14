@@ -1,4 +1,5 @@
-from ticket_to_ride.Intefaces.random_bot import ExampleBot
+from ticket_to_ride.Intefaces.random_bot import RandomBot
+from ticket_to_ride.Intefaces.example_bot import ExampleBot
 from ticket_to_ride.player import Player
 from ticket_to_ride.Game import Game
 from ticket_to_ride.context.game_context import GameContext
@@ -27,7 +28,7 @@ def setup():
     # sys.path.append(r"./ticket_to_ride/Intefaces")
     #
     # # Step 2: Loop through all Python files in the directory
-    # for file in glob(r". (Intefaces/*.py"):
+    # for file in glob(r".(Intefaces/*.py"):
     #     file = pathlib.Path(file)  # Convert the string path to a Path object
     # sys.path.append(file)  # Append the file path
     # imported_module = importlib.import_module(file.stem)# Import module by its name
@@ -49,7 +50,7 @@ def setup():
     players = []
     for i in range(player_count):
         player_id = f"bot_{i}"
-        players.append(Player(player_id,ExampleBot()))
+        players.append(Player(player_id,RandomBot()))
 
         #for the game context
         player_ids.append(player_id)
