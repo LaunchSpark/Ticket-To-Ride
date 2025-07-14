@@ -12,7 +12,7 @@ class RandomBot(Interface):
     # 2 = Claim
     # 3 = draw a destination ticket
     def choose_turn_action(self):
-        return random.randrange(1,3)
+        return random.randrange(1,3) # TODO: exclude 2 unless there is a claimable route
 
 
     ##############################################################################################
