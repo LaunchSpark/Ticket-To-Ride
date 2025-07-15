@@ -25,10 +25,10 @@
 							<rect id="right-player-name-card" x="1008" width="78" height="643" fill="#00FF2F"/>
 						</svg>
 						<div class="market" id="market-images">
-  							<img class="market-image-1" data-index="0" src="img/market/market-orangepng" />
-  							<img class="market-image-2" data-index="1" src="img/market/market-yellowpng" />
-  							<img class="market-image-3" data-index="2" src="img/market/market-bluepng" />
-  							<img class="market-image-4" data-index="3" src="img/market/market-redpng" />
+  							<img class="market-image-1" data-index="0" src="img/market/market-red.png" />
+  							<img class="market-image-2" data-index="1" src="img/market/market-blue.png" />
+  							<img class="market-image-3" data-index="2" src="img/market/market-yellow.png" />
+  							<img class="market-image-4" data-index="3" src="img/market/market-orange.png" />
   							<img class="market-image-5" data-index="4" src="img/market/market-locomotive.png" />
   							<img class="market-deck" src="img/market/market-deck.png" />
   							<img class="market-destination-ticket" src="img/market/market-ticket.png" />
@@ -340,15 +340,15 @@
 			});
             
             const marketImages = {
-			  	black: 'img/market/market-black.png',
-			  	blue: 'img/market/market-blue.png',
-				green: 'img/market/market-green.png',
-			  	locomotive: 'img/market/market-locomotive.png',
-				orange: 'img/market/market-orange.png',
-				purple: 'img/market/market-purple.png',
-				red: 'img/market/market-red.png',
-				white: 'img/market/market-white.png',
-			  	yellow: 'img/market/market-yellow.png',
+			  	'B': 'img/market/market-black.png',
+			  	'U': 'img/market/market-blue.png',
+				'G': 'img/market/market-green.png',
+			  	'L': 'img/market/market-locomotive.png',
+				'O': 'img/market/market-orange.png',
+				'P': 'img/market/market-purple.png',
+				'R': 'img/market/market-red.png',
+				'W': 'img/market/market-white.png',
+			  	'Y': 'img/market/market-yellow.png',
 			}
 
 			const playPauseImages = {
@@ -416,7 +416,7 @@
 			  	const targetImg = container.querySelector(`img[data-index="${index}"]`);
 				
 			  	if (targetImg) {
-			  	  targetImg.src = marketImages.newImg;
+			  	  targetImg.src = newImg;
 			  	} else {
 			  	  console.warn(`No image found at data-index="${index}"`);
 			  	}
@@ -424,7 +424,6 @@
 		
 			function claimRoute(routeId, playerColor) {
 				const matchingRoutes = Array.from(document.querySelectorAll(`[id^="${routeId}"]`));
-				console.log("Matching routes: ", matchingRoutes);
 				let claimed = false;
 
 				for (let route of matchingRoutes) {
@@ -618,13 +617,12 @@
 
 				// update market
 				turnData.gameObjects.decks.marketCards.forEach((card, index)=> {
-					setMarketCard(index, marketImages.card);
+					setMarketCard(index, marketImages[card]);
 				});
 
                 // update map
 				if (turnData.player.claimedRoutes.length > 0) {
 					turnData.player.claimedRoutes.forEach(route => {
-						console.log(`Claiming ${route} for ${currentPlayer.name} as ${currentPlayer.color}`);
 						claimRoute(route, currentPlayer.color);
 					});
 				}
