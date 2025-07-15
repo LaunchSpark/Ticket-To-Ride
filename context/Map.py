@@ -20,6 +20,9 @@ class Route:
 
     def get_cities(self) -> 'set[str]':
         return {self.city1,self.city2}
+    
+    def __repr__(self):
+        return f"{self.city1}-{self.city2}-{self.color}"
 
 class MapGraph:
     def __init__(self):
