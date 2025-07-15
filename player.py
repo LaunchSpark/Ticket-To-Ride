@@ -125,7 +125,7 @@ class Player:
         return 'success'
     
     def __claim_available_route(self) -> bool:
-        route = self.__interface.choose_route_to_claim(self.get_affordable_routes())
+        route = self.__interface.choose_route_to_claim(self.__get_affordable_routes())
         if route is None:
             return False
         if route.color == "X":
@@ -194,7 +194,7 @@ class Player:
     def get_tickets(self) -> List[DestinationTicket]:
         return self.__tickets
 
-    def get_affordable_routes(self) -> List[Route]:
+    def __get_affordable_routes(self) -> List[Route]:
         affordable_routes = []
         available_routes = self.context.map.get_available_routes()
         for r in available_routes:
@@ -204,15 +204,16 @@ class Player:
         return affordable_routes
     
     def update_longest_path(self):
-        self.context.map.update_longest_path(self.player_id) # TODO: change to function call once function is implemented in map
+        self.context.map.update_longest_path(self.player_id)
         my_longest_path = self.context.map.longest_paths[self.player_id]
-        has_longest_path = (self.context.map.longest_path_holder == self.player_id) # get longest path for 
-        return 0
+        has_longest_path = (self.context.map.longest_path_holder == self.player_id)
 
     def check_ticket_completion(self):
+        path_info = self.context.map.claimed_paths[self.player_id]
         for t in [t for t in self.__tickets if not t.is_completed]:
-            # check if both city A and city B exist among the routes in the destination ticket
-            return 0
+            city_1_group = next((group for group in path_info if t.city1 in group), None)
+            if city_1_group != None and t.city2 in city_1_group:
+                t.is_completed = True
 
     def __repr__(self) -> str:
         return (f"{self.__class__.__name__}(id={self.player_id}, trains={self.trains_remaining}, "
