@@ -12,7 +12,7 @@ class RandomBot(Interface):
     # 2 = Claim
     # 3 = draw a destination ticket
     def choose_turn_action(self):
-        return random.randrange(1,3) # TODO: exclude 2 unless there is a claimable route
+        return random.randrange(1,3)
 
 
     ##############################################################################################
@@ -27,6 +27,10 @@ class RandomBot(Interface):
     # choose what routes to claim
     def choose_route_to_claim(self,claimable_routes):
         return random.randrange(0,len(claimable_routes))
+
+    # choose what color to spend on a gray route (will spend most common color on input of None or on invalid color input)
+    def choose_color_to_spend(self, route: Route, color_options: List[str]) -> 'str | None':
+        return None
 
     # choose which destination tickets to keep
     def select_ticket_offer(self,offer):
