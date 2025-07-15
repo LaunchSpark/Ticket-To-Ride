@@ -320,7 +320,7 @@
 		</div>
 		<script>
             // grabbing JSON
-            logName = "4_player_test.json"
+            logName = "test_1-test_2.json"
 			let gameData = null;
 			let gameDataLoaded = false;
 			let turnOrder = null;
@@ -422,7 +422,7 @@
 			  	}
 			}
 		
-			function claimRoute(routeId,playerColor) {
+			function claimRoute(routeId,playerColor) { // TODO: handle double gray routes
 				const route = document.getElementById(routeId);
 				if (route) {
 					route.style.opacity = '1';

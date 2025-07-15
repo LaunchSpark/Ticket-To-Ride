@@ -48,7 +48,7 @@ class GameLogger:
             "playerId": context.player_id,
             "score": context.score,
             "remainingTrains": player.trains_remaining,
-            "claimedRoutes": [f"{r}" for r in context.map.get_claimed_routes(player.player_id)],
+            "claimedRoutes": [f"{r}" for r in context.map.get_claimed_routes(player.player_id)], # TODO: figure out what to do about double-gray routes
             "destinationTickets": [
                 {
                     "from": t.city1,
