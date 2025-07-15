@@ -1,5 +1,5 @@
 
-from typing import List, Optional
+from typing import List, Optional, Dict
 from context.Map import MapGraph , Route
 from context.player_context import PlayerContext
 from player import Player
@@ -16,13 +16,14 @@ class Game:
         self.context = context
         self.players = players
         self.turn_index = 0
-        self.score_table = dict[int: int]
-        self.score_table= {1:1,
-                           2:2,
-                           3:4,
-                           4:7,
-                           5:10,
-                           6:15}
+        self.score_table: Dict[int, int] = {
+            1:1,
+            2:2,
+            3:4,
+            4:7,
+            5:10,
+            6:15
+        }
 
 
 
@@ -42,7 +43,10 @@ class Game:
         self.logger.add_turn(self.round_number, self.current_player().context)
 
         # have that player take their turn
-        player.take_turn()
+        player.take_turn({
+            "claim_route": False,
+            "draw_destination": False
+        })
 
         # incriment the turn counter
         self.turn_index += 1
@@ -56,7 +60,7 @@ class Game:
     def _score_game(self) -> None:
       for p in self.players:
         values = []
-        for r in self.context.get_map().get_claimed_routes(p):
+        for r in self.context.get_map().get_claimed_routes(p.player_id):
             #refrence the score tabel to get score value
             values.append(self.score_table[r.length])
 

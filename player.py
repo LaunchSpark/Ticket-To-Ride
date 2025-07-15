@@ -33,25 +33,33 @@ class Player:
         self.context = context
 
     #prompts interface for turn option
-    def take_turn(self) -> None:
+    def take_turn(self, fault_flags: Dict[str, bool]) -> None:
         turn_choice = self.__interface.choose_turn_action()
 
         if turn_choice == 1: ## Draw Cards
-            first_draw_card = self.__draw_train_cards()
+            first_draw_card = self.__draw_train_cards() # TODO: add logic for locomotives from the draw pile vs from the market
             if first_draw_card != 'locomotive':
                 self.__draw_train_cards()
 
         elif turn_choice == 2: ## Claim Route
-            success = self.__claim_available_route()
-            if not success:
-                self.take_turn() #chose returns to the turn menu
-                print(f"{self.player_id} could not claim a route.")
-
+            if not fault_flags['claim_route']:
+                success = self.__claim_available_route()
+                if not success:
+                    fault_flags["claim_route"] = True
+                    print(f"{self.player_id} could not claim a route.")
+                    self.take_turn(fault_flags) #chose returns to the turn menu
+            else:
+                self.__add_cards([self.context.train_deck.draw_face_down() for i in range(0, 2)])
 
         elif turn_choice == 3: ## Draw Destination tickets
-            success = self.__draw_destination_tickets()
-            if not success:
-                print(f"{self.player_id} could not draw destination tickets.")
+            if not fault_flags['draw_destination']:
+                success = self.__draw_destination_tickets()
+                if not success:
+                    fault_flags["draw_destination"] = True
+                    print(f"{self.player_id} could not draw destination tickets.")
+                    self.take_turn(fault_flags)
+            else:
+                self.__add_cards([self.context.train_deck.draw_face_down() for i in range(0, 2)])
 
         else:
             print(f"Invalid action choice '{turn_choice}' by player {self.player_id}.")
