@@ -29,24 +29,26 @@ class TrainCardDeck:
             self._deck.extend([abbrev] * count)
 
         random.shuffle(self._deck)
-        self.refill_face_up()
+        self._refill_face_up_slot()
 
         # Mulligan rule enforcement
         while self._too_many_locomotives():
             self._mulligan_face_up()
 
-    def face_up(self) -> List[str]:
+    def get_face_up(self) -> List[str]:
         return self._face_up[:]
 
     def get_discard_pile(self) -> List[str]:
         return self._discard_pile[:]
 
-    def get_full_deck(self) -> List[str]:
+    def __get_full_deck(self) -> List[str]:
         return self._deck[:]
 
     def draw_face_up(self, idx: int) -> str:
         card = self._face_up.pop(idx)
         self._refill_face_up_slot()
+        if len(self.get_face_up()) < 5 and len(self._deck) >= 1:
+            print("unable to refill")
         return card
 
     def draw_face_down(self) -> str:
@@ -63,20 +65,15 @@ class TrainCardDeck:
             self._discard_pile.extend(cards)
 
     def _refill_face_up_slot(self):
-        if not self._deck:
-            self._reshuffle_discard()
-        if self._deck:
-            self._face_up.append(self._deck.pop())
-        if self._too_many_locomotives():
-            self._mulligan_face_up()
-
-    def refill_face_up(self):
-        while len(self._face_up) < 5:
+        while len(self.get_face_up()) < 5:
             if not self._deck:
                 self._reshuffle_discard()
-            if not self._deck:
-                break
-            self._face_up.append(self._deck.pop())
+            if self._deck:
+                self._face_up.append(self._deck.pop())
+            if self._too_many_locomotives():
+                self._mulligan_face_up()
+
+
 
     def _reshuffle_discard(self):
         if not self._discard_pile:
