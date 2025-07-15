@@ -163,13 +163,14 @@ class Player:
             print(f"No destination tickets available for {self.player_id}.")
             return False
 
-        kept = self.__interface.select_ticket_offer(offer)
-        if not kept or len(kept) == 0:
+        indices_kept = self.__interface.select_ticket_offer(offer)
+        if not indices_kept or len(indices_kept) == 0:
             print(f"{self.player_id} kept no tickets from offer.")
             return False
 
-        self.__tickets.extend(kept)
-        returned = [t for t in offer if t not in kept]
+        tickets_kept = [offer[i] for i in indices_kept]
+        self.__tickets.extend(tickets_kept)
+        returned = [t for t in offer if t not in tickets_kept]
         self.context.ticket_deck.return_tickets(returned)
         return True
 

@@ -63,6 +63,13 @@ class Game:
         for p in self.players:
             # reference the score table to get score value
             route_values = [self.score_table[r.length] for r in self.context.get_map().get_claimed_routes(p.player_id)]
+            print (f"Scoring player {p.player_id}")
+            tickets = p.get_tickets()
+            print(f"Tickets: {tickets}")
+            
+            if tickets is None:
+                raise ValueError(f"Player {p.player_id} has no tickets (NoneType)")
+            
             completed_ticket_values = [t.value for t in p.get_tickets() if t.is_completed]
             incomplete_ticket_values = [t.value for t in p.get_tickets() if not t.is_completed]
             
