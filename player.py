@@ -32,6 +32,10 @@ class Player:
     # sets the context for the player
     def set_context(self, context: PlayerContext):
         self.context = context
+        if context.turn_number == 0:
+            for i in range(0,4):
+                self.__draw_train_cards()
+
 
     #prompts interface for turn option
     def take_turn(self, fault_flags: Dict[str, bool]) -> None:

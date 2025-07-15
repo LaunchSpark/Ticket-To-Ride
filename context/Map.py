@@ -89,7 +89,8 @@ class MapGraph:
         starting_points: Set[str] = {new_route.city1, new_route.city2}
 
         # 2. Merge existing components that touch these cities
-        to_remove = []
+        if player_id not in self.paths.keys():
+            self.paths[player_id] = []
         for (cities, length) in self.paths[player_id]:
             if new_route.city1 in cities or new_route.city2 in cities:
                 starting_points.update(cities)

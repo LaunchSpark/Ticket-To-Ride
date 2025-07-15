@@ -4,7 +4,7 @@ from context.game_context import GameContext
 from player import Player
 from pathlib import Path
 from context.decks import DestinationTicket
-from context.Map import MapGraph
+from context.Map import MapGraph, Route
 import json
 
 class GameLogger:
@@ -44,7 +44,7 @@ class GameLogger:
             "playerId": context.player_id,
             "score": context.score,
             "remainingTrains": player.trains_remaining,
-            "claimedRoutes": [route for route in context.map.routes if route.claimed_by is context.player_id],
+            "claimedRoutes": [route for route in context.map.routes if route.claimed_by == context.player_id],
             "destinationTickets": [
                 {
                     "from": t.city1,

@@ -29,6 +29,7 @@ class Game:
 
 
     def play(self, turns: Optional[int] = None) -> None:
+
         while not self._is_game_over():
             self.next_turn()
             self._score_game(False)
@@ -69,7 +70,6 @@ class Game:
             if penalize_incomplete_tickets:
                 score -= sum(incomplete_ticket_values)
             self.context.set_score(p.player_id, score)
-
 
 
     def __repr__(self) -> str:
