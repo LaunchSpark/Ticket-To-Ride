@@ -181,11 +181,12 @@ class Player:
     def get_tickets(self) -> List[DestinationTicket]:
         return self.__tickets
 
-    def get_affordable_routes(self) -> List[Route]: #TODO Add grey support
+    def get_affordable_routes(self) -> List[Route]:
         affordable_routes = []
         available_routes = self.context.map.get_available_routes()
         for r in available_routes:
-            if self.__train_hand[r.color] >= r.length:
+            # if the player has enough of the color in hand or if the color is gray and the player has enough of their most common color in hand
+            if self.__train_hand[r.color] >= r.length or (r.color == "X" and self.__train_hand.most_common(1)[0][1] >= r.length):
                 affordable_routes.append(r)
         return affordable_routes
 
