@@ -21,15 +21,19 @@ class ExampleBot(Interface):
 
 
     # choose what cards to draw
-    def choose_draw_train_action(self):
+    def choose_draw_train_action(self) -> int:
         return random.randrange(-1,5)
 
     # choose what routes to claim
-    def choose_route_to_claim(self,claimable_routes):
-        return random.randrange(0,claimable_routes.len())
+    def choose_route_to_claim(self,claimable_routes) -> Route:
+        return claimable_routes[random.randrange(0,claimable_routes.len())]
+
+    # choose what color to spend on a gray route (will spend most common color on input of None or on invalid color input)
+    def choose_color_to_spend(self,route) -> 'str | None':
+        return None
 
     # choose which destination tickets to keep
-    def select_ticket_offer(self,offer):
+    def select_ticket_offer(self,offer) -> List[int]:
         return [0,1]
 
 

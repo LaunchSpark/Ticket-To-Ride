@@ -8,14 +8,15 @@ from typing import List, Dict, Optional, Set
 class Route:
     city1: str
     city2: str
+    length: int
+    color: str
     claimed_by: str
 
-    def __init__(self, city1: str, city2: str, length: int, color: Optional[str] = None, claimed_by: Optional[str] = None):
+    def __init__(self, city1: str, city2: str, length: int, color: str):
         self.city1 = city1
         self.city2 = city2
         self.length = length
         self.color = color
-        self.claimed_by = claimed_by
 
 class MapGraph:
     def __init__(self):
@@ -32,12 +33,12 @@ class MapGraph:
                 city1 = row["city1"]
                 city2 = row["city2"]
                 length = int(row["Distance"])
-                color = row["Color"] or None  # Empty string becomes None
+                color = row["Color"]
 
-                route = Route(city1=city1, city2=city2, length=length, color=color)
+                route = Route(city1, city2, length, color)
                 self.routes.append(route)
 
-    def _build_adjacency(self,player_id = None):
+    def _build_adjacency(self,player_id = None) -> Dict[str, List[Route]]:
         if player_id != None:
             player_adj: Dict[str, List[Route]] = {}
             for route in self.routes:
@@ -48,6 +49,7 @@ class MapGraph:
         for route in self.routes:
             self._adj.setdefault(route.city1, []).append(route)
             self._adj.setdefault(route.city2, []).append(route)
+        return self._adj
 
     def claim_route(self, route: Route, player_id: str):
         if route in self.routes and route.claimed_by is None:
