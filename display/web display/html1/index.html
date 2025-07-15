@@ -660,16 +660,9 @@
 				})
 
 				// update match stats for each player
-				averages = gameData.averageScores
-				averages.forEach(player => {
-					let total = 0;
-					player.scores.forEach(score => {
-						total += score;
-					});
-					let avgScore = total / (player.scores.length);
-					setMatchStatScore(player.playerId, avgScore);
+				gameData.averageScores.forEach(player => {
+					setMatchStatScore(player.playerId, player.scores[turnNumber]);
 				})
-				
 			}
 		</script>
 	</body>
