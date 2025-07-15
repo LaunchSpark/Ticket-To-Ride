@@ -428,7 +428,7 @@
 				let claimed = false;
 
 				for (let route of matchingRoutes) {
-					console.log("Checking ", route);
+					// console.log("Checking ", route);
 					if (route.getAttribute('stroke') === '#060606') {
 						route.setAttribute('stroke', playerColor);
 						route.setAttribute('opacity', '1');
@@ -518,7 +518,7 @@
 				const matchStatDiv = document.getElementById(`match-stats-names`);
 				let name = gameData.players.find(p => p.playerId === playerId).name;
 				let adjustedId = gameData.players.findIndex(p => p.playerId === playerId) + 1;
-				console.log("setting player ", playerId, "'s name to ", name);
+				// console.log("setting player ", playerId, "'s name to ", name);
 				matchStatDiv.querySelector(`div[data-player-id="${adjustedId}"]`).textContent = name;
 			}
 
@@ -547,9 +547,9 @@
 			// clock function
 			function toggleRunning() {
     			running = !running;
-    			console.log(`Running is now: ${running}`);
+    			// console.log(`Running is now: ${running}`);
 				lastTurn = gameData.rounds[currentRound].turns.length - 1
-				console.log(gameData.rounds[currentRound].turns.length, " turns in round ", currentRound, ", stopping after turn ", lastTurn)
+				// console.log(gameData.rounds[currentRound].turns.length, " turns in round ", currentRound, ", stopping after turn ", lastTurn)
     			if (running && currentTurn < lastTurn) {
       				intervalId = setInterval(() => {
         				currentTurn += 1;
@@ -571,20 +571,20 @@
 				  	event.preventDefault();
 				  	toggleRunning();
 				} else if(event.code === "ArrowLeft" && gameDataLoaded) {
-					console.log(`Input ${event.code} received`);
+					// console.log(`Input ${event.code} received`);
 					if (currentTurn > 0) {
                         currentTurn -= 1;
-					    console.log("value decremented");
-					    console.log(`calling test with input ${currentTurn}`)
+					    // console.log("value decremented");
+					    // console.log(`calling test with input ${currentTurn}`)
 					    turnUpdate(currentTurn);
-					    console.log(`value of currentTurn changed to ${currentTurn}`)
+					    // console.log(`value of currentTurn changed to ${currentTurn}`)
                     }
 				} else if(event.code === "ArrowRight" && gameDataLoaded) {
-					console.log(`Input ${event.code} received`);
+					// console.log(`Input ${event.code} received`);
                     if(currentTurn < (gameData.rounds[currentRound].turns.length - 1)) {
 					    currentTurn += 1;
-                        console.log(`value incremented`);
-					    console.log(`calling test with input ${currentTurn}`)
+                        // console.log(`value incremented`);
+					    // console.log(`calling test with input ${currentTurn}`)
 					    turnUpdate(currentTurn);
                     }
 				}
@@ -592,9 +592,9 @@
 
 			// update display given a specific turn of the current game.
 			function turnUpdate(turnNumber) {
-				console.log("getting turnData for round ", currentRound, ", turn ", turnNumber);
+				// console.log("getting turnData for round ", currentRound, ", turn ", turnNumber);
 				let turnData = gameData.rounds[currentRound].turns[turnNumber];
-				console.log(turnData);
+				// console.log(turnData);
                 setTurnCounter(turnNumber);
 
 				// clear claimed route display

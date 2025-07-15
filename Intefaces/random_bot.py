@@ -15,11 +15,11 @@ class RandomBot(Interface):
         affordable_routes = self.player.get_affordable_routes() if self.player else None
         if len(affordable_routes) > 4: # type: ignore
             # claim a route
-            print("RandomBot action choice: 2")
+            # print("RandomBot action choice: 2")
             return 2
         # draw cards or a destination ticket
         action = (random.randrange(1,3) * 2) - 1
-        print("RandomBot action choice:", action)
+        # print("RandomBot action choice:", action)
         return action
 
 
