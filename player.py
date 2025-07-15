@@ -45,12 +45,12 @@ class Player:
         elif turn_choice == 2: ## Claim Route
             if not fault_flags['claim_route']:
                 success = self.__claim_available_route()
-                if not success:
+                if success is None:
                     fault_flags["claim_route"] = True
                     print(f"{self.player_id} could not claim a route.")
                     self.take_turn(fault_flags) #chose returns to the turn menu
                 else:
-                    self.update_longest_path()
+                    self.update_longest_path(success)
                     self.check_ticket_completion()
 
             else:
@@ -124,10 +124,10 @@ class Player:
 
         return 'success'
     
-    def __claim_available_route(self) -> bool:
+    def __claim_available_route(self) -> 'Route | None':
         route = self.__interface.choose_route_to_claim(self.__get_affordable_routes())
         if route is None:
-            return False
+            return None
         if route.color == "X":
             color_options = [c for c in self.__train_hand.keys() if self.__train_hand.get(c) >= route.length]
             if len(color_options) >= 1:
@@ -141,10 +141,10 @@ class Player:
         try:
             self.__spend_cards([color_to_spend] * route.length)
             self.__claim_route(route)
-            return True
+            return route
         except Exception as e:
             print(f"Error claiming route {route}: {e}")
-            return False
+            return None
 
     def __draw_destination_tickets(self) -> bool:
         try:
@@ -203,13 +203,13 @@ class Player:
                 affordable_routes.append(r)
         return affordable_routes
     
-    def update_longest_path(self):
-        self.context.map.update_longest_path(self.player_id)
+    def update_longest_path(self, new_route: Route):
+        self.context.map.update_longest_path(self.player_id, new_route)
         my_longest_path = self.context.map.longest_paths[self.player_id]
         has_longest_path = (self.context.map.longest_path_holder == self.player_id)
 
     def check_ticket_completion(self):
-        path_info = self.context.map.claimed_paths[self.player_id]
+        path_info = self.context.map.paths[self.player_id]
         for t in [t for t in self.__tickets if not t.is_completed]:
             city_1_group = next((group for group in path_info if t.city1 in group), None)
             if city_1_group != None and t.city2 in city_1_group:
