@@ -669,7 +669,7 @@
     left: 10px;
     z-index: 0;
    }
-   .flatened .element-place-score {
+   .flatened .fourth-place-score {
     top: 210px;
     position: absolute;
    width: 82px;
@@ -684,7 +684,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .element-place-name-text {
+   .flatened .fourth-place-name {
     position: absolute;
    width: 237px;
     height: 51px;
@@ -698,7 +698,7 @@
    line-height: normal;
    z-index: 1;
    }
-   .flatened .element-rd-place-score {
+   .flatened .third-place-score {
     top: 157px;
     position: absolute;
    width: 82px;
@@ -713,7 +713,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .element-rd-place-name-text {
+   .flatened .third-place-name {
     position: absolute;
    width: 237px;
     height: 51px;
@@ -727,7 +727,7 @@
     line-height: normal;
     z-index: 1;
    }
-   .flatened .element-nd-place-score {
+   .flatened .second-place-score {
     top: 104px;
     position: absolute;
    width: 82px;
@@ -742,7 +742,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .element-nd-place-name-text {
+   .flatened .second-place-name {
     position: absolute;
    width: 237px;
     height: 51px;
@@ -756,7 +756,7 @@
    line-height: normal;
     z-index: 1;
    }
-   .flatened .element-st-place-score {
+   .flatened .first-place-score {
     top: 51px;
     position: absolute;
    width: 82px;
@@ -771,7 +771,7 @@
    line-height: normal;
    white-space: nowrap;
    }
-   .flatened .element-st-place-name-text {
+   .flatened .first-place-name {
     position: absolute;
    width: 237px;
     height: 51px;
