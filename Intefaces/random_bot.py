@@ -12,8 +12,8 @@ class RandomBot(Interface):
     # 2 = Claim
     # 3 = draw a destination ticket
     def choose_turn_action(self):
-        affordable_routes = self.player.get_affordable_routes()
-        if len(affordable_routes) > random.randrange(0, 7):
+        affordable_routes = self.player.get_affordable_routes() if self.player else None
+        if len(affordable_routes) > random.randrange(0, 7): # type: ignore
             # claim a route
             return 2
         # draw cards or a destination ticket
