@@ -24,6 +24,10 @@ class GameLogger:
             } for p in players]
         }
 
+    def set_player_list(self, players: List[Player]):
+        self.player_list = players
+
+
     def add_round(self):
         self.log["rounds"].append({
             "turns": []
@@ -44,7 +48,7 @@ class GameLogger:
             "playerId": context.player_id,
             "score": context.score,
             "remainingTrains": player.trains_remaining,
-            "claimedRoutes": context.map.get_claimed_routes(player.player_id),
+            "claimedRoutes": [f"{r}" for r in context.map.get_claimed_routes(player.player_id)],
             "destinationTickets": [
                 {
                     "from": t.city1,
@@ -71,7 +75,7 @@ class GameLogger:
             "playerId": p.player_id,
             "score": p.score,
             "trainCarCount": p.remaining_trains,
-            "claimed_routes": context.map.get_claimed_routes(p.player_id),
+            "claimed_routes": [f"{r}" for r in context.map.get_claimed_routes(p.player_id)],
             "destinationTicketCount": p.destination_ticket_count,
             "hand": {
                 "public": {

@@ -12,7 +12,12 @@ class RandomBot(Interface):
     # 2 = Claim
     # 3 = draw a destination ticket
     def choose_turn_action(self):
-        return random.randrange(1,3)
+        affordable_routes = self.player.get_affordable_routes()
+        if len(affordable_routes) > random.randrange(0, 7):
+            # claim a route
+            return 2
+        # draw cards or a destination ticket
+        return (random.randrange(1,3) * 2) - 1
 
 
     ##############################################################################################

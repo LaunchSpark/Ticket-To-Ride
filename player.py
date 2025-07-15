@@ -28,6 +28,8 @@ class Player:
     def get_context(self):
         return self.context
 
+    def get_interface(self):
+        return self.__interface
 
     # sets the context for the player
     def set_context(self, context: PlayerContext):
@@ -129,7 +131,7 @@ class Player:
         return 'success'
     
     def __claim_available_route(self) -> 'Route | None':
-        route = self.__interface.choose_route_to_claim(self.__get_affordable_routes())
+        route = self.__interface.choose_route_to_claim(self.get_affordable_routes())
         if route is None:
             return None
         if route.color == "X":
@@ -198,7 +200,7 @@ class Player:
     def get_tickets(self) -> List[DestinationTicket]:
         return self.__tickets
 
-    def __get_affordable_routes(self) -> List[Route]:
+    def get_affordable_routes(self) -> List[Route]:
         affordable_routes = []
         available_routes = self.context.map.get_available_routes()
         for r in available_routes:

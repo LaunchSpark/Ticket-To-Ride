@@ -1,5 +1,3 @@
-import weakref
-
 class Interface:
     def __init__(self):
         self.context = None
@@ -12,4 +10,4 @@ class Interface:
         self.context = context
 
     def set_player(self,player):
-        self.player = weakref.ref(player)
+        self.player = player

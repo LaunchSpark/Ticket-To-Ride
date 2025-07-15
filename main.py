@@ -26,9 +26,13 @@ def main():
         # Initialize GameContext
         context = GameContext([p.player_id for p in players])
         game = Game(context, players, logger, round_number)
+        print(f"Starting round {round_number}")
         game.play()
 
         round_number += 1
+        if round_number != round_limit:
+            players = [Player(p.player_id, p.get_interface(), p.name, p.color) for p in players]
+            logger.set_player_list(players)
 
     logger.log_match_stats()
     logger.export_log("-".join([p.name for p in players]))
