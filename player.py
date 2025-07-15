@@ -204,10 +204,14 @@ class Player:
         return affordable_routes
     
     def update_longest_path(self):
+        self.context.map.update_longest_path(self.player_id) # TODO: change to function call once function is implemented in map
+        my_longest_path = self.context.map.longest_paths[self.player_id]
+        has_longest_path = (self.context.map.longest_path_holder == self.player_id) # get longest path for 
         return 0
 
     def check_ticket_completion(self):
         for t in [t for t in self.__tickets if not t.is_completed]:
+            # check if both city A and city B exist among the routes in the destination ticket
             return 0
 
     def __repr__(self) -> str:
