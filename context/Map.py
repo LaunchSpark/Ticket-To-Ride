@@ -19,8 +19,14 @@ class MapGraph:
         self.routes: List[Route] = []
         self._load_routes_from_csv("data/map.csv")  # <-- Hardcoded path
 
+        #paths hold dicts that accociate player_ids with a list comprised of tuples containing (sets of connected cities, longest path length)
+        self.paths: Dict[str,List[tuple[set[str],int]]]
+        self.longest_paths: Dict[str,int]
+        self.longest_path_holder: str
+
         self._adj: Dict[str, List[Route]] = {}
         self._build_adjacency()
+
 
     def _load_routes_from_csv(self, csv_path: str):
         with open(csv_path, newline='') as csvfile:
@@ -69,7 +75,7 @@ class MapGraph:
         """
         return [route for route in self.routes if route.claimed_by == player_id]
 
-    def get_longest_path(self, player_ids: List[str]) -> Dict[str, int]:
+    def update_longest_path(self, player_ids: List[str]):
         def dfs(city: str, path_length: int, used_routes: Set[Route]):
             nonlocal max_length
             if path_length > max_length:
@@ -91,11 +97,10 @@ class MapGraph:
             for start_city in adjacency:
                 dfs(start_city, 0, set())
 
-            results[player_id] = max_length
+            self.longest_paths[player_id] = max_length
 
-        return results
 
-    def get_highest_path_only(self,results: Dict[str, int]) -> Dict[str, int]:
+    def get_highest_path_only(self,results: Dict[str, int]) -> Dict[str, int]: #TODO change this to use the attribute instead of the return
         """
         Returns a dictionary containing only the player(s) with the highest path length.
 
