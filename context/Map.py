@@ -17,7 +17,7 @@ class Route:
     def other_city(self,city: str) -> str:
         return self.city1 if self.city1 != city else self.city2
 
-    def get_cities(self) -> set[str]:
+    def get_cities(self) -> 'set[str]':
         return {self.city1,self.city2}
 
 class MapGraph:
@@ -28,7 +28,7 @@ class MapGraph:
         self._load_routes_from_csv("data/map.csv")  # <-- Hardcoded path
 
         #paths hold dicts that associate player_ids with a list comprised of tuples containing (sets of connected cities, longest path length)
-        self.paths: Dict[str,List[tuple[set[str],int]]] = {}
+        self.paths: 'Dict[str,List[tuple[set[str],int]]]' = {}
         self.longest_paths: Dict[str,int]
         self.longest_path_holder: str
 
@@ -142,7 +142,7 @@ class MapGraph:
 
     
 
-    def is_city_in_groups(self,city: str,player_id:str) -> set[str]|None:
+    def is_city_in_groups(self,city: str,player_id:str) -> 'set[str] | None':
         for (g,l) in self.paths[player_id]:
             if city in g:
                 return g
