@@ -6,13 +6,14 @@ class Route:
     city2: str
     length: int
     color: str
-    claimed_by: str
+    claimed_by: 'str | None'
 
     def __init__(self, city1: str, city2: str, length: int, color: str):
         self.city1 = city1
         self.city2 = city2
         self.length = length
         self.color = color
+        self.claimed_by = None
 
     def other_city(self,city: str) -> str:
         return self.city1 if self.city1 != city else self.city2
