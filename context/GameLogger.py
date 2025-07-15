@@ -37,8 +37,6 @@ class GameLogger:
           - .get_claimed_routes(), .get_exposed(), .get_card_count(), .get_hidden_card_count()
           - .get_tickets() returning .start, .end, .points, .completed
         """
-        longest_path = context.map.get_longest_path([p.player_id for p in self.player_list])
-        claimed_routes = []
         
         # logs the current player's information
         player = next((player for player in self.player_list if player.player_id == context.player_id))
@@ -91,8 +89,6 @@ class GameLogger:
             }
         }) for p in context.opponents]
 
-        longest_paths = context.map.get_longest_path([p.player_id for p in self.player_list])
-        longest_path_length = max(list(longest_paths.values()))
         turn_state = {
             "player": player_data,
             "opponents": opponents_data,
