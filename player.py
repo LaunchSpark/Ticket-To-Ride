@@ -60,7 +60,7 @@ class Player:
                     self.check_ticket_completion()
 
             else:
-                self.__add_cards([self.context.train_deck.draw_face_down() for i in range(0, 2)])
+                self.__draw_train_cards([-1]*2)
 
         elif turn_choice == 3: ## Draw Destination tickets
             if not fault_flags['draw_destination']:
@@ -70,14 +70,14 @@ class Player:
                     print(f"{self.player_id} could not draw destination tickets.")
                     self.take_turn(fault_flags)
             else:
-                self.__add_cards([self.context.train_deck.draw_face_down() for i in range(0, 2)])
+                self.__draw_train_cards([-1]*2)
 
         else:
             print(f"Invalid action choice '{turn_choice}' by player {self.player_id}.")
 
     # handlers for each option
-    def __draw_train_cards(self) -> str:
-        draw_choices = [self.__interface.choose_draw_train_action() for _ in range(2)]
+    def __draw_train_cards(self, draws: Optional[List[int]] = None) -> str:
+        draw_choices = [self.__interface.choose_draw_train_action() for _ in range(2)] if draws is None else draws
 
         train_deck = self.context.train_deck # Assuming ticket_deck includes train draw functionality
 
