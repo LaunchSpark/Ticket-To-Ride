@@ -429,12 +429,11 @@
 
 				for (let route of matchingRoutes) {
 					console.log("Checking ", route);
-					if (route.getAttribute('opacity') === '0') {
+					if (route.getAttribute('opacity') === '0' || route.getAttribute('stroke') === playerColor) {
+						if (route.getAttribute('stroke') === '') {
+							route.setAttribute('stroke', playerColor);
+						}
 						route.setAttribute('opacity', '1');
-						route.setAttribute('stroke', playerColor);
-						claimed = true;
-						break;
-					} else if (route.getAttribute('stroke') === playerColor) {
 						claimed = true;
 						break;
 					}
@@ -526,6 +525,14 @@
 				const matchStatDiv = document.getElementById(`match-stats-scores`);
 				let adjustedId = gameData.players.findIndex(p => p.playerId === playerId) + 1;
 				matchStatDiv.querySelector(`div[data-player-id="${adjustedId}"]`).textContent = score;
+			}
+
+			function clear_map() {
+				const routeDiv = document.getElementById('export_route');
+				const routes = Array.from(routeDiv.querySelectorAll('path'));
+				routes.forEach(route => {
+					route.setAttribute('opacity', '0');
+				})
 			}
 
 			// Initial setup function
@@ -622,6 +629,7 @@
 				});
 
                 // update map
+				clear_map()
 				if (turnData.player.claimedRoutes.length > 0) {
 					turnData.player.claimedRoutes.forEach(route => {
 						claimRoute(route, currentPlayer.color);
