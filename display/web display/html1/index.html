@@ -429,10 +429,12 @@
 
 				for (let route of matchingRoutes) {
 					console.log("Checking ", route);
-					if (route.getAttribute('opacity') === '0' || route.getAttribute('stroke') === playerColor) {
-						if (route.getAttribute('stroke') === '') {
-							route.setAttribute('stroke', playerColor);
-						}
+					if (route.getAttribute('stroke') === '#060606') {
+						route.setAttribute('stroke', playerColor);
+						route.setAttribute('opacity', '1');
+						claimed = true;
+						break;
+					} else if (route.getAttribute('stroke') === playerColor) {
 						route.setAttribute('opacity', '1');
 						claimed = true;
 						break;
@@ -528,7 +530,7 @@
 			}
 
 			function clear_map() {
-				const routeDiv = document.getElementById('export_route');
+				const routeDiv = document.getElementById('export route');
 				const routes = Array.from(routeDiv.querySelectorAll('path'));
 				routes.forEach(route => {
 					route.setAttribute('opacity', '0');
@@ -596,6 +598,9 @@
 				console.log(turnData);
                 setTurnCounter(turnNumber);
 
+				// clear claimed route display
+				clear_map()
+				
 				// set current player's name
 				let currentPlayer = gameData.players.find(p => p.playerId === turnData.player.playerId);
 				setCurrentPlayerName(currentPlayer.name);
@@ -621,6 +626,13 @@
 					
 					// set opponent's color
 					setPlayerColor(opponent.playerId, playerColors[opponentData.color]);
+					
+					// display opponent's claimed routes
+					if (opponent.claimedRoutes.length > 0) {
+						opponent.claimedRoutes.forEach(route => {
+							claimRoute(route, opponentData.color);
+						});
+					}
 				});
 
 				// update market
@@ -628,8 +640,7 @@
 					setMarketCard(index, marketImages[card]);
 				});
 
-                // update map
-				clear_map()
+                // show player's claimed routes
 				if (turnData.player.claimedRoutes.length > 0) {
 					turnData.player.claimedRoutes.forEach(route => {
 						claimRoute(route, currentPlayer.color);
