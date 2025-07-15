@@ -1,7 +1,7 @@
 class Interface:
     def __init__(self):
         self.context = None
-        self.player = None
+        self.player
 
 
 
