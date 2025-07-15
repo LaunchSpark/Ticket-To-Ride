@@ -47,8 +47,6 @@ class GameLogger:
             "score": context.score,
             "remainingTrains": player.trains_remaining,
             "claimedRoutes": [route for route in context.map.routes if route.claimed_by is context.player_id],
-            "longestPath": context.longest_path,
-            "hasLongestPath": player.has_longest_path, 
             "destinationTickets": [
                 {
                     "from": t.city1,
@@ -76,7 +74,6 @@ class GameLogger:
             "score": p.score,
             "trainCarCount": p.remaining_trains,
             "claimed_routes": context.map.get_claimed_routes(p.player_id),
-            "longest_path": p.longest_path,
             "destinationTicketCount": p.destination_ticket_count,
             "hand": {
                 "public": {

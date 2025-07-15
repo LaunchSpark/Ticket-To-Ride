@@ -11,8 +11,6 @@ class OpponentInfo:
     exposed_hand: 'Counter[str]'
     num_cards_in_hand: int
     remaining_trains: int
-    longest_path: int
-    has_longest_path: bool
     score: int
     destination_ticket_count: int
 
@@ -24,8 +22,6 @@ class PlayerContext:
         self.train_deck: TrainCardDeck = context.get_train_deck()
         self.ticket_deck: TicketDeck = context.get_ticket_deck()
         self.face_up_cards: List[str] = context.get_train_deck().face_up()
-        self.available_routes: List[Route] = context.get_map().get_available_routes()
-        self.longest_path: int = context.get_map().get_longest_path([self.player_id])[self.player_id]
         self.turn_number: int = context.turn_num
         self.score: int = context.get_score(player_id)
 
@@ -35,8 +31,6 @@ class PlayerContext:
                 exposed_hand = p.get_exposed(),
                 num_cards_in_hand = p.get_card_count(),
                 remaining_trains = p.trains_remaining,
-                longest_path = context.get_map().get_longest_path([p.player_id])[p.player_id],
-                has_longest_path = p.has_longest_path,
                 score = context.get_score(p.player_id),
                 destination_ticket_count = len(p.get_tickets())
             ) for p in players if p.player_id != self.player_id
