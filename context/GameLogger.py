@@ -106,16 +106,22 @@ class GameLogger:
 
     def find_player_score(self, turn: Dict, player_id: str) -> int:
         if (turn["player"]["playerId"] == player_id):
+            print("It was player's turn this turn and their score was", turn["player"]["score"])
             return turn["player"]["score"]
         else:
-            return next((p["score"] for p in turn["opponents"] if p["playerId"] == player_id))
+            player_score = next((p["score"] for p in turn["opponents"] if p["playerId"] == player_id))
+            print("It was someone else's turn this turn, but the player you're asking about scored", player_score, "this turn")
+            return player_score
     
     def log_match_stats(self):
-        for turn in range(0, max([len(r) for r in self.log["rounds"]])):
+        for turn in range(0, max([len(r["turns"]) for r in self.log["rounds"]])):
             for p in self.player_list:
+                print("Getting average scores for", p.name)
                 player_scores = next((player for player in self.log["averageScores"] if player["playerId"] == p.player_id))["scores"]
+                print("looking for score on turn", turn)
                 turn_scores = [self.find_player_score(r["turns"][turn], p.player_id) for r in self.log["rounds"] if (turn < len(r["turns"]))]
-                player_scores.append(sum(turn_scores) / len(turn_scores))
+                print("Scores list:", turn_scores)
+                player_scores.append(round(sum(turn_scores) / len(turn_scores)))
     
     def export_log(self, file_name: str):
         with open(f"display/web display/html1/logs/{file_name}.json", "w") as f:
