@@ -115,8 +115,18 @@ class Player:
         route = self.__interface.choose_route_to_claim(self.get_affordable_routes())
         if route is None:
             return False
+        if route.color == "X":
+            color_options = [c for c in self.__train_hand.keys() if self.__train_hand.get(c) >= route.length]
+            if len(color_options) >= 1:
+                chosen_color = self.__interface.choose_color_to_spend(route, color_options)
+                # set color_to_spend to chosen_color if chosen_color is a valid color that they have enough of; otherwise set it to the one they have the most of
+                color_to_spend = chosen_color if self.__train_hand.get(chosen_color, 0) >= route.length else self.__train_hand.most_common(1)[0][0]
+            else:
+                color_to_spend = color_options[0]
+        else:
+            color_to_spend = route.color
         try:
-            self.__spend_cards([route.color] * route.length)
+            self.__spend_cards([color_to_spend] * route.length)
             self.__claim_route(route)
             return True
         except Exception as e:
