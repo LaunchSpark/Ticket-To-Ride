@@ -14,13 +14,21 @@ class Route:
         self.length = length
         self.color = color
 
+    def other_city(self,city: str) -> str:
+        return self.city1 if self.city1 != city else self.city2
+
+    def get_cities(self) -> set[str]:
+        return {self.city1,self.city2}
+
 class MapGraph:
     def __init__(self):
+        self.longest_path_holder: str = ""
+        self.longest_paths: Dict[str,int] = {}
         self.routes: List[Route] = []
         self._load_routes_from_csv("data/map.csv")  # <-- Hardcoded path
 
-        #paths hold dicts that accociate player_ids with a list comprised of tuples containing (sets of connected cities, longest path length)
-        self.paths: Dict[str,List[tuple[set[str],int]]]
+        #paths hold dicts that associate player_ids with a list comprised of tuples containing (sets of connected cities, longest path length)
+        self.paths: Dict[str,List[tuple[set[str],int]]] = {}
         self.longest_paths: Dict[str,int]
         self.longest_path_holder: str
 
@@ -41,7 +49,7 @@ class MapGraph:
                 self.routes.append(route)
 
     def _build_adjacency(self,player_id = None) -> Dict[str, List[Route]]:
-        if player_id != None:
+        if player_id is not None:
             player_adj: Dict[str, List[Route]] = {}
             for route in self.routes:
                 if route.claimed_by == player_id:
@@ -75,46 +83,67 @@ class MapGraph:
         """
         return [route for route in self.routes if route.claimed_by == player_id]
 
-    def update_longest_path(self, player_ids: List[str]):
-        def dfs(city: str, path_length: int, used_routes: Set[Route]):
-            nonlocal max_length
-            if path_length > max_length:
-                max_length = path_length
+    def update_longest_path(self, player_id: str, new_route: Route):
+        # 1. Gather the endpoints of the newly claimed route
+        starting_points: Set[str] = {new_route.city1, new_route.city2}
 
-            for route in adjacency.get(city, []):
-                if route not in used_routes:
-                    next_city = route.city2 if city == route.city1 else route.city1
-                    used_routes.add(route)
-                    dfs(next_city, path_length + route.length, used_routes)
-                    used_routes.remove(route)
-
-        results: Dict[str, int] = {}
-
-        for player_id in player_ids:
-            adjacency = self._build_adjacency(player_id)
-            max_length = 0
-
-            for start_city in adjacency:
-                dfs(start_city, 0, set())
-
-            self.longest_paths[player_id] = max_length
+        # 2. Merge existing components that touch these cities
+        to_remove = []
+        for (cities, length) in self.paths[player_id]:
+            if new_route.city1 in cities or new_route.city2 in cities:
+                starting_points.update(cities)
+                self.paths[player_id].remove((cities,length))
 
 
-    def get_highest_path_only(self,results: Dict[str, int]) -> Dict[str, int]: #TODO change this to use the attribute instead of the return
-        """
-        Returns a dictionary containing only the player(s) with the highest path length.
+        # 3. Recompute this component's longest path length
+        new_length = self.get_longest_path(player_id, starting_points)
 
-        Args:
-            results (Dict[str, int]): Dictionary mapping player_id to their longest path length.
+        # 4. Update player's overall longest
+        other_best = max((l for (_, l) in self.paths[player_id]), default=0)
+        self.longest_paths[player_id] = max(new_length, other_best)
 
-        Returns:
-            Dict[str, int]: Filtered dictionary with only the player(s) with the maximum path length.
-        """
-        if not results:
-            return {}
+        # 5. Store the merged component
+        self.paths[player_id].append((starting_points, new_length))
 
-        max_length = max(results.values())
-        return {pid: length for pid, length in results.items() if length == max_length}
+        # 6. Possibly update the global longest-path holder
+        holder_len = self.longest_paths.get(self.longest_path_holder, 0)
+        if self.longest_paths[player_id] > holder_len:
+            self.longest_path_holder = player_id
+
+    def get_longest_path(self, player_id: str, cities: Set[str]) -> int:
+        # Build adjacency for this player
+        adj = self._build_adjacency(player_id)
+        max_length = 0
+        for city in cities:
+            length = self.dfs(city, set(), 0,player_id)
+            max_length = max(max_length, length)
+        return max_length
+
+    def dfs(self, current_city: str, visited: Set[Route], current_best: int, player_id: str) -> int:
+        # Explore all unvisited routes from current_city
+        adj = self._build_adjacency(player_id)
+        best = 0
+        children = [r for r in adj.get(current_city, []) if r not in visited]
+        if len(children) > 0:
+            for r in children:
+                nxt = r.other_city(current_city)
+                new_length = self.dfs(nxt, visited | {r},current_best + r.length, player_id)
+                best = max(best, new_length)
+        else:
+            group = self.is_city_in_groups(current_city, player_id)
+            set_to_add = set()
+            for r in visited:
+                set_to_add.update(r.get_cities())
+            if group:
+                group.update(set_to_add)
+            else:
+                self.paths[player_id].append((set_to_add,best))
+        return best
+
     
-    
 
+    def is_city_in_groups(self,city: str,player_id:str) -> set[str]|None:
+        for (g,l) in self.paths[player_id]:
+            if city in g:
+                return g
+        return None
