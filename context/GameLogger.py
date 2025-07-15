@@ -48,7 +48,7 @@ class GameLogger:
             "playerId": context.player_id,
             "score": context.score,
             "remainingTrains": player.trains_remaining,
-            "claimedRoutes": [f"{r}" for r in context.map.get_claimed_routes(player.player_id)], # TODO: figure out what to do about double-gray routes
+            "claimedRoutes": [f"{r}" for r in context.map.get_claimed_routes(player.player_id)],
             "destinationTickets": [
                 {
                     "from": t.city1,
@@ -75,7 +75,7 @@ class GameLogger:
             "playerId": p.player_id,
             "score": p.score,
             "trainCarCount": p.remaining_trains,
-            "claimed_routes": [f"{r}" for r in context.map.get_claimed_routes(p.player_id)],
+            "claimedRoutes": [f"{r}" for r in context.map.get_claimed_routes(p.player_id)],
             "destinationTicketCount": p.destination_ticket_count,
             "hand": {
                 "public": {
@@ -96,7 +96,7 @@ class GameLogger:
         turn_state = {
             "player": player_data,
             "opponents": opponents_data,
-            "game_objects": {
+            "gameObjects": {
                 "decks": {
                     "marketCards": context.face_up_cards
                 }

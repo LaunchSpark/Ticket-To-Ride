@@ -22,7 +22,7 @@ class Route:
         return {self.city1,self.city2}
     
     def __repr__(self):
-        return f"{self.city1}-{self.city2}-{self.color}"  # TODO: change HTML ids to match this format
+        return f"{self.city1.replace(' ', '_')}-{self.city2.replace(' ', '_')}-{self.color}"
 
 class MapGraph:
     def __init__(self):
