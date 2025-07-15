@@ -44,7 +44,7 @@ class Player:
         turn_choice = self.__interface.choose_turn_action()
 
         if turn_choice == 1: ## Draw Cards
-            first_draw_card = self.__draw_train_cards() # TODO: add logic for locomotives from the draw pile vs from the market
+            first_draw_card = self.__draw_train_cards()
             if first_draw_card != 'locomotive':
                 self.__draw_train_cards()
 
