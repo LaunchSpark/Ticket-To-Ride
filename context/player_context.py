@@ -21,7 +21,7 @@ class PlayerContext:
         self.map: MapGraph = context.get_map()
         self.train_deck: TrainCardDeck = context.get_train_deck()
         self.ticket_deck: TicketDeck = context.get_ticket_deck()
-        self.face_up_cards: List[str] = context.get_train_deck().face_up()
+        self.face_up_cards: List[str] = context.get_train_deck().get_face_up()
         self.turn_number: int = context.turn_num
         self.score: int = context.get_score(player_id)
 

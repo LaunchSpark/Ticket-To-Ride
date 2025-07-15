@@ -91,7 +91,7 @@ class HumanPlayer(Interface):
         print("----------------------------------")
 
     def _display_market(self) -> None:
-        face_up = self.train_deck.face_up()
+        face_up = self.train_deck.get_face_up()
         print("\n--- Current Face-Up Market ---")
         for idx, card in enumerate(face_up):
             print(f"{idx}: {card}")
