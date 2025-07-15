@@ -13,7 +13,7 @@ class RandomBot(Interface):
     # 3 = draw a destination ticket
     def choose_turn_action(self):
         affordable_routes = self.player.get_affordable_routes() if self.player else None
-        if len(self.player.get_hand()) > 10: # type: ignore
+        if len(affordable_routes) > 4: # type: ignore
             # claim a route
             print("RandomBot action choice: 2")
             return 2
