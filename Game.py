@@ -31,7 +31,8 @@ class Game:
     def play(self, turns: Optional[int] = None) -> None:
         while not self._is_game_over():
             self.next_turn()
-            self._score_game()
+            self._score_game(False)
+        self._score_game(True)
 
     def next_turn(self) -> None:
         # set current player
@@ -57,16 +58,17 @@ class Game:
     def _is_game_over(self) -> bool:
         return any(p.trains_remaining <= 2 for p in self.players)
 
-    def _score_game(self) -> None:
-      for p in self.players:
-        values = []
-        for r in self.context.get_map().get_claimed_routes(p.player_id):
-            #refrence the score tabel to get score value
-            values.append(self.score_table[r.length])
-
-
-        score  = sum(values) + self.context.get_map().get_longest_path([p.player_id])[p.player_id] #TODO add destination ticket checking
-        self.context.set_score(p.player_id,score)
+    def _score_game(self, penalize_incomplete_tickets: bool) -> None:
+        for p in self.players:
+            # reference the score table to get score value
+            route_values = [self.score_table[r.length] for r in self.context.get_map().get_claimed_routes(p.player_id)]
+            completed_ticket_values = [t.value for t in p.get_tickets() if t.is_completed]
+            incomplete_ticket_values = [t.value for t in p.get_tickets() if not t.is_completed]
+            
+            score = sum(route_values) + (10 * p.has_longest_path) + sum(completed_ticket_values)
+            if penalize_incomplete_tickets:
+                score -= sum(incomplete_ticket_values)
+            self.context.set_score(p.player_id, score)
 
 
 

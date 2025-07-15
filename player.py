@@ -22,6 +22,7 @@ class Player:
         self.__interface = interface
         self.__interface.set_player(self)
         self.has_longest_path: bool = False
+        self.my_longest_path_length: int
 
 
     def get_context(self):
@@ -48,6 +49,10 @@ class Player:
                     fault_flags["claim_route"] = True
                     print(f"{self.player_id} could not claim a route.")
                     self.take_turn(fault_flags) #chose returns to the turn menu
+                else:
+                    self.update_longest_path()
+                    self.check_ticket_completion()
+
             else:
                 self.__add_cards([self.context.train_deck.draw_face_down() for i in range(0, 2)])
 
@@ -197,6 +202,13 @@ class Player:
             if self.__train_hand[r.color] >= r.length or (r.color == "X" and self.__train_hand.most_common(1)[0][1] >= r.length):
                 affordable_routes.append(r)
         return affordable_routes
+    
+    def update_longest_path(self):
+        return 0
+
+    def check_ticket_completion(self):
+        for t in [t for t in self.__tickets if not t.is_completed]:
+            return 0
 
     def __repr__(self) -> str:
         return (f"{self.__class__.__name__}(id={self.player_id}, trains={self.trains_remaining}, "

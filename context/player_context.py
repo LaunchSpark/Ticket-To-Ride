@@ -36,7 +36,7 @@ class PlayerContext:
                 num_cards_in_hand = p.get_card_count(),
                 remaining_trains = p.trains_remaining,
                 longest_path = context.get_map().get_longest_path([p.player_id])[p.player_id],
-                has_longest_path = p.player_id in context.get_map().get_longest_path(p.player_id),
+                has_longest_path = p.has_longest_path,
                 score = context.get_score(p.player_id),
                 destination_ticket_count = len(p.get_tickets())
             ) for p in players if p.player_id != self.player_id
