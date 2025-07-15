@@ -4,6 +4,7 @@ from player import Player
 from Game import Game
 from context.game_context import GameContext
 from context.GameLogger import GameLogger
+from typing import List
 
 from glob import glob
 import sys
@@ -14,15 +15,25 @@ import importlib.util
 
 
 def main():
-    setup()
+    players, logger = setup()
+    round_number = 0
+    round_limit = 10 # Can be changed to adjust how many consecutive rounds to run before the program stops
+    
+    while (round_number < round_limit):
+        # Add empty round to log
+        logger.add_round()
+        
+        # Initialize GameContext
+        context = GameContext([p.player_id for p in players])
+        game = Game(context, players, logger, round_number)
+        game.play()
 
+        round_number += 1
 
+    logger.log_match_stats()
+    logger.export_log("-".join([p.name for p in players]))
 
-
-
-
-
-def setup():
+def setup() -> 'tuple[List[Player],GameLogger]':
     print("=== Game Setup ===")
 
     # # Step 1: Add the directory to sys.path
@@ -70,23 +81,8 @@ def setup():
 
     # Initialize logger and round_number counter
     logger = GameLogger(players)
-    round_number = 0
-    round_limit = 10 # Can be changed to adjust how many consecutive rounds to run before the program stops
-    
-    while (round_number < round_limit):
-        # Add empty round to log
-        logger.add_round()
-        
-        # Initialize GameContext
-        context = GameContext(player_ids)
-        game = Game(context, players, logger, round_number)
-        game.play()
 
-        round_number += 1
-
-    logger.log_match_stats()
-    logger.export_log("-".join(player_names))
-
+    return (players, logger)
     
 
 if __name__ == "__main__":
