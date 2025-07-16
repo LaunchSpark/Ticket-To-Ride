@@ -219,7 +219,7 @@ class Player:
         self.__train_hand.update(cards)
 
     def __spend_cards(self, cards: List[str]) -> None:
-        self.__train_hand.subtract(cards)
+        self.__train_hand.subtract(Counter(cards))
         self.context.train_deck.discard(cards)
 
     def __claim_route(self, route: Route) -> None:
