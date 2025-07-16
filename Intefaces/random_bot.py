@@ -13,14 +13,14 @@ class RandomBot(Interface):
     # 3 = draw a destination ticket
     def choose_turn_action(self):
         affordable_routes = self.player.get_affordable_routes() if self.player else None
-        if len(affordable_routes) > 1: # type: ignore
-            # claim a route
-            # print("RandomBot action choice: 2")
+        if not len([t for t in self.player.get_tickets() if not t.is_competed]):
+            return 3
+        elif affordable_routes:
             return 2
-        # draw cards or a destination ticket
-        action = (random.randrange(1,3) * 2) - 1
-        # print("RandomBot action choice:", action)
-        return action
+        else:
+            return 1
+
+
 
 
     ##############################################################################################
@@ -38,7 +38,6 @@ class RandomBot(Interface):
     # so to buy a route that costs 2 of a color using 1 locomotive you could return tuple(route, 1)  #
     # error handling is done on the back end --------------------------------------------------------#
     def choose_route_to_claim(self,claimable_routes: List[tuple[Route,int]]) -> 'tuple[Route,int]':
-
         return claimable_routes[random.randrange(0,len(claimable_routes))]
 
     # choose what color to spend on a gray route (will spend most common color on input of None or on invalid color input)

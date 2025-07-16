@@ -208,7 +208,7 @@ class Player:
 
     def __spend_cards(self, cards: List[str]) -> None:
         self.__train_hand.subtract(cards)
-        self.__train_hand += Counter()
+        self.context.train_deck.discard(cards)
 
     def __claim_route(self, route: Route) -> None:
         self.trains_remaining -= route.length
