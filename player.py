@@ -66,7 +66,7 @@ class Player:
             print(f"Invalid action choice '{turn_choice}' by player {self.player_id}.")
 
     # prompts for each option
-    def __prompt_draw_train(self): #TODO: add fault flag for drawing in initial call (in game.py)
+    def __prompt_draw_train(self):
         self.__draw_train_cards()
 
     def __prompt_claim_route(self, fault_flags: Dict[str,bool]):
@@ -167,7 +167,7 @@ class Player:
     
     def __claim_available_route(self, l_fault: Optional[bool]) -> Route:
         affordable_routes = self.get_affordable_routes()
-        route, l_count = self.__interface.choose_route_to_claim(affordable_routes) # TODO: update randomBot to expect a tuple from affordable_routes
+        route, l_count = self.__interface.choose_route_to_claim(affordable_routes)
         if l_count > self.__train_hand.get("L", 0):
             print(f"Player {self.name} doesn't have {l_count} locomotives to spend; try again.")
             if not l_fault:
