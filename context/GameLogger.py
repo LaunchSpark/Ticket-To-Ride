@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional
+from typing import List, Dict
 from context.player_context import PlayerContext
 from context.game_context import GameContext
 from player import Player
@@ -89,7 +89,7 @@ class GameLogger:
                     "white": p.exposed_hand.get("W", 0),
                     "yellow": p.exposed_hand.get("Y", 0)
                 },
-                "hidden": p.num_cards_in_hand - p.exposed_hand.total() # type: ignore
+                "hidden": p.num_cards_in_hand - p.exposed_hand.total()
             }
         }) for p in context.opponents]
 
