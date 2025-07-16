@@ -38,7 +38,6 @@ class Player:
             for i in range(0,2):
                 self.__draw_train_cards([-1] * 2)
 
-
     #prompts interface for turn option
     def take_turn(self, fault_flags: Dict[str, bool]) -> None:
         turn_choice = self.__interface.choose_turn_action()

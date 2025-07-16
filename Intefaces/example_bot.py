@@ -1,12 +1,14 @@
-from typing import List, Optional
+from typing import List, TYPE_CHECKING
 from Intefaces.abstract_interface import Interface
 import random
 
 from context.Map import MapGraph
 from context.Map import Route
 from context.decks import DestinationTicket
+if TYPE_CHECKING:
+    from player import Player
 
-class ExampleBot(Interface):
+class ExampleBot(Interface): # TODO: actually build the thing
     # used to determine weather to
     # 1 = Draw
     # 2 = Claim

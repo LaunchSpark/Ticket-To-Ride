@@ -4,6 +4,9 @@ from collections import Counter
 from context.game_context import GameContext
 from context.Map import MapGraph, Route
 from context.decks import TicketDeck, TrainCardDeck, DestinationTicket
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from player import Player
 
 @dataclass
 class OpponentInfo:

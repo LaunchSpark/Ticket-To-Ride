@@ -1,10 +1,12 @@
-from typing import List, Optional
+from typing import List, TYPE_CHECKING
 from Intefaces.abstract_interface import Interface
 import random
 
 from context.Map import MapGraph
 from context.Map import Route
 from context.decks import DestinationTicket
+if TYPE_CHECKING:
+    from player import Player
 
 class RandomBot(Interface):
     # used to determine weather to
@@ -13,7 +15,7 @@ class RandomBot(Interface):
     # 3 = draw a destination ticket
     def choose_turn_action(self):
         affordable_routes = self.player.get_affordable_routes() if self.player else None
-        if not len([t for t in self.player.get_tickets() if not t.is_completed]): #type: ignore
+        if not len([t for t in self.player.get_tickets() if not t.is_completed]):
             return 3
         elif affordable_routes:
             return 2
