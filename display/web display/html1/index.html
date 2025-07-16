@@ -451,7 +451,7 @@
 				playerName.textContent = name;
 			}
 			
-			function setTrainCarCount(count) { // TODO: fix train car total display
+			function setTrainCarCount(count) {
 				let trainCarCount = document.getElementById("train-car-total");
 				trainCarCount.textContent = count;
 			}
@@ -648,15 +648,16 @@
 
 				// update leaderboard
 				// sort players in descending order of score
-				let playerList = [turnData.player].concat(turnData.opponents) // TODO: fix sorting
+				let playerList = [turnData.player].concat(turnData.opponents)
 				sortedPlayers = playerList.toSorted(function(a, b) {
-					b.score - a.score
+					return b.score - a.score
 				});
 				sortedPlayers.forEach((player, index) => {
 					let playerData = gameData.players.find(p => p.playerId === player.playerId);
-					setLeaderboardColor(index + 1, playerColors[playerData.color]);
-					setLeaderboardName(index + 1, playerData.name);
-					setLeaderboardScore(index + 1, player.score);
+					place = index + 1
+					setLeaderboardColor(place, playerColors[playerData.color]);
+					setLeaderboardName(place, playerData.name);
+					setLeaderboardScore(place, player.score);
 				})
 
 				// update match stats for each player
