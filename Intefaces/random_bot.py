@@ -13,7 +13,7 @@ class RandomBot(Interface):
     # 3 = draw a destination ticket
     def choose_turn_action(self):
         affordable_routes = self.player.get_affordable_routes() if self.player else None
-        if not len([t for t in self.player.get_tickets() if not t.is_competed]):
+        if not len([t for t in self.player.get_tickets() if not t.is_completed]): #type: ignore
             return 3
         elif affordable_routes:
             return 2
