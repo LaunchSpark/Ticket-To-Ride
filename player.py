@@ -24,13 +24,6 @@ class Player:
         self.has_longest_path: bool = False
         self.my_longest_path_length: int
 
-
-    def get_context(self):
-        return self.context
-
-    def get_interface(self):
-        return self.__interface
-
     # sets the context for the player
     def set_context(self, context: PlayerContext):
         self.context = context
@@ -41,6 +34,7 @@ class Player:
     #prompts interface for turn option
     def take_turn(self, fault_flags: Dict[str, bool]) -> None:
         turn_choice = self.__interface.choose_turn_action()
+        
         # Check if there are enough cards in the deck to draw; if not, shuffle in the discard and check again. 
         # If there are still less than 2 cards in the deck, force the player to claim a route if they can afford one, or to pass the turn if they can't
         if len(self.context.train_deck) < 2:
@@ -177,22 +171,25 @@ class Player:
         if route not in affordable_routes:
             print(f"Player {self.name} can't afford route {route} this turn; we've chosen {affordable_routes[0]} for you instead")
             route = affordable_routes[0]
-        if l_count > route.length:
-            l_count = route.length
-        if route.color == "X":
-            color_options = [c for c in self.__train_hand.keys() if self.__train_hand.get(c, 0) >= (route.length - l_count)]
-            if len(color_options) >= 1:
-                chosen_color = self.__interface.choose_color_to_spend(route, color_options)
-                # set color_to_spend to chosen_color if chosen_color is a valid color that they have enough of; otherwise set it to the one they have the most of
-                color_to_spend = chosen_color if self.__train_hand.get(chosen_color, 0) >= (route.length - l_count) else self.__train_hand.most_common(1)[0][0]
-            else:
-                color_to_spend = color_options[0]
-        else:
-            color_to_spend = route.color
         cards_to_spend = []
-        cards_to_spend.extend([color_to_spend] * (route.length - l_count))
+        if l_count >= route.length:
+            l_count = route.length
+        else:
+            if route.color == "X":
+                color_options = [c for c in self.__train_hand.keys() if self.__train_hand.get(c, 0) >= (route.length - l_count) and c != 'L']
+                if len(color_options) >= 1:
+                    chosen_color = self.__interface.choose_color_to_spend(route, color_options)
+                    # set color_to_spend to chosen_color if chosen_color is a valid color that they have enough of; otherwise set it to the one they have the most of
+                    color_to_spend = chosen_color if self.__train_hand.get(chosen_color, 0) >= (route.length - l_count) else self.get_no_locomotives().most_common(1)[0][0]
+                else:
+                    color_to_spend = color_options[0]
+            else:
+                color_to_spend = route.color
+            cards_to_spend.extend([color_to_spend] * (route.length - l_count))
         cards_to_spend.extend(["L"] * l_count)
-        self.__spend_cards(cards_to_spend)
+        if self._spend_cards.__self__ != self:
+            pass
+        self._spend_cards(cards_to_spend)
         self.__claim_route(route)
         return route
 
@@ -219,12 +216,26 @@ class Player:
         return True
 
     # Helpers
+    def get_no_locomotives(self):
+        no_locomotives = self.__train_hand.copy()
+        if "L" in no_locomotives.keys():
+            no_locomotives.pop("L")
+        return no_locomotives
+
+    def get_context(self):
+        return self.context
+
+    def get_interface(self):
+        return self.__interface
+
+    
+
     def __add_cards(self, cards: List[str], exposed: bool) -> None:
         self.__train_hand.update(cards)
         if exposed:
             self.exposed.update(cards)
 
-    def __spend_cards(self, cards: List[str]) -> None:
+    def _spend_cards(self, cards: List[str]) -> None:
         self.__train_hand.subtract(cards)
         self.context.train_deck.discard(cards)
         self.exposed.subtract(cards)
@@ -259,10 +270,12 @@ class Player:
             return []
         affordable_routes = []
         available_routes = self.context.map.get_available_routes()
+        
         for r in available_routes:
             for n in range(0, self.__train_hand.get("L", 0) + 1):
                 # if the player has enough of the color in hand or if the color is gray and the player has enough of their most common color in hand
-                if self.__train_hand[r.color] >= (r.length - n) or (r.color == "X" and self.__train_hand.most_common(1)[0][1] >= (r.length - n)):
+                most_common_num = 0 if self.get_no_locomotives().total() == 0 else self.get_no_locomotives().most_common(1)[0][1]
+                if self.get_no_locomotives().get(r.color, 0) >= (r.length - n) or (r.color == "X" and most_common_num >= (r.length - n)):
                     if r not in [r for (r, _) in affordable_routes]:
                         affordable_routes.append((r, n))
         return affordable_routes
