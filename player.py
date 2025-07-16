@@ -35,45 +35,75 @@ class Player:
     def set_context(self, context: PlayerContext):
         self.context = context
         if context.turn_number == 0:
-            for i in range(0,4):
-                self.__draw_train_cards()
+            for i in range(0,2):
+                self.__draw_train_cards([-1] * 2)
 
 
     #prompts interface for turn option
     def take_turn(self, fault_flags: Dict[str, bool]) -> None:
         turn_choice = self.__interface.choose_turn_action()
+        # Check if there are enough cards in the deck to draw; if not, shuffle in the discard and check again. 
+        # If there are still less than 2 cards in the deck, force the player to claim a route if they can afford one, or to pass the turn if they can't
+        if len(self.context.train_deck) < 2:
+            self.context.train_deck._reshuffle_discard()
+            if len(self.context.train_deck) < 2:
+                fault_flags['draw_train'] = True
 
         if turn_choice == 1: ## Draw Cards
-            first_draw_card = self.__draw_train_cards()
-            if first_draw_card != 'locomotive':
-                self.__draw_train_cards()
+            # if there is a fault flag, force players to claim routes if possible
+            if not fault_flags['draw_train']:
+                self.__prompt_draw_train()
+            else:
+                self.__prompt_claim_route(fault_flags)
 
         elif turn_choice == 2: ## Claim Route
-            if not fault_flags['claim_route']:
-                success = self.__claim_available_route()
-                if success is None:
-                    fault_flags["claim_route"] = True
-                    print(f"{self.player_id} could not claim a route.")
-                    self.take_turn(fault_flags) #chose returns to the turn menu
-                else:
-                    self.update_longest_path(success)
-                    self.check_ticket_completion()
-
-            else:
-                self.__draw_train_cards([-1]*2)
+            self.__prompt_claim_route(fault_flags)
 
         elif turn_choice == 3: ## Draw Destination tickets
-            if not fault_flags['draw_destination']:
+            self.__prompt_draw_ticket(fault_flags)
+
+        else:
+            print(f"Invalid action choice '{turn_choice}' by player {self.player_id}.")
+
+    # prompts for each option
+    def __prompt_draw_train(self): #TODO: add fault flag for drawing in initial call (in game.py)
+        self.__draw_train_cards()
+
+    def __prompt_claim_route(self, fault_flags: Dict[str,bool]):
+        # does it already have a fault flag?
+        if not fault_flags['claim_route']:
+            # should it have a fault flag?
+            if not len(self.get_affordable_routes()):
+                # if so, add one, throw an error message, and try again
+                fault_flags["claim_route"] = True
+                print(f"{self.name} cannot currently afford any routes. Try something else.")
+                self.take_turn(fault_flags)
+            else:
+                # if not, proceed as normal
+                route = self.__claim_available_route(fault_flags["draw_train"])
+                self.update_longest_path(route)
+                self.check_ticket_completion()
+        elif not fault_flags['draw_train']:
+            self.__draw_train_cards([-1]*2)
+
+    def __prompt_draw_ticket(self, fault_flags: Dict[str,bool]):
+        # does it already have a fault flag?
+        if not fault_flags['draw_destination']:
+            # should it have a fault flag?
+            if len(self.context.ticket_deck) < 3:
+                # if so, add one, throw an error message, and try again
+                fault_flags["draw_destination"] = True
+                print(f"There aren't enough destination tickets left for {self.name}. Try something else.")
+                self.take_turn(fault_flags)
+            else:
+                # if not, proceed as normal
                 success = self.__draw_destination_tickets()
                 if not success:
                     fault_flags["draw_destination"] = True
                     print(f"{self.player_id} could not draw destination tickets.")
                     self.take_turn(fault_flags)
-            else:
-                self.__draw_train_cards([-1]*2)
-
         else:
-            print(f"Invalid action choice '{turn_choice}' by player {self.player_id}.")
+            self.__draw_train_cards([-1]*2)
 
     # handlers for each option
     def __draw_train_cards(self, draws: Optional[List[int]] = None) -> str:
@@ -130,12 +160,14 @@ class Player:
 
         return 'success'
     
-    def __claim_available_route(self) -> 'Route | None':
-        route = self.__interface.choose_route_to_claim(self.get_affordable_routes())
-        if route is None:
-            return None
+    def __claim_available_route(self, fault_flag: bool) -> Route:
+        affordable_routes = self.get_affordable_routes()
+        route = self.__interface.choose_route_to_claim(affordable_routes)
+        if route not in affordable_routes:
+            print(f"Player {self.name} can't afford route {route} this turn; we've chosen {affordable_routes[0]} for you instead")
+            route = affordable_routes[0]
         if route.color == "X":
-            color_options = [c for c in self.__train_hand.keys() if self.__train_hand.get(c) >= route.length]
+            color_options = [c for c in self.__train_hand.keys() if self.__train_hand.get(c, 0) >= route.length]
             if len(color_options) >= 1:
                 chosen_color = self.__interface.choose_color_to_spend(route, color_options)
                 # set color_to_spend to chosen_color if chosen_color is a valid color that they have enough of; otherwise set it to the one they have the most of
@@ -144,13 +176,9 @@ class Player:
                 color_to_spend = color_options[0]
         else:
             color_to_spend = route.color
-        try:
-            self.__spend_cards([color_to_spend] * route.length)
-            self.__claim_route(route)
-            return route
-        except Exception as e:
-            print(f"Error claiming route {route}: {e}")
-            return None
+        self.__spend_cards([color_to_spend] * route.length)
+        self.__claim_route(route)
+        return route
 
     def __draw_destination_tickets(self) -> bool:
         try:
@@ -206,6 +234,8 @@ class Player:
         available_routes = self.context.map.get_available_routes()
         for r in available_routes:
             # if the player has enough of the color in hand or if the color is gray and the player has enough of their most common color in hand
+            if not self.__train_hand.total():
+                return []
             if self.__train_hand[r.color] >= r.length or (r.color == "X" and self.__train_hand.most_common(1)[0][1] >= r.length):
                 affordable_routes.append(r)
         return affordable_routes

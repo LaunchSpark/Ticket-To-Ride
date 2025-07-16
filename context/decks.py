@@ -88,6 +88,9 @@ class TrainCardDeck:
         self._face_up.clear()
         self._refill_face_up_slot()
 
+    def __len__(self):
+        return len(self._deck)
+
 # ────────────────────────────────────────────────────────────────────────────────
 # DestinationTicket – as originally defined
 # ────────────────────────────────────────────────────────────────────────────────
@@ -126,6 +129,9 @@ class TicketDeck:
         temp_list = list(self._stack)
         self._rng.shuffle(temp_list)
         self._stack = deque(temp_list)
+
+    def __len__(self):
+        return len(self._stack)
 
     @staticmethod
     def _load_tickets_from_csv(csv_path: str) -> List[DestinationTicket]:

@@ -29,7 +29,6 @@ class Game:
 
 
     def play(self, turns: Optional[int] = None) -> None:
-
         while not self._is_game_over():
             self.next_turn()
             self._score_game(False)
@@ -38,20 +37,24 @@ class Game:
     def next_turn(self) -> None:
         # set current player
         player = self.current_player()
-        #
         # build and load player context into player
         player_ids = [p.player_id for p in self.players]
         player.set_context(PlayerContext(self.current_player().player_id, self.context, self.players))
         self.logger.add_turn(self.round_number, self.current_player().context)
 
+        # pseudo-progress-bar:
+        if not self.turn_index % 15:
+            print("Turn", self.turn_index, "reached")
         # have that player take their turn
         player.take_turn({
+            "draw_train": False,
             "claim_route": False,
             "draw_destination": False
         })
 
         # incriment the turn counter
         self.turn_index += 1
+        self.context.turn_num = self.turn_index
 
     def current_player(self) -> Player:
         return self.players[self.turn_index % len(self.players)]
