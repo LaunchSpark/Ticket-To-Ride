@@ -1,12 +1,10 @@
-from typing import List, TYPE_CHECKING
+from typing import List
 from Intefaces.abstract_interface import Interface
 import random
 
 from context.Map import MapGraph
 from context.Map import Route
 from context.decks import DestinationTicket
-if TYPE_CHECKING:
-    from player import Player
 
 class RandomBot(Interface):
     # used to determine weather to
