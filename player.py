@@ -111,13 +111,21 @@ class Player:
 
         train_deck = self.context.train_deck # Assuming ticket_deck includes train draw functionality
 
+        # If a card chosen from the face_up_cards is a locomotive
+        for c in draw_choices:
+            if self.context.face_up_cards[c] == 'L' and c >= 0:
+                try:
+                    card = train_deck.draw_face_up(c)
+                    self.__add_cards([card], True)
+                except IndexError:
+                    print(f"Invalid face-up index '{c}' by player {self.player_id}.")
+                    return 'invalid'
+                
         first_choice = draw_choices[0]
         if first_choice >= 0:
             try:
                 card = train_deck.draw_face_up(first_choice)
                 self.__add_cards([card], True)
-                if card == 'L':
-                    return 'success'
             except IndexError:
                 print(f"Invalid face-up index '{first_choice}' by player {self.player_id}.")
                 return 'invalid'
@@ -138,9 +146,6 @@ class Player:
         if second_choice >= 0:
             try:
                 card = train_deck.draw_face_up(second_choice)
-                if card == 'L':
-                    print(f"{self.player_id} attempted to draw a locomotive on second draw. Action cancelled.")
-                    return 'invalid'
                 self.__add_cards([card], True)
             except IndexError:
                 print(f"Invalid face-up index '{second_choice}' by player {self.player_id}.")
