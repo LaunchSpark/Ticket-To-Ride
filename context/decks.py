@@ -73,8 +73,6 @@ class TrainCardDeck:
             if self._too_many_locomotives():
                 self._mulligan_face_up()
 
-
-
     def _reshuffle_discard(self):
         if not self._discard_pile:
             return
@@ -88,7 +86,7 @@ class TrainCardDeck:
     def _mulligan_face_up(self):
         self._discard_pile.extend(self._face_up)
         self._face_up.clear()
-        self.refill_face_up()
+        self._refill_face_up_slot()
 
 # ────────────────────────────────────────────────────────────────────────────────
 # DestinationTicket – as originally defined
