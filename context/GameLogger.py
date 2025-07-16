@@ -74,7 +74,7 @@ class GameLogger:
         opponents_data = [({
             "playerId": p.player_id,
             "score": p.score,
-            "trainCarCount": p.remaining_trains,
+            "remainingTrains": p.remaining_trains,
             "claimedRoutes": [f"{r}" for r in context.map.get_claimed_routes(p.player_id)],
             "destinationTicketCount": p.destination_ticket_count,
             "hand": {
