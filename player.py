@@ -186,8 +186,8 @@ class Player:
         else:
             color_to_spend = route.color
         cards_to_spend = []
-        cards_to_spend.append([color_to_spend] * (route.length - l_count))
-        cards_to_spend.append(["L"] * l_count)
+        cards_to_spend.extend([color_to_spend] * (route.length - l_count))
+        cards_to_spend.extend(["L"] * l_count)
         self.__spend_cards(cards_to_spend)
         self.__claim_route(route)
         return route
@@ -219,7 +219,7 @@ class Player:
         self.__train_hand.update(cards)
 
     def __spend_cards(self, cards: List[str]) -> None:
-        self.__train_hand.subtract(Counter(cards))
+        self.__train_hand.subtract(cards)
         self.context.train_deck.discard(cards)
 
     def __claim_route(self, route: Route) -> None:
