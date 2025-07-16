@@ -51,7 +51,7 @@ class GameLogger:
             "claimedRoutes": [f"{r}" for r in context.map.get_claimed_routes(player.player_id)],
             "destinationTickets": [
                 {
-                    "from": t.city1,
+                    "from": t.city1, # TODO: use abbreviations (PENDING ticket_deck function)
                     "to": t.city2,
                     "points": t.value,
                     "completed": t.is_completed
@@ -89,7 +89,7 @@ class GameLogger:
                     "white": p.exposed_hand.get("W", 0),
                     "yellow": p.exposed_hand.get("Y", 0)
                 },
-                "hidden": p.num_cards_in_hand - p.exposed_hand.total()
+                "hidden": p.num_cards_in_hand - p.exposed_hand.total() # TODO: find the source of the "-1"s and strike it from the face of the earth
             }
         }) for p in context.opponents]
 

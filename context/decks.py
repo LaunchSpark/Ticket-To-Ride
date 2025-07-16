@@ -95,7 +95,7 @@ class TrainCardDeck:
 # DestinationTicket – as originally defined
 # ────────────────────────────────────────────────────────────────────────────────
 class DestinationTicket:
-    def __init__(self, city1: str, city2: str, value: int):
+    def __init__(self, city1: str, city2: str, value: int): # TODO: add getter for cities with optional abbreviations
         self.city1 = city1
         self.city2 = city2
         self.value = value
