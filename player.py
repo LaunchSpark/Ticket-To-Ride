@@ -115,9 +115,9 @@ class Player:
         if first_choice >= 0:
             try:
                 card = train_deck.draw_face_up(first_choice)
-                self.__add_cards([card])
+                self.__add_cards([card], True)
                 if card == 'L':
-                    return card
+                    return 'success'
             except IndexError:
                 print(f"Invalid face-up index '{first_choice}' by player {self.player_id}.")
                 return 'invalid'
@@ -125,7 +125,7 @@ class Player:
         elif first_choice == -1:
             try:
                 card = train_deck.draw_face_down()
-                self.__add_cards([card])
+                self.__add_cards([card], False)
             except Exception as e:
                 print(f"Face-down draw failed for player {self.player_id}: {e}")
                 return 'invalid'
@@ -138,10 +138,10 @@ class Player:
         if second_choice >= 0:
             try:
                 card = train_deck.draw_face_up(second_choice)
-                if card == 'locomotive':
+                if card == 'L':
                     print(f"{self.player_id} attempted to draw a locomotive on second draw. Action cancelled.")
                     return 'invalid'
-                self.__add_cards([card])
+                self.__add_cards([card], True)
             except IndexError:
                 print(f"Invalid face-up index '{second_choice}' by player {self.player_id}.")
                 return 'invalid'
@@ -149,7 +149,7 @@ class Player:
         elif second_choice == -1:
             try:
                 card = train_deck.draw_face_down()
-                self.__add_cards([card])
+                self.__add_cards([card], False)
             except Exception as e:
                 print(f"Face-down draw failed for player {self.player_id}: {e}")
                 return 'invalid'
@@ -215,12 +215,21 @@ class Player:
         return True
 
     # Helpers
-    def __add_cards(self, cards: List[str]) -> None:
+    def __add_cards(self, cards: List[str], exposed: bool) -> None:
         self.__train_hand.update(cards)
+        if exposed:
+            self.exposed.update(cards)
 
     def __spend_cards(self, cards: List[str]) -> None:
         self.__train_hand.subtract(cards)
         self.context.train_deck.discard(cards)
+        self.exposed.subtract(cards)
+        correction_list = []
+        for k in self.exposed.keys():
+            if self.exposed.get(k, 0) < 0:
+                correction_list.append(k)
+        for k in correction_list:
+            self.exposed[k] = 0
 
     def __claim_route(self, route: Route) -> None:
         self.trains_remaining -= route.length
