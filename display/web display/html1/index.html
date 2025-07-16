@@ -447,31 +447,31 @@
 			}
 
 			function setCurrentPlayerName(name) {
-				const playerName = document.getElementById("current-player-name");
+				let playerName = document.getElementById("current-player-name");
 				playerName.textContent = name;
 			}
 			
-			function setTrainCarCount(count) {
-				const trainCarCount = document.getElementById("train-car-total");
+			function setTrainCarCount(count) { // TODO: fix train car total display
+				let trainCarCount = document.getElementById("train-car-total");
 				trainCarCount.textContent = count;
 			}
 
 			function setDestinationTicket(ticketSlot, leftCity, rightCity, score, completed) {
-				const ticket = document.getElementById(`ticket-${ticketSlot}`);
+				let ticket = document.getElementById(`ticket-${ticketSlot}`); // TODO: clear placeholder tickets before displaying the tickets
 				ticket.querySelector('div[data-section-id="left-city"]').textContent = leftCity;
 				ticket.querySelector('div[data-section-id="right-city"]').textContent = rightCity;
 				ticket.querySelector('div[data-section-id="ticket-score"]').textContent = score;
-				ticket.querySelector('img[data-section-id="check-mark"]').style.opacity = (completed? '1' : '0');
+				ticket.querySelector('img[data-section-id="check-mark"]').style.opacity = (completed? '1' : '0'); // TODO: change so that it turns green instead of using the checkmark
 			}
 
 			function setPlayerColor(playerId, color) {
-				const colorCard = document.getElementById(`${playerIdConverter(playerId)}-name-card`);
+				let colorCard = document.getElementById(`${playerIdConverter(playerId)}-name-card`);
 				colorCard.setAttribute('fill', color);
 			}
 
 			function setCardCount(playerId, color, count) {
-				const container = document.getElementById(playerIdConverter(playerId));
-				const cardDiv = container.querySelector(`div[data-index="${color}"]`);
+				let container = document.getElementById(playerIdConverter(playerId));
+				let cardDiv = container.querySelector(`div[data-index="${color}"]`);
 				if (cardDiv) {
 			  	  	cardDiv.textContent = count;
 			  	} else {
@@ -608,7 +608,7 @@
                 setCurrentPlayerCardCounts(turnData.player.playerId, turnData.player.hand);
 
 				// set current player's train car count
-                setTrainCarCount(turnData.player.trainCarCount);
+                setTrainCarCount(turnData.player.remainingTrains);
 
 				// set current player's destination tickets
 				turnData.player.destinationTickets.forEach((ticket, index) => {
@@ -648,7 +648,7 @@
 
 				// update leaderboard
 				// sort players in descending order of score
-				let playerList = [turnData.player].concat(turnData.opponents)
+				let playerList = [turnData.player].concat(turnData.opponents) // TODO: fix sorting
 				sortedPlayers = playerList.toSorted(function(a, b) {
 					b.score - a.score
 				});
