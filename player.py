@@ -160,23 +160,35 @@ class Player:
 
         return 'success'
     
-    def __claim_available_route(self, fault_flag: bool) -> Route:
+    def __claim_available_route(self, l_fault: Optional[bool]) -> Route:
         affordable_routes = self.get_affordable_routes()
-        route = self.__interface.choose_route_to_claim(affordable_routes)
+        route, l_count = self.__interface.choose_route_to_claim(affordable_routes) # TODO: update randomBot to expect a tuple from affordable_routes
+        if l_count > self.__train_hand.get("L", 0):
+            print(f"Player {self.name} doesn't have {l_count} locomotives to spend; try again.")
+            if not l_fault:
+                self.__claim_available_route(True)
+            else:
+                l_count = 0
+        affordable_routes = [r for (r, l) in affordable_routes if l <= l_count]
         if route not in affordable_routes:
             print(f"Player {self.name} can't afford route {route} this turn; we've chosen {affordable_routes[0]} for you instead")
             route = affordable_routes[0]
+        if l_count > route.length:
+            l_count = route.length
         if route.color == "X":
-            color_options = [c for c in self.__train_hand.keys() if self.__train_hand.get(c, 0) >= route.length]
+            color_options = [c for c in self.__train_hand.keys() if self.__train_hand.get(c, 0) >= (route.length - l_count)]
             if len(color_options) >= 1:
                 chosen_color = self.__interface.choose_color_to_spend(route, color_options)
                 # set color_to_spend to chosen_color if chosen_color is a valid color that they have enough of; otherwise set it to the one they have the most of
-                color_to_spend = chosen_color if self.__train_hand.get(chosen_color, 0) >= route.length else self.__train_hand.most_common(1)[0][0]
+                color_to_spend = chosen_color if self.__train_hand.get(chosen_color, 0) >= (route.length - l_count) else self.__train_hand.most_common(1)[0][0]
             else:
                 color_to_spend = color_options[0]
         else:
             color_to_spend = route.color
-        self.__spend_cards([color_to_spend] * route.length)
+        cards_to_spend = []
+        cards_to_spend.append([color_to_spend] * (route.length - l_count))
+        cards_to_spend.append(["L"] * l_count)
+        self.__spend_cards(cards_to_spend)
         self.__claim_route(route)
         return route
 
@@ -229,15 +241,17 @@ class Player:
     def get_tickets(self) -> List[DestinationTicket]:
         return self.__tickets
 
-    def get_affordable_routes(self) -> List[Route]:
+    def get_affordable_routes(self) -> List[tuple[Route, int]]:        
+        if not self.__train_hand.total():
+            return []
         affordable_routes = []
         available_routes = self.context.map.get_available_routes()
         for r in available_routes:
-            # if the player has enough of the color in hand or if the color is gray and the player has enough of their most common color in hand
-            if not self.__train_hand.total():
-                return []
-            if self.__train_hand[r.color] >= r.length or (r.color == "X" and self.__train_hand.most_common(1)[0][1] >= r.length):
-                affordable_routes.append(r)
+            for n in range(0, self.__train_hand.get("L", 0) + 1):
+                # if the player has enough of the color in hand or if the color is gray and the player has enough of their most common color in hand
+                if self.__train_hand[r.color] >= (r.length - n) or (r.color == "X" and self.__train_hand.most_common(1)[0][1] >= (r.length - n)):
+                    if r not in [r for (r, _) in affordable_routes]:
+                        affordable_routes.append((r, n))
         return affordable_routes
     
     def update_longest_path(self, new_route: Route):
