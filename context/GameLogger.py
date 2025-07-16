@@ -58,15 +58,15 @@ class GameLogger:
                 } for t in player.get_tickets()
             ],
             "hand": {
-                "black": player.get_hand()["B"],
-                "blue": player.get_hand()["U"],
-                "green": player.get_hand()["G"],
-                "locomotive": player.get_hand()["L"],
-                "orange": player.get_hand()["O"],
-                "purple": player.get_hand()["P"],
-                "red": player.get_hand()["R"],
-                "white": player.get_hand()["W"],
-                "yellow": player.get_hand()["Y"]
+                "black": player.get_hand().get("B", 0),
+                "blue": player.get_hand().get("U", 0),
+                "green": player.get_hand().get("G", 0),
+                "locomotive": player.get_hand().get("L", 0),
+                "orange": player.get_hand().get("O", 0),
+                "purple": player.get_hand().get("P", 0),
+                "red": player.get_hand().get("R", 0),
+                "white": player.get_hand().get("W", 0),
+                "yellow": player.get_hand().get("Y", 0)
             }
         })
 
@@ -79,15 +79,15 @@ class GameLogger:
             "destinationTicketCount": p.destination_ticket_count,
             "hand": {
                 "public": {
-                    "black": p.exposed_hand["B"],
-                    "blue": p.exposed_hand["U"],
-                    "green": p.exposed_hand["G"],
-                    "locomotive": p.exposed_hand["L"],
-                    "orange": p.exposed_hand["O"],
-                    "purple": p.exposed_hand["P"],
-                    "red": p.exposed_hand["R"],
-                    "white": p.exposed_hand["W"],
-                    "yellow": p.exposed_hand["Y"]
+                    "black": p.exposed_hand.get("B", 0),
+                    "blue": p.exposed_hand.get("U", 0),
+                    "green": p.exposed_hand.get("G", 0),
+                    "locomotive": p.exposed_hand.get("L", 0),
+                    "orange": p.exposed_hand.get("O", 0),
+                    "purple": p.exposed_hand.get("P", 0),
+                    "red": p.exposed_hand.get("R", 0),
+                    "white": p.exposed_hand.get("W", 0),
+                    "yellow": p.exposed_hand.get("Y", 0)
                 },
                 "hidden": p.num_cards_in_hand - p.exposed_hand.total() # type: ignore
             }
