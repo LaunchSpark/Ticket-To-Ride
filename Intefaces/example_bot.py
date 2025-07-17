@@ -33,8 +33,8 @@ class ExampleBot(Interface): # TODO: actually build the thing
         return None
 
     # choose which destination tickets to keep
-    def select_ticket_offer(self, offer: List[DestinationTicket]) -> List[int]:
-        return [0,1]
+    def select_ticket_offer(self, offer: List[DestinationTicket]) -> List[DestinationTicket]:
+        return [offer[0],offer[1]]
 
 
     #######################

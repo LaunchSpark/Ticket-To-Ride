@@ -29,7 +29,7 @@ class RandomBot(Interface):
 
 
     # choose what cards to draw
-    def choose_draw_train_action(self):
+    def choose_draw_train_action(self) -> int:
         return random.randrange(-1,5)
 
     # choose what routes to claim -------------------------------------------------------------------#
@@ -37,7 +37,7 @@ class RandomBot(Interface):
     # return a tuple (route, number of locomotives you wish to spend)                                #
     # so to buy a route that costs 2 of a color using 1 locomotive you could return tuple(route, 1)  #
     # error handling is done on the back end --------------------------------------------------------#
-    def choose_route_to_claim(self,claimable_routes: List[tuple[Route,int]]) -> 'tuple[Route,int]':
+    def choose_route_to_claim(self,claimable_routes: 'List[tuple[Route,int]]') -> 'tuple[Route,int]':
         return claimable_routes[random.randrange(0,len(claimable_routes))]
 
     # choose what color to spend on a gray route (will spend most common color on input of None or on invalid color input)
@@ -45,8 +45,8 @@ class RandomBot(Interface):
         return None
 
     # choose which destination tickets to keep
-    def select_ticket_offer(self,offer):
-        return [0,1]
+    def select_ticket_offer(self,offer) -> List[DestinationTicket]:
+        return [offer[0],offer[1]]
 
 
     #######################

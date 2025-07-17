@@ -11,7 +11,7 @@ class YourBotName(Interface):
     # 1 = Draw
     # 2 = Claim
     # 3 = draw a destination ticket
-    def choose_turn_action(self):
+    def choose_turn_action(self) -> int:
         pass
 
 
@@ -23,7 +23,7 @@ class YourBotName(Interface):
 
 
     # choose what cards to draw
-    def choose_draw_train_action(self):
+    def choose_draw_train_action(self) -> int:
         pass
 
     # choose what routes to claim -------------------------------------------------------------------#
@@ -31,7 +31,7 @@ class YourBotName(Interface):
     # return a tuple (route, number of locomotives you wish to spend)                                #
     # so to buy a route that costs 2 of a color using 1 locomotive you could return tuple(route, 1)  #
     # error handling is done on the back end --------------------------------------------------------#
-    def choose_route_to_claim(self,claimable_routes: List[tuple[Route,int]]) -> 'tuple[Route,int]':
+    def choose_route_to_claim(self,claimable_routes: 'List[tuple[Route,int]]') -> 'tuple[Route,int]':
         pass
 
     # choose what color to spend on a gray route (will spend most common color on input of None or on invalid color input)
@@ -39,5 +39,5 @@ class YourBotName(Interface):
         pass
 
     # choose which destination tickets to keep must keep at least 1
-    def select_ticket_offer(self,offer):
+    def select_ticket_offer(self,offer) -> List[DestinationTicket]:
         pass
