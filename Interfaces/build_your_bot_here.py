@@ -1,5 +1,5 @@
 from typing import List
-from Intefaces.abstract_interface import Interface
+from Interfaces.abstract_interface import Interface
 import random
 
 from context.Map import MapGraph

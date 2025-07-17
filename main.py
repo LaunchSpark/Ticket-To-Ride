@@ -1,5 +1,5 @@
-from Intefaces.random_bot import RandomBot
-from Intefaces.example_bot import ExampleBot
+from Interfaces.random_bot import RandomBot
+from Interfaces.example_bot import ExampleBot
 from player import Player
 from Game import Game
 from context.game_context import GameContext
@@ -70,12 +70,17 @@ def setup() -> 'tuple[List[Player],GameLogger]':
         "test_3",
         "test_4",
     ]
+    player_bot_paths = [
+        "Intefaces",
+        ""
+    ]
     player_colors = [
         "red",
         "blue",
         "green",
         "yellow"
     ]
+
     for i in range(player_count):
         player_id = f"bot_{i}"
         players.append(Player(player_id,RandomBot(), player_names[i], player_colors[i]))
