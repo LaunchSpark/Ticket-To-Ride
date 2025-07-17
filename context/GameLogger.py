@@ -89,7 +89,7 @@ class GameLogger:
                     "white": p.exposed_hand.get("W", 0),
                     "yellow": p.exposed_hand.get("Y", 0)
                 },
-                "hidden": p.num_cards_in_hand - p.exposed_hand.total() # TODO: find the source of the "-1"s and strike it from the face of the earth
+                "hidden": p.num_cards_in_hand - p.exposed_hand.total() # type: ignore
             }
         }) for p in context.opponents]
 

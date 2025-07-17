@@ -264,8 +264,8 @@ class Player:
     def get_tickets(self) -> List[DestinationTicket]:
         return self.__tickets
 
-    def get_affordable_routes(self) -> List[tuple[Route, int]]:        
-        if not self.__train_hand.total():
+    def get_affordable_routes(self) -> 'List[tuple[Route, int]]':        
+        if not self.__train_hand.total(): # type: ignore
             return []
         affordable_routes = []
         available_routes = self.context.map.get_available_routes()
@@ -273,7 +273,7 @@ class Player:
         for r in available_routes:
             for n in range(0, self.__train_hand.get("L", 0) + 1):
                 # if the player has enough of the color in hand or if the color is gray and the player has enough of their most common color in hand
-                most_common_num = 0 if self.get_no_locomotives().total() == 0 else self.get_no_locomotives().most_common(1)[0][1]
+                most_common_num = 0 if self.get_no_locomotives().total() == 0 else self.get_no_locomotives().most_common(1)[0][1] # type: ignore
                 if self.get_no_locomotives().get(r.color, 0) >= (r.length - n) or (r.color == "X" and most_common_num >= (r.length - n)):
                     if r not in [r for (r, _) in affordable_routes]:
                         affordable_routes.append((r, n))
