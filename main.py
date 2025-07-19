@@ -1,15 +1,27 @@
-from Interfaces.random_bot import RandomBot
-from Interfaces.example_bot import ExampleBot
 from player import Player
 from Game import Game
 from context.game_context import GameContext
 from context.GameLogger import GameLogger
 from typing import List
 
-from glob import glob
-import sys
-import pathlib
-import importlib.util
+import inspect
+import pkgutil
+import importlib
+import Interfaces
+from Interfaces.abstract_interface import Interface
+
+
+def load_bots() -> dict:
+    """Dynamically load all bot classes from the Interfaces package."""
+    bots = {}
+    for _, module_name, _ in pkgutil.iter_modules(Interfaces.__path__):
+        if module_name == "abstract_interface":
+            continue
+        module = importlib.import_module(f"Interfaces.{module_name}")
+        for name, obj in inspect.getmembers(module, inspect.isclass):
+            if issubclass(obj, Interface) and obj is not Interface:
+                bots[name] = obj
+    return bots
 
 
 
@@ -42,18 +54,6 @@ def setup() -> 'tuple[List[Player],GameLogger]':
     """Gather setup information and instantiate all players."""
     print("=== Game Setup ===")
 
-    # # Step 1: Add the directory to sys.path
-    # sys.path.append(r"./ticket_to_ride/Intefaces")
-    #
-    # # Step 2: Loop through all Python files in the directory
-    # for file in glob(r".(Intefaces/*.py"):
-    #     file = pathlib.Path(file)  # Convert the string path to a Path object
-    # sys.path.append(file)  # Append the file path
-    # imported_module = importlib.import_module(file.stem)# Import module by its name
-    #
-    #
-    # globals().update(imported_module.__dict__)  # Update the global namespace with the imported functions
-    # # Now you can call any function defined in the imported files
 
     while True:
         try:
@@ -72,10 +72,6 @@ def setup() -> 'tuple[List[Player],GameLogger]':
         "test_3",
         "test_4",
     ]
-    player_bot_paths = [
-        "Intefaces",
-        ""
-    ]
     player_colors = [
         "red",
         "blue",
@@ -83,11 +79,27 @@ def setup() -> 'tuple[List[Player],GameLogger]':
         "yellow"
     ]
 
+    available_bots = load_bots()
+    bot_names = list(available_bots.keys())
+
     for i in range(player_count):
         player_id = f"bot_{i}"
-        players.append(Player(player_id,RandomBot(), player_names[i], player_colors[i]))
+        print(f"Select bot for player {i+1}:")
+        for idx, name in enumerate(bot_names, start=1):
+            print(f"  {idx}. {name}")
+        while True:
+            try:
+                choice = int(input("Enter choice number: ")) - 1
+                if 0 <= choice < len(bot_names):
+                    break
+            except ValueError:
+                pass
+            print("Invalid choice. Please try again.")
 
-        #for the game context
+        bot_class = available_bots[bot_names[choice]]
+        players.append(Player(player_id, bot_class(), player_names[i], player_colors[i]))
+
+        # for the game context
         player_ids.append(player_id)
 
     # Initialize logger and round_number counter
