@@ -10,7 +10,8 @@ from context.player_context import PlayerContext
 
 
 class Player:
-    def __init__(self, player_id: str,interface, name: str, color: str):
+    def __init__(self, player_id: str, interface, name: str, color: str):
+        """Create a new player controlled by the provided interface."""
         self.player_id = player_id
         self.name = name
         self.color = color
@@ -26,13 +27,15 @@ class Player:
 
     # sets the context for the player
     def set_context(self, context: PlayerContext):
+        """Provide the player with the latest :class:`PlayerContext`."""
         self.context = context
         if context.turn_number == 0:
-            for i in range(0,2):
+            for i in range(0, 2):
                 self.__draw_train_cards([-1] * 2)
 
     #prompts interface for turn option
     def take_turn(self, fault_flags: Dict[str, bool]) -> None:
+        """Execute a single iteration of the gameplay loop for this player."""
         turn_choice = self.__interface.choose_turn_action()
         
         # Check if there are enough cards in the deck to draw; if not, shuffle in the discard and check again. 
@@ -60,9 +63,11 @@ class Player:
 
     # prompts for each option
     def __prompt_draw_train(self):
+        """Handle the draw-train-cards portion of a turn."""
         self.__draw_train_cards()
 
-    def __prompt_claim_route(self, fault_flags: Dict[str,bool]):
+    def __prompt_claim_route(self, fault_flags: Dict[str, bool]):
+        """Handle a player's attempt to claim a route."""
         # does it already have a fault flag?
         if not fault_flags['claim_route']:
             # should it have a fault flag?
@@ -79,7 +84,8 @@ class Player:
         elif not fault_flags['draw_train']:
             self.__draw_train_cards([-1]*2)
 
-    def __prompt_draw_ticket(self, fault_flags: Dict[str,bool]):
+    def __prompt_draw_ticket(self, fault_flags: Dict[str, bool]):
+        """Handle drawing destination tickets during a turn."""
         # does it already have a fault flag?
         if not fault_flags['draw_destination']:
             # should it have a fault flag?
@@ -100,6 +106,7 @@ class Player:
 
     # handlers for each option
     def __draw_train_cards(self, draws: Optional[List[int]] = None) -> str:
+        """Internal helper for drawing train cards."""
         draw_choices = [self.__interface.choose_draw_train_action() for _ in range(2)] if draws is None else draws
 
         train_deck = self.context.train_deck # Assuming ticket_deck includes train draw functionality
@@ -159,6 +166,7 @@ class Player:
         return 'success'
     
     def __claim_available_route(self, l_fault: Optional[bool]) -> Route:
+        """Spend cards and claim a route chosen by the interface."""
         affordable_routes = self.get_affordable_routes()
         route, l_count = self.__interface.choose_route_to_claim(affordable_routes)
         if l_count > self.__train_hand.get("L", 0):
@@ -194,6 +202,7 @@ class Player:
         return route
 
     def __draw_destination_tickets(self) -> bool:
+        """Offer destination tickets and keep the chosen ones."""
         try:
             offer = self.context.ticket_deck.deal_unique(3)
         except Exception as e:
@@ -216,25 +225,30 @@ class Player:
 
     # Helpers
     def get_no_locomotives(self):
+        """Return a copy of the player's hand without locomotives."""
         no_locomotives = self.__train_hand.copy()
         if "L" in no_locomotives.keys():
             no_locomotives.pop("L")
         return no_locomotives
 
     def get_context(self):
+        """Expose the player's current context."""
         return self.context
 
     def get_interface(self):
+        """Return the controlling interface for this player."""
         return self.__interface
 
     
 
     def __add_cards(self, cards: List[str], exposed: bool) -> None:
+        """Add drawn cards to the player's hand."""
         self.__train_hand.update(cards)
         if exposed:
             self.exposed.update(cards)
 
     def _spend_cards(self, cards: List[str]) -> None:
+        """Spend cards from the player's hand and discard them."""
         self.__train_hand.subtract(cards)
         self.context.train_deck.discard(cards)
         self.exposed.subtract(cards)
@@ -246,25 +260,32 @@ class Player:
             self.exposed[k] = 0
 
     def __claim_route(self, route: Route) -> None:
+        """Mark a route as claimed and update train count."""
         self.trains_remaining -= route.length
         self.context.map.claim_route(route, self.player_id)
 
     def __hand_counts(self) -> 'Counter[str]':
+        """Return a copy of the player's full hand counts."""
         return self.__train_hand.copy()
 
     def get_exposed(self) -> 'Counter[str]':
+        """Public information about cards drawn face up."""
         return self.exposed
     
     def get_hand(self) -> 'Counter[str]':
+        """Return the player's current hand."""
         return self.__train_hand
 
     def get_card_count(self) -> int:
+        """Total number of train cards in hand."""
         return sum(self.__train_hand.values())
     
     def get_tickets(self) -> List[DestinationTicket]:
+        """Return the player's destination tickets."""
         return self.__tickets
 
-    def get_affordable_routes(self) -> 'List[tuple[Route, int]]':        
+    def get_affordable_routes(self) -> 'List[tuple[Route, int]]':
+        """List routes this player can currently afford to claim."""
         if not self.__train_hand.total(): # type: ignore
             return []
         affordable_routes = []
@@ -280,11 +301,13 @@ class Player:
         return affordable_routes
     
     def update_longest_path(self, new_route: Route):
+        """Notify the map that this player claimed a new route."""
         self.context.map.update_longest_path(self.player_id, new_route)
         my_longest_path = self.context.map.longest_paths[self.player_id]
         has_longest_path = (self.context.map.longest_path_holder == self.player_id)
 
     def check_ticket_completion(self):
+        """Update ticket completion status based on owned routes."""
         path_info = self.context.map.paths[self.player_id]
         for t in [t for t in self.__tickets if not t.is_completed]:
             city_1_group = next((group for group in path_info if t.city1 in group), None)

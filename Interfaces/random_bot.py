@@ -12,6 +12,7 @@ class RandomBot(Interface):
     # 2 = Claim
     # 3 = draw a destination ticket
     def choose_turn_action(self):
+        """Decide which action to take this turn."""
         affordable_routes = self.player.get_affordable_routes() if self.player else None
         if not len([t for t in self.player.get_tickets() if not t.is_completed]):
             return 3
@@ -30,28 +31,33 @@ class RandomBot(Interface):
 
     # choose what cards to draw
     def choose_draw_train_action(self) -> int:
-        return random.randrange(-1,5)
+        """Choose which face-up index to draw or ``-1`` for the deck."""
+        return random.randrange(-1, 5)
 
     # choose what routes to claim -------------------------------------------------------------------#
     # claimable_routes is a list of tuples( Route , number of locomotives needed to claim)           #
     # return a tuple (route, number of locomotives you wish to spend)                                #
     # so to buy a route that costs 2 of a color using 1 locomotive you could return tuple(route, 1)  #
     # error handling is done on the back end --------------------------------------------------------#
-    def choose_route_to_claim(self,claimable_routes: 'List[tuple[Route,int]]') -> 'tuple[Route,int]':
-        return claimable_routes[random.randrange(0,len(claimable_routes))]
+    def choose_route_to_claim(self, claimable_routes: 'List[tuple[Route,int]]') -> 'tuple[Route,int]':
+        """Select a route and number of locomotives to spend."""
+        return claimable_routes[random.randrange(0, len(claimable_routes))]
 
     # choose what color to spend on a gray route (will spend most common color on input of None or on invalid color input)
-    def choose_color_to_spend(self, route: Route, color_options: List[str]) -> 'str | None':
+    def choose_color_to_spend(self, route: Route, color_options: List[str]) -> "str | None":
+        """Pick a color to spend on gray routes."""
         return None
 
     # choose which destination tickets to keep
-    def select_ticket_offer(self,offer) -> List[DestinationTicket]:
-        return [offer[0],offer[1]]
+    def select_ticket_offer(self, offer) -> List[DestinationTicket]:
+        """Choose which destination tickets to keep."""
+        return [offer[0], offer[1]]
 
 
     #######################
     #       helpers       #
     #######################
 
-    def path_finder(self,city1,city2):
+    def path_finder(self, city1, city2):
+        """Placeholder for path-finding logic."""
         return None
