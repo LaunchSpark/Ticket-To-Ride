@@ -7,49 +7,52 @@ from context.decks import DestinationTicket
 from context.Map import MapGraph
 import json
 
+
 class GameLogger:
     player_list: List[Player]
 
     def __init__(self, players: List[Player]):
-        """Initialize logging structures for an entire match."""
         self.player_list = players
         self.log = {
             "rounds": [],
-            "players": [
-                {
-                    "playerId": p.player_id,
-                    "name": p.name,
-                    "color": p.color,
-                }
-                for p in players
-            ],
-            "averageScores": [
-                {"playerId": p.player_id, "scores": []} for p in players
-            ],
+            "players": [{
+                "playerId": p.player_id,
+                "name": p.name,
+                "color": p.color
+            } for p in players],
+            "averageScores": [{
+                "playerId": p.player_id,
+                "scores": []
+            } for p in players]
         }
 
     def set_player_list(self, players: List[Player]):
-        """Replace the current player list when a new game starts."""
         self.player_list = players
 
-
     def add_round(self):
-        """Create a new round entry before turns are logged."""
-        self.log["rounds"].append({"turns": []})
+        self.log["rounds"].append({
+            "turns": []
+        })
 
     def add_turn(self, round_number: int, context: PlayerContext):
-        """Record a single turn from the gameplay loop."""
-        
+        """
+        Export a PlayerContext + full player list to JSON format.
+        Assumes each player object has:
+          - .player_id, .name, .color, .get_score(), .trains_remaining
+          - .get_claimed_routes(), .get_exposed(), .get_card_count(), .get_hidden_card_count()
+          - .get_tickets() returning .start, .end, .points, .completed
+        """
+
         # logs the current player's information
         player = next((player for player in self.player_list if player.player_id == context.player_id))
-        player_data = ({ 
+        player_data = ({
             "playerId": context.player_id,
             "score": context.score,
             "remainingTrains": player.trains_remaining,
             "claimedRoutes": [f"{r}" for r in context.map.get_claimed_routes(player.player_id)],
             "destinationTickets": [
                 {
-                    "from": t.city1, # TODO: use abbreviations (PENDING ticket_deck function)
+                    "from": t.city1,  # TODO: use abbreviations (PENDING ticket_deck function)
                     "to": t.city2,
                     "points": t.value,
                     "completed": t.is_completed
@@ -87,7 +90,7 @@ class GameLogger:
                     "white": p.exposed_hand.get("W", 0),
                     "yellow": p.exposed_hand.get("Y", 0)
                 },
-                "hidden": p.num_cards_in_hand - p.exposed_hand.total() # type: ignore
+                "hidden": p.num_cards_in_hand - p.exposed_hand.total()  # type: ignore
             }
         }) for p in context.opponents]
 
@@ -103,32 +106,26 @@ class GameLogger:
         self.log["rounds"][round_number]["turns"].append(turn_state)
 
     def find_player_score(self, turn: Dict, player_id: str) -> int:
-        """Helper used when computing average scores per turn."""
-        if turn["player"]["playerId"] == player_id:
+        if (turn["player"]["playerId"] == player_id):
+            # print("It was player's turn this turn and their score was", turn["player"]["score"])
             return turn["player"]["score"]
         else:
-            player_score = next(
-                p["score"] for p in turn["opponents"] if p["playerId"] == player_id
-            )
+            player_score = next((p["score"] for p in turn["opponents"] if p["playerId"] == player_id))
+            # print("It was someone else's turn this turn, but the player you're asking about scored", player_score, "this turn")
             return player_score
-    
+
     def log_match_stats(self):
-        """Compile statistics for the entire match after it ends."""
-        for turn in range(0, max(len(r["turns"]) for r in self.log["rounds"])):
+        for turn in range(0, max([len(r["turns"]) for r in self.log["rounds"]])):
             for p in self.player_list:
-                player_scores = next(
-                    player
-                    for player in self.log["averageScores"]
-                    if player["playerId"] == p.player_id
-                )["scores"]
-                turn_scores = [
-                    self.find_player_score(r["turns"][turn], p.player_id)
-                    for r in self.log["rounds"]
-                    if turn < len(r["turns"])
-                ]
+                # print("Getting average scores for", p.name)
+                player_scores = \
+                next((player for player in self.log["averageScores"] if player["playerId"] == p.player_id))["scores"]
+                # print("looking for score on turn", turn)
+                turn_scores = [self.find_player_score(r["turns"][turn], p.player_id) for r in self.log["rounds"] if
+                               (turn < len(r["turns"]))]
+                # print("Scores list:", turn_scores)
                 player_scores.append(round(sum(turn_scores) / len(turn_scores)))
-    
+
     def export_log(self, file_name: str):
-        """Write the collected log to disk for visualization."""
         with open(f"display/web display/html1/logs/{file_name}.json", "w") as f:
             json.dump(self.log, f, indent=2)
