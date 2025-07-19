@@ -7,6 +7,65 @@ from context.Map import Route
 from context.decks import DestinationTicket
 
 class RandomBot(Interface):
+    """Baseline bot that makes random choices.
+
+    Helpful functions and attributes
+    -------------------------------
+    ``self.player`` is assigned by the game engine and exposes many helpers for
+    making decisions. Some commonly used ones are listed below.
+
+    ``self.player.get_affordable_routes()`` -> ``List[tuple[Route, int]]``
+        Returns the routes you can currently afford and the locomotives required.
+        Example::
+
+            options = self.player.get_affordable_routes()
+            if options:
+                route, loco_needed = options[0]
+
+    ``self.player.get_tickets()`` -> ``List[DestinationTicket]``
+        Your destination tickets. Each ticket has ``city1``, ``city2``,
+        ``value`` and ``is_completed`` attributes.
+        Example::
+
+            incomplete = [t for t in self.player.get_tickets() if not t.is_completed]
+
+    ``self.player.get_hand()`` -> ``Counter[str]``
+        Current train cards in hand, keyed by color letter.
+        Example::
+
+            red_cards = self.player.get_hand().get('R', 0)
+
+    ``self.player.trains_remaining``
+        How many trains you still have available.
+        Example::
+
+            if self.player.trains_remaining <= 2:
+                # game will end soon
+                pass
+
+    ``self.player.context`` -> :class:`PlayerContext`
+        Snapshot of public game state each turn. Useful fields include:
+
+        - ``face_up_cards``: visible train cards in the market.
+          Example::
+
+              first = self.player.context.face_up_cards[0]
+
+        - ``map``: :class:`MapGraph` representing the board. You can inspect
+          routes via ``self.player.context.map.get_available_routes()`` or
+          ``get_claimed_routes(player_id)``.
+
+        - ``opponents``: list of ``OpponentInfo`` with each opponent's exposed
+          cards, remaining trains, score and ticket count.
+          Example::
+
+              for opp in self.player.context.opponents:
+                  print(opp.player_id, opp.score)
+
+        - ``turn_number``: current turn index.
+        - ``score``: your current score so far.
+    """
+
     # used to determine weather to
     # 1 = Draw
     # 2 = Claim
