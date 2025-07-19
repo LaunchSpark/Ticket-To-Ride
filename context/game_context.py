@@ -13,8 +13,9 @@ class GameContext:
         self.train_deck = TrainCardDeck()
         self.ticket_deck = TicketDeck()
         self.turn_num = 0
-        for p in player_ids:
-            self.scores = {p: 0 for p in player_ids}
+        # initialize score dictionary for all players
+        # each player starts with a score of 0
+        self.scores = {p: 0 for p in player_ids}
 
 
     def set_score(self,player_id,score):
