@@ -9,23 +9,27 @@ class Route:
     claimed_by: 'str | None'
 
     def __init__(self, city1: str, city2: str, length: int, color: str):
+        """Represent a single route on the map."""
         self.city1 = city1
         self.city2 = city2
         self.length = length
         self.color = color
         self.claimed_by = None
 
-    def other_city(self,city: str) -> str:
+    def other_city(self, city: str) -> str:
+        """Return the opposite endpoint of the route."""
         return self.city1 if self.city1 != city else self.city2
 
     def get_cities(self) -> 'set[str]':
-        return {self.city1,self.city2}
+        """Return a set containing both connected cities."""
+        return {self.city1, self.city2}
     
     def __repr__(self):
         return f"{self.city1.replace(' ', '_')}-{self.city2.replace(' ', '_')}-{self.color}"
 
 class MapGraph:
     def __init__(self):
+        """Load the map and prepare tracking of routes and paths."""
         self.longest_path_holder: str = ""
         self.longest_paths: Dict[str,int] = {}
         self.routes: List[Route] = []
@@ -41,6 +45,7 @@ class MapGraph:
 
 
     def _load_routes_from_csv(self, csv_path: str):
+        """Load all map routes from a CSV file."""
         with open(csv_path, newline='') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
@@ -52,7 +57,8 @@ class MapGraph:
                 route = Route(city1, city2, length, color)
                 self.routes.append(route)
 
-    def _build_adjacency(self,player_id = None) -> Dict[str, List[Route]]:
+    def _build_adjacency(self, player_id=None) -> Dict[str, List[Route]]:
+        """Generate adjacency lists used for path finding."""
         if player_id is not None:
             player_adj: Dict[str, List[Route]] = {}
             for route in self.routes:
@@ -66,28 +72,27 @@ class MapGraph:
         return self._adj
 
     def claim_route(self, route: Route, player_id: str):
+        """Mark a route as claimed by the given player."""
         if route in self.routes and route.claimed_by is None:
             route.claimed_by = player_id
 
     def cities(self) -> Set[str]:
+        """Return a set of every city on the map."""
         return set(self._adj.keys())
 
 
 
 
     def get_available_routes(self) -> List[Route]:
-        """
-        Returns a list of all unclaimed routes.
-        """
+        """Return all routes that have not been claimed."""
         return [route for route in self.routes if route.claimed_by is None]
 
     def get_claimed_routes(self, player_id: str) -> List[Route]:
-        """
-        Returns all routes claimed by the specified player.
-        """
+        """Return all routes claimed by the specified player."""
         return [route for route in self.routes if route.claimed_by == player_id]
 
     def update_longest_path(self, player_id: str, new_route: Route):
+        """Update tracking for longest continuous path after a claim."""
         # 1. Gather the endpoints of the newly claimed route
         starting_points: Set[str] = {new_route.city1, new_route.city2}
 
@@ -116,6 +121,7 @@ class MapGraph:
             self.longest_path_holder = player_id
 
     def get_longest_path(self, player_id: str, cities: Set[str]) -> int:
+        """Return the longest path length for a connected set of cities."""
         # Build adjacency for this player
         adj = self._build_adjacency(player_id)
         max_length = 0
@@ -125,6 +131,7 @@ class MapGraph:
         return max_length
 
     def dfs(self, current_city: str, visited: Set[Route], current_best: int, player_id: str) -> int:
+        """Depth-first search used by longest path calculations."""
         # Explore all unvisited routes from current_city
         adj = self._build_adjacency(player_id)
         best = 0
@@ -148,6 +155,7 @@ class MapGraph:
     
 
     def is_city_in_groups(self,city: str,player_id:str) -> 'set[str] | None':
+        """Helper for tracking connected components on the map."""
         for (g,l) in self.paths[player_id]:
             if city in g:
                 return g

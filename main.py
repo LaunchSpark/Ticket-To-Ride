@@ -15,6 +15,7 @@ import importlib.util
 
 
 def main():
+    """Entry point for running a full match via the command line."""
     players, logger = setup()
     round_number = 0
     round_limit = 10 # Can be changed to adjust how many consecutive rounds to run before the program stops
@@ -38,6 +39,7 @@ def main():
     logger.export_log("-".join([p.name for p in players]))
 
 def setup() -> 'tuple[List[Player],GameLogger]':
+    """Gather setup information and instantiate all players."""
     print("=== Game Setup ===")
 
     # # Step 1: Add the directory to sys.path

@@ -8,6 +8,20 @@ from context.GameLogger import GameLogger
 
 class Game:
     def __init__(self, context: GameContext, players: List[Player], logger: GameLogger, round_number: int):
+        """Create a game instance and prime the gameplay loop.
+
+        Parameters
+        ----------
+        context:
+            The :class:`GameContext` holding shared state such as decks and the
+            game map.
+        players:
+            The list of :class:`Player` objects participating in this game.
+        logger:
+            Collector used to persist turn by turn data for later inspection.
+        round_number:
+            Identifier for the current round when multiple games are played.
+        """
         # logging variables
         self.round_number = round_number
         self.logger = logger
@@ -29,17 +43,21 @@ class Game:
 
 
     def play(self, turns: Optional[int] = None) -> None:
+        """Run the core gameplay loop until an end condition is reached."""
         while not self._is_game_over():
             self.next_turn()
             self._score_game(False)
         self._score_game(True)
 
     def next_turn(self) -> None:
+        """Advance the gameplay loop by executing a single player's turn."""
         # set current player
         player = self.current_player()
         # build and load player context into player
         player_ids = [p.player_id for p in self.players]
-        player.set_context(PlayerContext(self.current_player().player_id, self.context, self.players))
+        player.set_context(
+            PlayerContext(self.current_player().player_id, self.context, self.players)
+        )
         self.logger.add_turn(self.round_number, self.current_player().context)
 
         # pseudo-progress-bar:
@@ -57,25 +75,29 @@ class Game:
         self.context.turn_num = self.turn_index
 
     def current_player(self) -> Player:
+        """Return the :class:`Player` whose turn is active."""
         return self.players[self.turn_index % len(self.players)]
 
     def _is_game_over(self) -> bool:
+        """Check if any player has two or fewer trains remaining."""
         return any(p.trains_remaining <= 2 for p in self.players)
 
     def _score_game(self, penalize_incomplete_tickets: bool) -> None:
+        """Update scores based on routes and tickets after each turn."""
         for p in self.players:
             # reference the score table to get score value
-            route_values = [self.score_table[r.length] for r in self.context.get_map().get_claimed_routes(p.player_id)]
-            # print (f"Scoring player {p.player_id}")
+            route_values = [
+                self.score_table[r.length]
+                for r in self.context.get_map().get_claimed_routes(p.player_id)
+            ]
             tickets = p.get_tickets()
-            # print(f"Tickets: {tickets}")
-            
+
             if tickets is None:
                 raise ValueError(f"Player {p.player_id} has no tickets (NoneType)")
-            
+
             completed_ticket_values = [t.value for t in p.get_tickets() if t.is_completed]
             incomplete_ticket_values = [t.value for t in p.get_tickets() if not t.is_completed]
-            
+
             score = sum(route_values) + (10 * p.has_longest_path) + sum(completed_ticket_values)
             if penalize_incomplete_tickets:
                 score -= sum(incomplete_ticket_values)
