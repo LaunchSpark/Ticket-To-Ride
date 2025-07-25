@@ -18,7 +18,8 @@ class OpponentInfo:
     destination_ticket_count: int
 
 class PlayerContext:
-    def __init__(self,player_id: str,context: GameContext, players: List):
+    def __init__(self, player_id: str, context: GameContext, players: List):
+        """Snapshot of public information passed to a :class:`Player`."""
         player = next((player for player in players if player.player_id == player_id), None)
         self.player_id: str = player_id
         self.map: MapGraph = context.get_map()
