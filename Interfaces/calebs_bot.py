@@ -1,3 +1,5 @@
+import math
+from scipy.stats import nhypergeom
 from typing import List, Optional, Dict
 from Interfaces.abstract_interface import Interface
 import random
@@ -67,7 +69,7 @@ class CalebsBot(Interface):
         - ``turn_number``: current turn index.
         - ``score``: your current score so far.
     """
-    is_endgame: bool = False # TODO: implement endgame detection
+    endgame_threshold: int = 5
     risk_appetite: float = 1.0
     # used to determine whether to
     # 1 = Draw
@@ -98,13 +100,13 @@ class CalebsBot(Interface):
                     # If we can pay with a non-wishlist color or with wishlist color and still have enough left for wishlist
                     if color not in wishlist_colors or (type(wishlist_colors) == Counter and (hand[color] - route.length >= wishlist_colors.get(color))): # type:ignore
                         # if we can pay without locomotives or if we are in the endgame
-                        if loco_needed == 0 or self.is_endgame == True:
+                        if loco_needed == 0 or self.estimate_turns_until_end() < self.endgame_threshold:
                             return 2
 
         # if we are too close to the end of the game to draw another destination ticket, do cost calculation to decide which routes to go for
         # if any destination tickets are incomplete, draw train cards. Otherwise, draw new destination tickets.
         for ticket in self.player.get_tickets():
-            if not ticket.is_completed or self.is_endgame:
+            if not ticket.is_completed or self.estimate_turns_until_end() < self.endgame_threshold:
                 return 1
         return 3
 
@@ -176,7 +178,16 @@ class CalebsBot(Interface):
     def choose_route_to_claim(self, claimable_routes: 'List[tuple[Route,int]]') -> 'tuple[Route,int]':
         """Select a route and number of locomotives to spend."""
         # Find the most expensive route from target_routes that is also claimable
-        target_routes = self.get_target_routes()
+        city_goals: set[str] = set()
+        for ticket in [t for t in self.player.get_tickets() if not t.is_completed]:
+            city_goals.add(ticket.city1)
+            city_goals.add(ticket.city2)
+        path_results = self.path_finder(city_goals.pop(), [city for city in city_goals])
+        if path_results:
+            target_routes = path_results[0]
+        else:
+            raise ValueError("No valid path found to complete destination tickets.")
+        
         if not claimable_routes or not target_routes:
             return claimable_routes[random.randrange(0, len(claimable_routes))]
 
@@ -242,63 +253,167 @@ class CalebsBot(Interface):
         # calculate value and train car cost for each ticket and combination of tickets
         # single tickets
         for ticket in offer:
-            cost, expected_value = self.calculate_tickets_value([ticket])
-            options.append(([ticket], cost, expected_value))
+            cost, expected_value, routes, wishlist = self.calculate_tickets_value([ticket])
+            if cost < self.player.trains_remaining:
+                options.append(([ticket], cost, expected_value, routes, wishlist))
 
         # two tickets
         for ticket in [t1 for t1 in offer]:
             for ticket2 in [t2 for t2 in offer if t2 != ticket and [ticket, t2] not in [o[0] for o in options] and [t2, ticket] not in [o[0] for o in options]]:
-                cost, expected_value = self.calculate_tickets_value([ticket, ticket2])
-                options.append(([ticket, ticket2], cost, expected_value))
+                cost, expected_value, routes, wishlist = self.calculate_tickets_value([ticket, ticket2])
+                if cost < self.player.trains_remaining:
+                    options.append(([ticket, ticket2], cost, expected_value, routes, wishlist))
 
         # all three tickets
-        value_calc = self.calculate_tickets_value(offer)
-        options.append((offer, value_calc[0], value_calc[1]))
+        cost, expected_value, wishlist, routes = self.calculate_tickets_value(offer)
+        if cost < self.player.trains_remaining:
+            options.append((offer, cost, expected_value, routes, wishlist))
+
+        # if none of the options are affordable with how many trains remain, choose the one with the lowest value to minimize score loss
+        if not options:
+            return [min(offer, key = lambda x: x.value)]
 
         # Sort by expected value descending
         options.sort(key=lambda x: x[2], reverse=True)
 
+        def estimate_turn_cost(routes, wishlist) -> int:
+            """
+            Estimate how many turns a given list of routes will take to fully claim and return the estimate as an int
+            """
+            turn_count = len(routes)
+            # Estimate how many turns it would take to draw all needed cards
+            wishlist_colors = wishlist['colors']
+            wishlist_gray = sorted(wishlist['gray'], reverse = True)
+            hand_copy = hand.copy()
+            for color, count in wishlist_colors.items():
+                if color in hand_copy:
+                    hand_copy[color] -= count
+                else:
+                    hand_copy[color] = -count
+
+            # Get accessible cards
+            accessible_cards = self.get_card_accessibility()
+            
+            # Loop through wishlist colors and take stock of how many we can fill from accessible colors
+            for color, count in [item for item in wishlist_colors.items() if wishlist_colors[item[1]] < 0]:
+                adjust_value = min(accessible_cards.get(color, 0), -count)
+                if color in accessible_cards:
+                    accessible_cards[color] -= adjust_value
+                wishlist_colors[color] = count + adjust_value
+
+                # Calculate expected turn cost
+                turn_count += math.ceil(float(adjust_value) * (1.0 + self.risk_appetite)) # Assumes different rates of relevant card draw depending on risk appetite (1 per turn at 0 and 2 per turn at 1)
+                        
+            # If we still have negative counts, check if we can fill them with locomotives
+            for color, count in [item for item in wishlist_colors.items() if wishlist_colors[item[1]] < 0]:
+                adjust_value = min(hand_copy.get('L', 0), -count)
+                if 'L' in hand_copy:
+                    hand_copy['L'] -= adjust_value
+                wishlist_colors[color] = count + adjust_value
+            
+            # If we still have negative counts, check if there are enough accessible locomotives to fill them
+            known_cards = 0
+            for opponent in self.player.context.opponents:
+                known_cards += opponent.exposed_hand.get('L', 0)
+            unknown_cards = 14 - known_cards
+            accessible_locomotives = unknown_cards
+            for color, count in [item for item in wishlist_colors.items() if wishlist_colors[item[1]] < 0]:
+                adjust_value = min(accessible_locomotives, -count)
+                accessible_locomotives -= adjust_value
+                wishlist_colors[color] = count + adjust_value
+
+                # Map risk tolerance to confidence level, requiring an 80% confidence level at risk appetite 0 and a 99% confidence level at risk appetite 100
+                confidence = 0.99 - 0.19 * self.risk_appetite
+
+                # Calculate total unknown cards
+                total_unknowns = sum((o.num_cards_in_hand - o.exposed_hand.total()) for o in self.player.context.opponents) + len(self.player.context.train_deck)
+
+                # Negative hypergeometric in scipy: nhypergeom(M, K, r)
+                dist = nhypergeom(M=total_unknowns, K=accessible_locomotives, r=adjust_value)
+
+                # Use percent point function (inverse CDF) to get the quantile
+                min_draws = math.ceil(dist.ppf(confidence))
+                turn_count += min_draws
+                accessible_locomotives -= adjust_value
+
+            # TODO (STRETCH): instead of this, find a way to allow for the fact that cards will become accessible as they are paid (and maybe even prioritize paying those colors to get them back sooner)
+            for color, count in [item for item in wishlist_colors.items() if wishlist_colors[item[1]] < 0]:
+                return 99999
+
+            # Assuming color needs are filled, fill gray route needs from remaining accessible cards if possible, using remaining locomotives to supplement where possible/necessary
+            for gray_cost in wishlist_gray:
+                color = min([color for color, count in accessible_cards.items() if count >= gray_cost], key = lambda x: accessible_cards[x], default = None)
+                if color:
+                    wishlist_gray.remove(gray_cost)
+                    accessible_cards[color] -= gray_cost
+                # TODO (STRETCH): instead of this, find a way to allow for the fact that cards will become accessible as they are paid (and maybe even prioritize paying those colors to get them back sooner)
+                else: 
+                    return 99999
+
+            # Add the number of routes to the previous turn count estimate (assuming one route per turn) and return 
+            return turn_count
+
         # Choose the option that maximizes expected value without exceeding train cost
-        for tickets, cost, _ in options:
-            if cost < self.player.trains_remaining: # TODO: factor in turns remaining estimate
-                return tickets
+        turns_until_end = self.estimate_turns_until_end()
+        option_info = []
+        for tickets, cost, value, routes, wishlist in [o for o in options if o[3]]:
+            turns_left = turns_until_end - estimate_turn_cost(routes, wishlist)
+            option_info.append((tickets, turns_left, value / turns_left))
+        # Sort options in descending order of estimated turn cost
+        sorted_options: List[tuple[List[DestinationTicket], int, int]] = sorted(option_info, key = lambda x: (x[2], x[1]), reverse = True)
+        if sorted_options[0][1] > 0:
+            return sorted_options[0][0]
         
-        # Always keep at least one ticket (game rule)
-        return [o for o in options if len(o[0]) == 1][0][0][0] # Returns the first sigle ticket option as a default
+        # If no options are expected to be complete before the game ends, choose the option that is closest to resolving before the game ends
+        return min([o for o in sorted_options if len(o[0]) == 1], key = lambda x: x[1])[0]
 
 
     #######################
     #       helpers       #
     #######################
 
-    def calculate_tickets_value(self, tickets: List[DestinationTicket]) -> tuple[int, float]:
+    def calculate_tickets_value(self, tickets: List[DestinationTicket]) -> tuple[int, float, List[Route], Dict[str, Counter | List]]:
         """
         Estimate the cost (in train cards) to complete the given list of destination tickets.
         Uses the shortest available path that completes all tickets.
         Already claimed routes are treated as zero-cost (free to traverse) if claimed by self,
         but routes claimed by other players are unnavigable.
         Returns None if no path exists to complete all tickets, otherwise returns a tuple 
-        (total cost in train cars, expected value of the tickets).
+        (total cost in train cars, expected value of the tickets, route wishlist, color wishlist).
+        Color wishlist structure is {'colors': Counter[str], 'gray': List[int]}.
         """
         cities = set()
         for ticket in tickets:
             cities.add(ticket.city1)
             cities.add(ticket.city2)
         path_results = self.path_finder(cities.pop(), [c for c in cities])
-        routes, wishlist = path_results if path_results else ([], {'colors': Counter(), 'gray': []})
+        routes, wishlist = path_results if (path_results and path_results[0]) else ([], {'colors': Counter(), 'gray': []})
         
         train_car_total = 0
+        if not routes:
+            return (0, 0, routes, wishlist) # No routes to traverse
         for route in routes:
             train_car_total += route.length
-        if train_car_total == 0:
-            return (0, 0)  # No routes to traverse
         expected_value = sum(ticket.value for ticket in tickets) / train_car_total # TODO: factor in longest path
-        return (train_car_total, expected_value)
+        return (train_car_total, expected_value, routes, wishlist)
 
-    def get_target_routes(self) -> List[Route]:
-        target_routes = []
-        return target_routes
-
+    def get_card_accessibility(self) -> Dict[str, int]:
+        """
+        Calculate the accessibility of each train card color based on the current hand and face-up cards.
+        Returns a dictionary with colors as keys and their accessibility score as values.
+        The score is based on how many of that color are in hand, in opponents' exposed hands, and in the unknown pile.
+        """
+        accessible_cards = Counter[str]()
+        for color in ["W", "B", "U", "G", "Y", "O", "R", "P"]:
+            in_hand = self.player.get_hand().get(color, 0)
+            known_cards = 0
+            for opponent in self.player.context.opponents:
+                known_cards += opponent.exposed_hand.get(color, 0)
+            unknown_cards = 12 - known_cards
+            accessible_count = in_hand + unknown_cards
+            accessible_cards.update({color: accessible_count})
+        return accessible_cards
+    
     def path_finder( # TODO: prefer longest path in case of ties
         self,
         start_point: str,
@@ -309,6 +424,7 @@ class CalebsBot(Interface):
         minimizing the sum of route lengths (A* search).
         Routes claimed by self are treated as zero-cost, routes claimed by others are ignored.
         Returns a tuple (list of Route objects, wishlist dict), or (0, 0) if not all destinations are reachable.
+        The list of Route objects does not include routes claimed by self.
         The wishlist dict has keys 'colors' (Counter) and 'gray' (list of lengths).
         """
         graph = self.player.context.map  # MapGraph instance representing the game board
@@ -321,15 +437,7 @@ class CalebsBot(Interface):
             to prefer routes with a higher chance of drawing the needed cards.
             Gray routes are the most flexible, so they get a lower multiplier.
             """
-            accessible_cards = Counter[str]()
-            for color in ["W", "B", "U", "G", "Y", "O", "R", "P"]:
-                in_hand = self.player.get_hand().get(route.color, 0)
-                known_cards = 0
-                for opponent in self.player.context.opponents:
-                    known_cards += opponent.exposed_hand.get(route.color, 0)
-                unknown_cards = 12 - known_cards
-                accessible_count = in_hand + unknown_cards
-                accessible_cards.update({color: accessible_count})
+            accessible_cards = self.get_card_accessibility()
             if route.color == "X":
                 # gray routes are flexible, so they are treated as whichever color is most accessible
                 return min(accessible_cards.values(), default=1.0) / 12.0
@@ -400,7 +508,7 @@ class CalebsBot(Interface):
 
             # If all destinations have been visited, return the path
             if not remaining:
-                return path, wishlist
+                return [p for p in path if p.claimed_by != self.player.player_id], wishlist
 
             # Explore all routes from the current city
             for route in graph._adj.get(current, []):
