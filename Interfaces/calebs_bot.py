@@ -1,10 +1,12 @@
 import math
+from itertools import count
 from scipy.stats import nhypergeom
 from typing import List, Optional, Dict
 from Interfaces.abstract_interface import Interface
 import random
 import heapq
 from collections import Counter
+import csv
 
 from context.Map import MapGraph
 from context.Map import Route
@@ -71,6 +73,11 @@ class CalebsBot(Interface):
         - ``turn_number``: current turn index.
         - ``score``: your current score so far.
     """
+
+    def __init__(self):
+        super().__init__()
+        self.precompute_data = self.read_routes_from_csv("shortest_paths_precompute.csv")
+
     def set_player(self, player):
         """Provide the Player instance that this interface controls."""
         self.player = player
@@ -248,7 +255,7 @@ class CalebsBot(Interface):
         return None
 
     # choose which destination tickets to keep
-    def select_ticket_offer(self, offer) -> List[DestinationTicket]:
+    def select_ticket_offer(self, offer) -> List[DestinationTicket]: #TODO: implement special logic for first turn (check if len(player.get_tickets()) == 0)
         """Choose which destination tickets to keep.
 
         Takes as many as possible without the cost exceeding what the player can spend before the end of the game,
@@ -379,6 +386,32 @@ class CalebsBot(Interface):
     #       helpers       #
     #######################
 
+    def parse_route_str(self, route_str: str) -> list[tuple[str, str, int, str]]:
+        routes = []
+        if route_str:
+            for part in route_str.split("|"):
+                city_pair, length, color = part.split(":")
+                city1, city2 = city_pair.split("-")
+                routes.append(Route(city1, city2, int(length), color))
+        return routes
+
+    def read_routes_from_csv(self, filename="shortest_paths.csv") -> dict[str, dict[str, tuple[list[tuple[str, str, int, str]], int]]]:
+        data = {}
+        with open(filename, mode="r", newline='') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                start = row["start_city"]
+                end = row["end_city"]
+                route_str = row["route_str"]
+                length = int(row["length"])
+
+                route_list = self.parse_route_str(route_str)
+
+                if start not in data:
+                    data[start] = {}
+                data[start][end] = (route_list, length)
+        return data
+
     def calculate_tickets_value(self, tickets: List[DestinationTicket]) -> tuple[int, float, List[Route], Dict[str, Counter | List]]:
         """
         Estimate the cost (in train cards) to complete the given list of destination tickets.
@@ -453,31 +486,9 @@ class CalebsBot(Interface):
                 return accessible_cards.get(route.color, 1.0) / 12.0
 
         # Heuristic function for A* (estimates cost to reach all remaining destinations)
-        def heuristic(current: str, remaining: set[str]) -> float:
-            # Use Dijkstra's algorithm to estimate the shortest path from current to each remaining destination,
-            # then sum the costs. If a destination is unreachable, treat its cost as a large number.
-            def dijkstra(start: str, end: str) -> float:
-                heap = [(0.0, start)]
-                visited = set()
-                while heap:
-                    cost, city = heapq.heappop(heap)
-                    if city == end:
-                        return cost
-                    if city in visited:
-                        continue
-                    visited.add(city)
-                    for route in graph._adj.get(city, []):
-                        neighbor = route.other_city(city)
-                        if neighbor in visited:
-                            continue
-                        # Ignore routes claimed by other players
-                        if route.claimed_by is not None and route.claimed_by != my_id:
-                            continue
-                        # If claimed by self, cost is 0; else, cost is route.length
-                        route_cost = 0 if route.claimed_by == my_id else route.length * get_color_multiplier(route)
-                        heapq.heappush(heap, (cost + route_cost, neighbor))
-                return 999999  # Large number if unreachable
-            return sum(dijkstra(current, dest) for dest in remaining)
+        def heuristic(current: str, remaining: set[str]) -> int:
+            """Use precomputed shortest paths from current to each remaining destination, then sum the costs."""
+            return sum([self.precompute_data[current][r][1] for r in remaining]) 
 
         # Each state in the search is a tuple:
         # (estimated_total_cost, cost_so_far, current_city, remaining_destinations, path_so_far, visited_cities)
@@ -488,7 +499,8 @@ class CalebsBot(Interface):
         # Each state: (est_total, cost_so_far, current, remaining, path, visited_cities, wishlist)
         heap = [
             (
-                heuristic(start_point, initial_remaining),
+                float(heuristic(start_point, initial_remaining)),
+                0,  # tie-breaker
                 0.0,
                 start_point,
                 frozenset(initial_remaining),
@@ -498,15 +510,15 @@ class CalebsBot(Interface):
             )
         ]
         visited_states = {}  # Memoization: (current_city, remaining_destinations) -> lowest cost found
-
+        counter = count()
         while heap:
             # Pop the state with the lowest estimated total cost
-            est_total, cost_so_far, current, remaining, path, visited_cities, wishlist = heapq.heappop(heap)
+            _, _, cost_so_far, current, remaining, path, visited_cities, wishlist = heapq.heappop(heap)
             # Memoization key includes both city, remaining, and a tuple of sorted color counts and gray lengths
             state_key = (
                 current,
                 remaining,
-                tuple(sorted(wishlist['colors'].items())),
+                tuple(wishlist['colors'].most_common()),
                 tuple(sorted(wishlist['gray']))
             )
             if state_key in visited_states and visited_states[state_key] <= cost_so_far:
@@ -557,7 +569,8 @@ class CalebsBot(Interface):
                 heapq.heappush(
                     heap,
                     (
-                        cost_so_far + route_cost + heuristic(neighbor, new_remaining),
+                        cost_so_far + route_cost + heuristic(neighbor, new_remaining), # priority
+                        next(counter),  # tie-breaker
                         float(cost_so_far + route_cost),
                         neighbor,
                         frozenset(new_remaining),
