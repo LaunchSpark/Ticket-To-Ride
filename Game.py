@@ -44,6 +44,10 @@ class Game:
 
     def play(self, turns: Optional[int] = None) -> None:
         """Run the core gameplay loop until an end condition is reached."""
+        for p in self.players:
+            p.set_context(
+                PlayerContext(self.current_player().player_id, self.context, self.players), True
+            )
         while not self._is_game_over():
             self.next_turn()
             self._score_game(False)

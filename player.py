@@ -26,12 +26,15 @@ class Player:
         self.my_longest_path_length: int
 
     # sets the context for the player
-    def set_context(self, context: PlayerContext):
+    def set_context(self, context: PlayerContext, setup: bool = False):
         """Provide the player with the latest :class:`PlayerContext`."""
         self.context = context
-        if context.turn_number == 0:
+        if setup:
             for i in range(0, 2):
                 self.__draw_train_cards([-1] * 2)
+            self.__draw_destination_tickets()
+            if len(self.__tickets) < 2:
+                self.__draw_destination_tickets()
 
     #prompts interface for turn option
     def take_turn(self, fault_flags: Dict[str, bool]) -> None:
