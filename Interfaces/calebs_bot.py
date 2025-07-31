@@ -11,6 +11,8 @@ from context.Map import Route
 from context.decks import DestinationTicket
 
 class CalebsBot(Interface):
+    risk_appetite: float
+    endgame_threshold: int
     """Baseline bot that makes random choices.
 
     Helpful functions and attributes
@@ -69,8 +71,12 @@ class CalebsBot(Interface):
         - ``turn_number``: current turn index.
         - ``score``: your current score so far.
     """
-    endgame_threshold: int = 5
-    risk_appetite: float = 1.0
+    def set_player(self, player):
+        """Provide the Player instance that this interface controls."""
+        self.player = player
+        self.risk_appetite = float(self.player.name.split(sep = "_")[-1])
+        self.endgame_threshold: int = math.ceil(5 + 5 * self.risk_appetite)
+
     # used to determine whether to
     # 1 = Draw
     # 2 = Claim
@@ -79,29 +85,30 @@ class CalebsBot(Interface):
         """Decide which action to take this turn."""
         # if there is a route in the wishlist we can afford, claim it (make sure not to spend reserved colors for grays)
         claimable = self.player.get_affordable_routes()
-        city_goals: set[str] = set()
-        for ticket in [t for t in self.player.get_tickets() if not t.is_completed]:
-            city_goals.add(ticket.city1)
-            city_goals.add(ticket.city2)
-        path_results = self.path_finder(city_goals.pop(), [city for city in city_goals])
-        if path_results:
-            wishlist_routes, wishlist_colors = path_results
-        else:
-            raise ValueError("No valid path found to complete destination tickets.")
-        hand = self.player.get_hand()
-        for route, loco_needed in claimable:
-            if route in wishlist_routes:
-            # If not a gray route, claim it
-                if route.color != "X":
-                    return 2
-                # For gray routes, check if we can pay with a non-wishlist color or with a wishlist color without dipping below wishlist need
-                eligible_colors = [color for color, count in hand.items() if count >= route.length]
-                for color in eligible_colors:
-                    # If we can pay with a non-wishlist color or with wishlist color and still have enough left for wishlist
-                    if color not in wishlist_colors or (type(wishlist_colors) == Counter and (hand[color] - route.length >= wishlist_colors.get(color))): # type:ignore
-                        # if we can pay without locomotives or if we are in the endgame
-                        if loco_needed == 0 or self.estimate_turns_until_end() < self.endgame_threshold:
-                            return 2
+        if claimable:
+            city_goals: set[str] = set()
+            for ticket in [t for t in self.player.get_tickets() if not t.is_completed]:
+                city_goals.add(ticket.city1)
+                city_goals.add(ticket.city2)
+            path_results = self.path_finder(city_goals.pop(), [city for city in city_goals])
+            if path_results:
+                wishlist_routes, wishlist_colors = path_results
+            else:
+                raise ValueError("No valid path found to complete destination tickets.")
+            hand = self.player.get_hand()
+            for route, loco_needed in claimable:
+                if route in wishlist_routes:
+                # If not a gray route, claim it
+                    if route.color != "X":
+                        return 2
+                    # For gray routes, check if we can pay with a non-wishlist color or with a wishlist color without dipping below wishlist need
+                    eligible_colors = [color for color, count in hand.items() if count >= route.length]
+                    for color in eligible_colors:
+                        # If we can pay with a non-wishlist color or with wishlist color and still have enough left for wishlist
+                        if color not in wishlist_colors or (type(wishlist_colors) == Counter and (hand[color] - route.length >= wishlist_colors.get(color))): # type:ignore
+                            # if we can pay without locomotives or if we are in the endgame
+                            if loco_needed == 0 or self.estimate_turns_until_end() < self.endgame_threshold:
+                                return 2
 
         # if we are too close to the end of the game to draw another destination ticket, do cost calculation to decide which routes to go for
         # if any destination tickets are incomplete, draw train cards. Otherwise, draw new destination tickets.
