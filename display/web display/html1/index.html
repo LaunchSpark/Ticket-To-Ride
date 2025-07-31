@@ -66,7 +66,7 @@
 							<div class="left-yellow-count" data-index="yellow">3</div>
 							<div class="left-orange-count" data-index="orange">4</div>
 							<div class="left-green-count" data-index="green">5</div>
-							<div class="left-purple-count-count" data-index="purple">6</div>
+							<div class="left-purple-count" data-index="purple">6</div>
 							<div class="left-white-count" data-index="white">7</div>
 							<div class="left-black-count" data-index="black">8</div>
 							<div class="left-locomotive-count" data-index="locomotive">9</div>
@@ -359,7 +359,7 @@
 
 			const playerColors = { // PENDING player color assignment: update with RGB
 				red: 'red',
-				blue: 'blue',
+				blue: '#526DF2',
 				green: 'green',
 				yellow: 'yellow'
 			}
@@ -636,7 +636,7 @@
 					// display opponent's claimed routes
 					if (opponent.claimedRoutes.length > 0) {
 						opponent.claimedRoutes.forEach(route => {
-							claimRoute(route, opponentData.color);
+							claimRoute(route, playerColors[opponentData.color]);
 						});
 					}
 				});
@@ -649,7 +649,7 @@
                 // show player's claimed routes
 				if (turnData.player.claimedRoutes.length > 0) {
 					turnData.player.claimedRoutes.forEach(route => {
-						claimRoute(route, currentPlayer.color);
+						claimRoute(route, playerColors[currentPlayer.color]);
 					});
 				}
 
