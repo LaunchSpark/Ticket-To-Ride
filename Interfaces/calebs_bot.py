@@ -279,7 +279,7 @@ class CalebsBot(Interface):
                     options.append(([ticket, ticket2], cost, expected_value, routes, wishlist))
 
         # all three tickets
-        cost, expected_value, wishlist, routes = self.calculate_tickets_value(offer)
+        cost, expected_value, routes, wishlist = self.calculate_tickets_value(offer)
         if cost < self.player.trains_remaining:
             options.append((offer, cost, expected_value, routes, wishlist))
 
@@ -454,29 +454,16 @@ class CalebsBot(Interface):
             accessible_cards.update({color: accessible_count})
         return accessible_cards
     
-    def path_finder( # TODO: prefer longest path in case of ties
+
+    def path_finder(
         self,
         start_point: str,
         destinations: List[str]
-    ) -> 'tuple[List[Route], Dict[str, Counter | List]] | None':
-        """
-        Find a set of routes that connects start_point to all destinations,
-        minimizing the sum of route lengths (A* search).
-        Routes claimed by self are treated as zero-cost, routes claimed by others are ignored.
-        Returns a tuple (list of Route objects, wishlist dict), or (0, 0) if not all destinations are reachable.
-        The list of Route objects does not include routes claimed by self.
-        The wishlist dict has keys 'colors' (Counter) and 'gray' (list of lengths).
-        """
-        graph = self.player.context.map  # MapGraph instance representing the game board
-        my_id = self.player.player_id    # The current player's ID
+    ) -> 'tuple[List[Route], dict[str, Counter | List]] | None':
+        graph = self.player.context.map
+        my_id = self.player.player_id
 
-        def get_color_multiplier(route: Route) -> float: # TODO: factor in the fact that locomotives exist
-            """
-            Calculate a cost multiplier for the route's length based on how many 
-            of the required color cards are in the unknown pile or in hand, 
-            to prefer routes with a higher chance of drawing the needed cards.
-            Gray routes are the most flexible, so they get a lower multiplier.
-            """
+        def get_color_multiplier(route: Route) -> float:
             accessible_cards = self.get_card_accessibility()
             if route.color == "X":
                 # gray routes are flexible, so they are treated as whichever color is most accessible
@@ -487,20 +474,22 @@ class CalebsBot(Interface):
 
         # Heuristic function for A* (estimates cost to reach all remaining destinations)
         def heuristic(current: str, remaining: set[str]) -> int:
-            """Use precomputed shortest paths from current to each remaining destination, then sum the costs."""
-            return sum([self.precompute_data[current][r][1] for r in remaining]) 
+            return sum([self.precompute_data[current][r][1] for r in remaining])
 
-        # Each state in the search is a tuple:
-        # (estimated_total_cost, cost_so_far, current_city, remaining_destinations, path_so_far, visited_cities)
+        def wishlist_signature(wishlist: dict) -> tuple:
+            color_bucket = tuple(sorted((color, (count // 2) * 2) for color, count in wishlist['colors'].items()))
+            gray_bucket = tuple(sorted((length // 2) * 2 for length in wishlist['gray']))
+            return (color_bucket, gray_bucket)
+
         initial_remaining = set(destinations)
         if start_point in initial_remaining:
-            initial_remaining.remove(start_point)  # Don't count the start if it's a destination
+            initial_remaining.remove(start_point)
 
         # Each state: (est_total, cost_so_far, current, remaining, path, visited_cities, wishlist)
         heap = [
             (
-                float(heuristic(start_point, initial_remaining)),
-                0,  # tie-breaker
+                float(heuristic(start_point, initial_remaining)),  # priority
+                0,  # tie-breaker: prefer longer path (negated later)
                 0.0,
                 start_point,
                 frozenset(initial_remaining),
@@ -509,17 +498,17 @@ class CalebsBot(Interface):
                 {'colors': Counter(), 'gray': []}
             )
         ]
-        visited_states = {}  # Memoization: (current_city, remaining_destinations) -> lowest cost found
+        visited_states = {}
         counter = count()
+
         while heap:
             # Pop the state with the lowest estimated total cost
             _, _, cost_so_far, current, remaining, path, visited_cities, wishlist = heapq.heappop(heap)
-            # Memoization key includes both city, remaining, and a tuple of sorted color counts and gray lengths
+
             state_key = (
                 current,
                 remaining,
-                tuple(wishlist['colors'].most_common()),
-                tuple(sorted(wishlist['gray']))
+                wishlist_signature(wishlist)
             )
             if state_key in visited_states and visited_states[state_key] <= cost_so_far:
                 continue
@@ -531,56 +520,55 @@ class CalebsBot(Interface):
 
             # Explore all routes from the current city
             for route in graph._adj.get(current, []):
-                # Ignore routes claimed by other players
                 if route.claimed_by is not None and route.claimed_by != my_id:
                     continue
+
                 neighbor = route.other_city(current)
                 if neighbor in visited_cities:
-                    continue  # Avoid cycles
+                    continue
 
-                # If the route is already claimed by us, it's free; otherwise, use its length as cost
                 route_cost = 0 if route.claimed_by == my_id else route.length * get_color_multiplier(route)
 
                 new_wishlist = {
                     'colors': wishlist['colors'].copy(),
                     'gray': list(wishlist['gray'])
                 }
+
                 if route.claimed_by != my_id:
                     if route.color == "X":
                         new_wishlist['gray'].append(route.length)
                     else:
                         new_wishlist['colors'][route.color] += route.length
 
-                # Prune if any color exceeds 12
-                test_wishlist = new_wishlist['colors']
+                # Gray simulation for pruning (in-place temp simulation)
+                test_wishlist = new_wishlist['colors'].copy()
                 for g in sorted(new_wishlist['gray'], reverse=True):
-                    test_color = min(test_wishlist, key = test_wishlist.get, default=None)
-                    test_wishlist[test_color] += g
-                # If any color exceeds 12, skip this route
-                if new_wishlist['colors'] and max(test_wishlist.values(), default=0) > 12:
+                    least_needed = min(test_wishlist, key=test_wishlist.get, default=None)
+                    if least_needed is not None:
+                        test_wishlist[least_needed] += g
+
+                if test_wishlist and max(test_wishlist.values(), default=0) > 12:
                     continue
 
-                # Remove neighbor from remaining destinations if it's one of them
                 new_remaining = set(remaining)
                 if neighbor in new_remaining:
                     new_remaining.remove(neighbor)
 
-                # Push the new state onto the heap
                 heapq.heappush(
                     heap,
                     (
-                        cost_so_far + route_cost + heuristic(neighbor, new_remaining), # priority
-                        next(counter),  # tie-breaker
+                        cost_so_far + route_cost + heuristic(neighbor, new_remaining),
+                        next(counter), # tiebreaker
                         float(cost_so_far + route_cost),
                         neighbor,
                         frozenset(new_remaining),
                         path + [route],
-                        visited_cities | {neighbor},
+                        visited_cities | set(neighbor),
                         new_wishlist
                     )
                 )
-        # If the heap is empty and we haven't returned, not all destinations are reachable
-        return None
+
+        return None  # No valid path found
 
     def estimate_turns_until_end(self) -> int:
         """
