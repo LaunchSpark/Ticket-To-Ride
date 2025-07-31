@@ -67,10 +67,10 @@ def setup() -> 'tuple[List[Player],GameLogger]':
     player_ids = []
     players = []
     player_names = [
-        "test_1",
-        "test_2",
-        "test_3",
-        "test_4",
+        "random_bot",
+        "Calebs_bot_1.0",
+        "Calebs_bot_0.5",
+        "Calebs_bot_0.0",
     ]
     player_colors = [
         "red",
