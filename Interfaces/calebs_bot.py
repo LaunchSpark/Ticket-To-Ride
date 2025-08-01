@@ -156,7 +156,7 @@ class CalebsBot(Interface):
             if len(draw_choices) == 2:
                 return draw_choices
             if color in face_up:
-                for market_color, index in face_up:
+                for index, market_color in enumerate(face_up):
                     if market_color == color and hand[color] < color_counts[color]:
                         # If we have less than wishlist, pick this color
                         draw_choices.append(index)
@@ -372,7 +372,7 @@ class CalebsBot(Interface):
         option_info = []
         for tickets, cost, value, routes, wishlist in [o for o in options if o[3]]:
             turns_left = turns_until_end - estimate_turn_cost(routes, wishlist)
-            option_info.append((tickets, turns_left, value / turns_left))
+            option_info.append((tickets, turns_left, value / turns_until_end))
         # Sort options in descending order of estimated turn cost
         sorted_options: List[tuple[List[DestinationTicket], int, int]] = sorted(option_info, key = lambda x: (x[2], x[1]), reverse = True)
         if sorted_options[0][1] > 0:
@@ -563,7 +563,7 @@ class CalebsBot(Interface):
                         neighbor,
                         frozenset(new_remaining),
                         path + [route],
-                        visited_cities | set(neighbor),
+                        visited_cities | {neighbor},
                         new_wishlist
                     )
                 )

@@ -89,9 +89,9 @@ class RandomBot(Interface):
 
 
     # choose what cards to draw
-    def choose_draw_train_action(self) -> int:
+    def choose_draw_train_action(self) -> list[int]:
         """Choose which face-up index to draw or ``-1`` for the deck."""
-        return random.randrange(-1, 5)
+        return [random.randrange(-1, 5), random.randrange(-1, 5)]
 
     # choose what routes to claim -------------------------------------------------------------------#
     # claimable_routes is a list of tuples( Route , number of locomotives needed to claim)           #

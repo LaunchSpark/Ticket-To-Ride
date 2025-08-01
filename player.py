@@ -110,7 +110,7 @@ class Player:
     # handlers for each option
     def __draw_train_cards(self, draws: Optional[List[int]] = None) -> str:
         """Internal helper for drawing train cards."""
-        draw_choices = [self.__interface.choose_draw_train_action() for _ in range(2)] if draws is None else draws
+        draw_choices = self.__interface.choose_draw_train_action() if draws is None else draws
 
         train_deck = self.context.train_deck # Assuming ticket_deck includes train draw functionality
 
