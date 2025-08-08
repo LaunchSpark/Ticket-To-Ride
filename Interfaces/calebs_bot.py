@@ -373,7 +373,7 @@ class CalebsBot(Interface):
 
         # Choose the option that maximizes expected value without exceeding train cost
         train_counts = [self.player.trains_remaining] + [o.remaining_trains for o in self.player.context.opponents]
-        turns_until_end = self.estimate_turns_until_end() if min(train_counts) < self.endgame_threshold else 50
+        turns_until_end = self.estimate_turns_until_end()
         option_info = []
         for tickets, cost, value, routes, wishlist in [o for o in options if o[3]]:
             turns_left = turns_until_end - estimate_turn_cost(routes, wishlist)
@@ -577,17 +577,23 @@ class CalebsBot(Interface):
 
     def estimate_turns_until_end(self) -> int: # TODO: look at this again, also condition isn't 0 trains, have it only kick in at 15 trains
         """
-        Estimate the minimum number of turns before any player runs out of trains,
-        taking into account trains_remaining and color breakdowns of each player's hand,
-        and using risk_appetite to interpolate between pessimistic and optimistic assumptions
-        about unknown cards in opponents' hands.
+        If the endgame threshold has been reached, estimate the minimum number of turns 
+        before any player runs out of trains, assuming that the player with the least 
+        number of trains tries to spend their remaining trains as quickly as possible.
         """
 
+        least_trains = min([(self.player, self.player.trains_remaining)] + [(o, o.remaining_trains) for o in self.player.context.opponents])
+        if least_trains[1] > self.endgame_threshold:
+            return 50
+        
         all_routes = self.player.context.map.get_available_routes()
         if not all_routes:
-            return 1  # Game will end immediately if no routes left
+            return -1  # If there are no routes left, something is very wrong
 
         min_turns = float('inf')
+
+        # the player and opponents need separate logic, so first check which one we're dealing with
+        if type(least_trains[0]) is 
 
         # Handle self (Player)
         trains = getattr(self.player, 'trains_remaining', 0)
