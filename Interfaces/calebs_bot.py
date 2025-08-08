@@ -82,7 +82,7 @@ class CalebsBot(Interface):
         """Provide the Player instance that this interface controls."""
         self.player = player
         self.risk_appetite = float(self.player.name.split(sep = "_")[-1])
-        self.endgame_threshold: int = math.ceil(5 + 5 * self.risk_appetite)
+        self.endgame_threshold: int = math.ceil(10 + 5 * self.risk_appetite)
 
     # used to determine whether to
     # 1 = Draw
@@ -114,13 +114,15 @@ class CalebsBot(Interface):
                         # If we can pay with a non-wishlist color or with wishlist color and still have enough left for wishlist
                         if color not in wishlist_colors or (type(wishlist_colors) == Counter and (hand[color] - route.length >= wishlist_colors.get(color))): # type:ignore
                             # if we can pay without locomotives or if we are in the endgame
-                            if loco_needed == 0 or self.estimate_turns_until_end() < self.endgame_threshold:
+                            train_counts = [self.player.trains_remaining] + [o.remaining_trains for o in self.player.context.opponents]
+                            if loco_needed == 0 or (min(train_counts) <= self.endgame_threshold): # TODO: add back a call to estimate_turns_until_end once I have something to check it against
                                 return 2
 
         # if we are too close to the end of the game to draw another destination ticket, do cost calculation to decide which routes to go for
         # if any destination tickets are incomplete, draw train cards. Otherwise, draw new destination tickets.
         for ticket in self.player.get_tickets():
-            if not ticket.is_completed or self.estimate_turns_until_end() < self.endgame_threshold:
+            train_counts = [self.player.trains_remaining] + [o.remaining_trains for o in self.player.context.opponents]
+            if not ticket.is_completed or (min(train_counts) <= self.endgame_threshold): # TODO: add back a call to estimate_turns_until_end once I have something to check it against
                 return 1
         return 3
 
@@ -263,13 +265,15 @@ class CalebsBot(Interface):
         """
         hand = self.player.get_hand()
         options = []
+        min_kept = 1 if self.player.get_tickets() else 2
 
         # calculate value and train car cost for each ticket and combination of tickets
-        # single tickets
-        for ticket in offer:
-            cost, expected_value, routes, wishlist = self.calculate_tickets_value([ticket])
-            if cost < self.player.trains_remaining:
-                options.append(([ticket], cost, expected_value, routes, wishlist))
+        # single tickets (only calculate if keeping one ticket is an option)
+        if min_kept == 1:
+            for ticket in offer:
+                cost, expected_value, routes, wishlist = self.calculate_tickets_value([ticket])
+                if cost < self.player.trains_remaining:
+                    options.append(([ticket], cost, expected_value, routes, wishlist))
 
         # two tickets
         for ticket in [t1 for t1 in offer]:
@@ -368,7 +372,8 @@ class CalebsBot(Interface):
             return turn_count
 
         # Choose the option that maximizes expected value without exceeding train cost
-        turns_until_end = self.estimate_turns_until_end()
+        train_counts = [self.player.trains_remaining] + [o.remaining_trains for o in self.player.context.opponents]
+        turns_until_end = self.estimate_turns_until_end() if min(train_counts) < self.endgame_threshold else 50
         option_info = []
         for tickets, cost, value, routes, wishlist in [o for o in options if o[3]]:
             turns_left = turns_until_end - estimate_turn_cost(routes, wishlist)
@@ -379,7 +384,7 @@ class CalebsBot(Interface):
             return sorted_options[0][0]
         
         # If no options are expected to be complete before the game ends, choose the option that is closest to resolving before the game ends
-        return min([o for o in sorted_options if len(o[0]) == 1], key = lambda x: x[1])[0]
+        return min([o for o in sorted_options if len(o[0]) == min_kept], key = lambda x: x[1])[0]
 
 
     #######################
@@ -437,7 +442,7 @@ class CalebsBot(Interface):
         expected_value = sum(ticket.value for ticket in tickets) / train_car_total # TODO: factor in longest path
         return (train_car_total, expected_value, routes, wishlist)
 
-    def get_card_accessibility(self) -> Dict[str, int]:
+    def get_card_accessibility(self) -> Dict[str, int]: # TODO: factor in market
         """
         Calculate the accessibility of each train card color based on the current hand and face-up cards.
         Returns a dictionary with colors as keys and their accessibility score as values.
@@ -485,7 +490,7 @@ class CalebsBot(Interface):
         if start_point in initial_remaining:
             initial_remaining.remove(start_point)
 
-        # Each state: (est_total, cost_so_far, current, remaining, path, visited_cities, wishlist)
+        # Each state: (est_total, tie-breaker, cost_so_far, current, remaining, path, visited_cities, wishlist)
         heap = [
             (
                 float(heuristic(start_point, initial_remaining)),  # priority
@@ -570,14 +575,13 @@ class CalebsBot(Interface):
 
         return None  # No valid path found
 
-    def estimate_turns_until_end(self) -> int:
+    def estimate_turns_until_end(self) -> int: # TODO: look at this again, also condition isn't 0 trains, have it only kick in at 15 trains
         """
         Estimate the minimum number of turns before any player runs out of trains,
         taking into account trains_remaining and color breakdowns of each player's hand,
         and using risk_appetite to interpolate between pessimistic and optimistic assumptions
         about unknown cards in opponents' hands.
         """
-        import math
 
         all_routes = self.player.context.map.get_available_routes()
         if not all_routes:
