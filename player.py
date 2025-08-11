@@ -120,6 +120,7 @@ class Player:
                 try:
                     card = train_deck.draw_face_up(c)
                     self.__add_cards([card], True)
+                    return 'success'
                 except IndexError:
                     print(f"Invalid face-up index '{c}' by player {self.player_id}.")
                     return 'invalid'
