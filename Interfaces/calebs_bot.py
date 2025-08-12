@@ -168,7 +168,7 @@ class CalebsBot(Interface):
                     draw_choices.append(face_up.index(color))
 
         # If still no choices and there are locomotives face-up, pick one
-        # TODO: weigh locomotives more heavily if close to a large route, and less if there are few colors we don't have
+        # TODO (STRETCH): weigh locomotives more heavily if close to a large route, and less if there are few colors we don't have
         if not draw_choices and 'L' in face_up:
             return [face_up.index('L')]
 
@@ -207,7 +207,6 @@ class CalebsBot(Interface):
         if not target_routes:
             return claimable_routes[0]
 
-        # TODO: limit locomotive use based on risk appetite?
         # Build a set for fast lookup
         target_set = set(target_routes)
         # Sort claimable_routes by:
@@ -250,7 +249,7 @@ class CalebsBot(Interface):
         return None
 
     # choose which destination tickets to keep
-    def select_ticket_offer(self, offer) -> List[DestinationTicket]: #TODO: implement special logic for first turn (check if len(player.get_tickets()) == 0)
+    def select_ticket_offer(self, offer) -> List[DestinationTicket]:
         """Choose which destination tickets to keep.
 
         Takes as many as possible without the cost exceeding what the player can spend before the end of the game,
@@ -430,7 +429,7 @@ class CalebsBot(Interface):
         expected_value = sum(ticket.value for ticket in tickets) / train_car_total # TODO: factor in longest path
         return (train_car_total, expected_value, routes, wishlist)
 
-    def get_card_accessibility(self) -> Counter[str]: # TODO: factor in market
+    def get_card_accessibility(self) -> Counter[str]:
         """
         Calculate the accessibility of each train card color based on the current hand and face-up cards.
         Returns a dictionary with colors as keys and the number of that color in the unknown as the value.
@@ -616,7 +615,7 @@ class CalebsBot(Interface):
             # For now, just subtract the locomotive count from the train count
             trains -= hand.pop('L', 0)
 
-            # function to update claimable route lists TODO: eventually implement a way to make sure routes don't get double-claimed
+            # function to update claimable route lists
             def update_claimable():
                 optimistic = [r for r in claimable_optimistic if (r.color != 'X' and r.length < min(trains, hand.get(r.color, 0) + unknown_cards)) or r.length < min(trains, max(hand.values()) + unknown_cards)]
                 pessimistic = [r for r in optimistic if (r.color != 'X' and r.length < min(trains, hand.get(r.color, 0))) or r.length < min(trains, max(hand.values()))]
@@ -641,6 +640,8 @@ class CalebsBot(Interface):
                     hand_copy[color] -= route.length
                     spent.append((color, route.length))
                     min_turns += 1
+                    claimable_pessimistic.remove(route)
+                    claimable_optimistic.remove(route)
                     claimable_optimistic, claimable_pessimistic = update_claimable()
             
             ############
